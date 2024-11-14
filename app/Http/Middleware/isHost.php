@@ -19,7 +19,7 @@ class isHost
     {
         $user = Auth::user();
 
-        if($user->ownedParties()->exists()){
+        if($user->ownedProducts()->exists()){
             return $next($request);
         }
         //return $next($request);

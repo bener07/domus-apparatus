@@ -14,7 +14,7 @@ class TagsController extends Controller
 
     public function show($id){
         $tag = Tags::find($id);
-        $parties = $tag->parties;
-        return view('party.byTag', compact('parties', 'tag'));
+        $products = $tag->products;
+        return view('Product.byTag', compact('products', 'tag'));
     }
 }

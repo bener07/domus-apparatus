@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\PartyController;
+use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserAuthController;
 
@@ -13,20 +13,20 @@ Route::group([
     'namespace' => 'user',        // Controller namespace
     'name' => 'user.',             // Name prefix for route names
 ], function () {
-    Route::delete('party', [UserController::class, 'detachFromParty']);
-    Route::post('party', [UserController::class, 'addUserToParty']);
-    Route::get('parties', [UserController::class, 'getUserParties']);
+    Route::delete('Product', [UserController::class, 'detachFromProduct']);
+    Route::post('Product', [UserController::class, 'addUserToProduct']);
+    Route::get('products', [UserController::class, 'getUserProducts']);
     Route::get('events', [userController::class, 'getUserEvents']);
     Route::get('/', function (Request $request) {return $request->user();});
 });
 
-Route::get('/party', [PartyController::class, 'index'])->name('parties.index');
+Route::get('/Product', [ProductController::class, 'index'])->name('products.index');
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('/party', [PartyController::class, 'store'])->name('parties.store');
-    Route::get('/party/{party}', [PartyController::class, 'show'])->name('parties.show');
-    Route::put('/party/{party}', [PartyController::class, 'update'])->name('parties.update');
-    Route::delete('/party/{party}', [PartyController::class, 'destroy'])->name('parties.destroy');
+    Route::post('/Product', [ProductController::class, 'store'])->name('products.store');
+    Route::get('/Product/{Product}', [ProductController::class, 'show'])->name('products.show');
+    Route::put('/Product/{Product}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('/Product/{Product}', [ProductController::class, 'destroy'])->name('products.destroy');
 });
 
 // Sanctum Autentication

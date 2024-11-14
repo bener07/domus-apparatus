@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('avatar')->default('/storage/images/avatar.png');
             $table->string('nickname')->nullable();
-            $table->string('password')->nullable(); // only nullable because of the third_parties
+            $table->string('password')->nullable(); // only nullable because of the third_products
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('directory')->unique()->nullable(); // on creation nothing happens but the observer then creates it and modifies here

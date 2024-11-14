@@ -29,7 +29,7 @@ class SocialLinks extends Model
 
     public static function handleCallback($platform){
         $social_user = Socialite::driver($platform)->user();
-        $user = User::handleThirdParty($platform, $social_user);
+        $user = User::handleThirdProduct($platform, $social_user);
         if($user){
             Auth::login($user);
             return redirect('/dashboard');

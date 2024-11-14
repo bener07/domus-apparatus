@@ -13,7 +13,7 @@ class Tags extends Model
         'description'
     ];
 
-    public function parties(){
-        return $this->belongsToMany(Party::class, 'party_tag');
+    public function products(){
+        return $this->belongsToMany(Product::class, 'Product_tag');
     }
 }

@@ -36,6 +36,6 @@ class DatabaseSeeder extends Seeder
             'remember_token' => Str::random(10)
         ]);
         $this->call(TagsSeeder::class);
-        $this->call(PartySeeder::class);
+        $this->call(ProductSeeder::class);
     }
 }

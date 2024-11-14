@@ -28,14 +28,14 @@ class AppServiceProvider extends ServiceProvider
         // Register the user Policy
         Gate::policy(User::class, UserPolicy::class);
 
-        Gate::define('isHost', function($user, $party){
-            return $user->id === $party->owner_id;
+        Gate::define('isHost', function($user, $Product){
+            return $user->id === $Product->owner_id;
         });
 
         Blade::if('isHosting', function(){
             $user = Auth::user();
 
-            return $user && $user->ownedParties()->exists();
+            return $user && $user->ownedProducts()->exists();
         });
         Blade::if('isAdmin', function () {
             $user = Auth::user();

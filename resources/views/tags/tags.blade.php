@@ -1,6 +1,6 @@
 @extends('../layout')
 @section('title')
-Party Tags
+Product Tags
 @endsection
 
 @section('content')

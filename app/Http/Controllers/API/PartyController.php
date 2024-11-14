@@ -3,39 +3,39 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\StorePartyRequest;
-use App\Http\Requests\UpdatePartyRequest;
-use App\Interfaces\PartyRepositoryInterface;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+use App\Interfaces\ProductRepositoryInterface;
 use App\Classes\ApiResponseClass;
-use App\Http\Resources\PartyResource;
+use App\Http\Resources\ProductResource;
 use Illuminate\Support\Facades\DB;
 
 
-class PartyController extends Controller
+class ProductController extends Controller
 {
-    private PartyRepositoryInterface $partyRepositoryInterface;
+    private ProductRepositoryInterface $ProductRepositoryInterface;
 
-    public function __construct(PartyRepositoryInterface $partyRepositoryInterface){
-        $this->partyRepositoryInterface = $partyRepositoryInterface;
+    public function __construct(ProductRepositoryInterface $ProductRepositoryInterface){
+        $this->ProductRepositoryInterface = $ProductRepositoryInterface;
     }
 
     public function index(Request $request){
-        $data = $this->partyRepositoryInterface->index();
+        $data = $this->ProductRepositoryInterface->index();
 
-        return ApiResponseClass::sendResponse(PartyResource::collection($data), '',200);
+        return ApiResponseClass::sendResponse(ProductResource::collection($data), '',200);
     }
     
     public function create(){
         //
     }
 
-    public function store(StorePartyRequest $request){
+    public function store(StoreProductRequest $request){
         DB::beginTransaction();
         try{
-             $party = $this->partyRepositoryInterface->store($request);
+             $Product = $this->ProductRepositoryInterface->store($request);
 
              DB::commit();
-             return ApiResponseClass::sendResponse(new PartyResource($party), 'party Create Successful', 201);
+             return ApiResponseClass::sendResponse(new ProductResource($Product), 'Product Create Successful', 201);
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
@@ -43,12 +43,12 @@ class PartyController extends Controller
     }
 
     public function show($id){
-        $party = $this->partyRepositoryInterface->getById($id);
+        $Product = $this->ProductRepositoryInterface->getById($id);
 
-        if($party){
-            return ApiResponseClass::sendResponse(new PartyResource($party), 'party retrieved successfully', 200);
+        if($Product){
+            return ApiResponseClass::sendResponse(new ProductResource($Product), 'Product retrieved successfully', 200);
         }else {
-            return ApiResponseClass::sendResponse([], 'party not found', 404);
+            return ApiResponseClass::sendResponse([], 'Product not found', 404);
         }
     }
 
@@ -56,17 +56,17 @@ class PartyController extends Controller
         //
     }
 
-    public function update(UpdatePartyRequest $request, $id){
+    public function update(UpdateProductRequest $request, $id){
         $details =[
             'name' => $request->name,
             'details' => $request->details
         ];
         DB::beginTransaction();
         try{
-             $party = $this->partyRepositoryInterface->update($id, $details);
+             $Product = $this->ProductRepositoryInterface->update($id, $details);
 
              DB::commit();
-             return ApiResponseClass::sendResponse(new PartyResource($Party), 'party Update Successful', 200);
+             return ApiResponseClass::sendResponse(new ProductResource($Product), 'Product Update Successful', 200);
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
@@ -74,8 +74,8 @@ class PartyController extends Controller
     }
     
     public function destroy($id){
-        $this->partyRepositoryInterface->delete($id);
+        $this->ProductRepositoryInterface->delete($id);
 
-        return ApiResponseClass::sendResponse([], 'party Delete Successful', 204);
+        return ApiResponseClass::sendResponse([], 'Product Delete Successful', 204);
     }
 }

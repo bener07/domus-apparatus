@@ -52,16 +52,16 @@ class User extends Authenticatable
         ];
     }
 
-    public static function handleThirdParty($platform, $third_party){
+    public static function handleThirdProduct($platform, $third_Product){
         $user = User::firstOrCreate(
-            ['email' => $third_party->getEmail()],
+            ['email' => $third_Product->getEmail()],
             [
-            'email' => $third_party->getEmail(),
-            'nickname' => $third_party->getNickname(),
-            'avatar' => $third_party->getAvatar(),
-            'name' => $third_party->getName(),
+            'email' => $third_Product->getEmail(),
+            'nickname' => $third_Product->getNickname(),
+            'avatar' => $third_Product->getAvatar(),
+            'name' => $third_Product->getName(),
         ]);
-        $user->addLink($platform,$third_party);
+        $user->addLink($platform,$third_Product);
         return $user;
     }
 
@@ -72,34 +72,34 @@ class User extends Authenticatable
      */
     public function events()
     {
-        return $this->hasMany(Party::class, 'owner_id');
+        return $this->hasMany(Product::class, 'owner_id');
     }
 
     /**
-     * The parties that belong to the User
+     * The products that belong to the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function parties()
+    public function products()
     {
-        return $this->belongsToMany(Party::class, 'party_users');
+        return $this->belongsToMany(Product::class, 'Product_users');
     }
 
-    public function addParty($party_id){
-        if(!$this->parties->contains($party_id)){
-            $this->parties()->attach($party_id);
+    public function addProduct($Product_id){
+        if(!$this->products->contains($Product_id)){
+            $this->products()->attach($Product_id);
             return true;
         }
         return false;
     }
 
-    public function ownedParties(){
-        return $this->hasMany(Party::class, 'owner_id');
+    public function ownedProducts(){
+        return $this->hasMany(Product::class, 'owner_id');
     }
 
-    public function removeParty($party_id){
-        if($this->parties->contains($party_id)){
-            $this->parties()->detach($party_id);
+    public function removeProduct($Product_id){
+        if($this->products->contains($Product_id)){
+            $this->products()->detach($Product_id);
             return true;
         }
         return false;
@@ -136,14 +136,14 @@ class User extends Authenticatable
         return $this->hasMany(SocialLinks::class);
     }
 
-    public function addLink($platform,$third_party){
+    public function addLink($platform,$third_Product){
         $this->socialLinks()->updateOrCreate([
             'platform' => $platform,
             'user_id' => $this->id,
         ],[
-            'token' => $third_party->token,
+            'token' => $third_Product->token,
             'expiresIn' => $this->expiresIn,
-            'social_id' => $third_party->getId(),
+            'social_id' => $third_Product->getId(),
         ]);
     }
 
