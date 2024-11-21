@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_users', function (Blueprint $table) {
+        Schema::create('requisicoes', function (Blueprint $table) {
             $table->id();
+            $table->text('status')->default('indisponível');
+            $table->foreignId('admin_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->
             $table->timestamps();
         });
     }

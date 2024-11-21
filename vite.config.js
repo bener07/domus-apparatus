@@ -6,12 +6,20 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
-                'resources/js/app.js',
                 'resources/css/styles.css',
-                'resources/js/dashboard.js',
+                'resources/css/dark.css',
+                'resources/css/template.css',
+                'resources/js/app.js',
                 'resources/js/index.js',
+                'resources/js/template.js',
             ],
             refresh: true,
         }),
     ],
+    build: {
+        rollupOptions: {
+          external: ['jquery', 'jquery.easing'],
+        },
+      },
+    
 });
