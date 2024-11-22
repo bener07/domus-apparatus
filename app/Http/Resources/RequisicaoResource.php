@@ -25,7 +25,7 @@ class RequisicaoResource extends JsonResource
             'entrega_real' => $this->entrega_real,
             'product' => optional(Product::find($this->product_id))->name, // Access the name directly
             'requisicao' => $this->created_at,
-            'autorizacao' => $this->confirmacao()->pluck('status'),
+            'autorizacao' => $this->confirmacao->pluck('status')
         ];
     }
 }

@@ -38,4 +38,21 @@ class Product extends Model
     public function tags(){
         return $this->belongsToMany(Tags::class, 'product_tag');
     }
+
+    public function requisicoes(){
+        return $this->hasMany(Requisicao::class);
+    }
+
+    public function updateStatus($status){
+        $this->status = $status;
+        $this->save();
+    }
+
+    public function getDisponivel(){
+        return $this->status == 'disponivel';
+    }
+
+    public function getEmConfirmacao(){
+        return $this->status == 'em confirmacao';
+    }
 }
