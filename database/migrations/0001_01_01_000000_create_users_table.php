@@ -15,10 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('avatar')->default('/storage/images/avatar.png');
-            $table->string('password')->nullable(); // only nullable because of the third_products
+            $table->string('password'); // only nullable because of the third_party
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('directory')->unique()->nullable(); // on creation the observer creates a directory
             $table->rememberToken();
             $table->timestamps();
             $table->foreignId('department_id')->nullable();

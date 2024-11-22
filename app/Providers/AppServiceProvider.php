@@ -6,8 +6,12 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Requisicao;
+use App\Observers\RequisicaoObserver;
 use App\Observers\UserObserver;
 use App\Models\User;
+use App\Models\AdminConfirmation;
+use App\Observers\AdminConfirmationObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,7 +28,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // set the observers
+        AdminConfirmation::observe(AdminConfirmationObserver::class);
         User::observe(UserObserver::class);
+        Requisicao::observe(RequisicaoObserver::class);
         // Register the user Policy
         Gate::policy(User::class, UserPolicy::class);
 

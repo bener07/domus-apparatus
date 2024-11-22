@@ -43,5 +43,6 @@ require __DIR__.'/auth.php';
 require __DIR__.'/third_party_auth.php';
 
 Route::get('/{page}', function($page) {
-    return view('pages.'.$page);
-});
+    $user = Auth::user();
+    return view('pages.'.$page, compact('user'));
+})->middleware('auth');

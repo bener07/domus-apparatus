@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\API;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Classes\ApiResponseClass;
 
-class isHost
+class IsAdmin
 {
     /**
      * Handle an incoming request.
@@ -19,10 +20,10 @@ class isHost
     {
         $user = Auth::user();
 
-        if($user->ownedProducts()->exists()){
+        if($user->isAdmin()){
+            Log::info("Administrador acedeu a uma route");
             return $next($request);
         }
-        //return $next($request);
-        return redirect()->back()->withErrors('User has no events');
+        return ApiResponseClass::sendResponse([], 'Nao e administrador', 403);
     }
 }

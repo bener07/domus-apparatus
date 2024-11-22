@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Requisicao;
 
 
 class User extends Authenticatable
@@ -25,7 +26,6 @@ class User extends Authenticatable
         'avatar',
         'email',
         'password',
-        'directory',
     ];
 
     /**
@@ -65,43 +65,26 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all of the events for the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function events()
-    {
-        return $this->hasMany(Product::class, 'owner_id');
-    }
-
-    /**
      * The products that belong to the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function products()
+    public function requisicoes()
     {
-        return $this->belongsToMany(Product::class, 'Product_users');
+        return $this->belongsToMany(Product::class, 'requisicoes')->where('requisicoes.status', 'requisitado');
     }
 
-    public function addProduct($Product_id){
-        if(!$this->products->contains($Product_id)){
-            $this->products()->attach($Product_id);
-            return true;
-        }
-        return false;
+    public function entregues(){
+        return $this->belongsToMany(Product::class, 'requisicoes')->where('requisicoes.status', 'entregue');
     }
 
-    public function ownedProducts(){
-        return $this->hasMany(Product::class, 'owner_id');
+    public function pendentes(){
+        return $this->belongsToMany(Product::class, 'requisicoes')->where('requisicoes.status', 'pendente');
     }
 
-    public function removeProduct($Product_id){
-        if($this->products->contains($Product_id)){
-            $this->products()->detach($Product_id);
-            return true;
-        }
-        return false;
+    public function requisitar($request){
+        $product = Product::find($request->product_id);
+        return Requisicao::requisitar($this, $product, $request);
     }
 
     /**
@@ -112,6 +95,10 @@ class User extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(Roles::class, 'role_user', 'user_id', 'role_id');
+    }
+
+    public function hasRole($role_name){
+        return $this->roles->contains('name', $role_name);
     }
 
     public function addRole($role_name){
@@ -128,7 +115,7 @@ class User extends Authenticatable
     }
 
     public function isAdmin(){
-        return $this->roles()->contains('admin');
+        return $this->hasRole('admin');
     }
 
     public function socialLinks(){

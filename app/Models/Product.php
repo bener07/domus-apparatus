@@ -8,13 +8,8 @@ class Product extends Model
 {
     protected $fillable = [
         'name',
-        'description',
         'details',
-        'price',
-        'location',
         'images',
-        'featured_image',
-        'owner_id'
     ];
 
     protected $casts = [
@@ -33,7 +28,7 @@ class Product extends Model
     }
 
     public function users(){
-        return $this->belongsToMany(User::class, 'product_users');
+        return $this->belongsToMany(User::class, 'requisicoes');
     }
     
     public function owner(){
