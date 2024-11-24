@@ -47,6 +47,17 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
+
+    phpmyadmin:
+        image: phpmyadmin
+        restart: always
+        ports:
+          - 8080:80
+        networks:
+          - sail
+        environment:
+          - PMA_ARBITRARY=1
+
 networks:
     sail:
         driver: bridge

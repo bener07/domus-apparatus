@@ -15,13 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->longText('details');
-            $table->float('price');
             $table->json('images');
-            $table->string('featured_image');
-            $table->string('location');
+            $table->string('status')->default('disponivel');
             $table->timestamps();
-            $table->unsignedBigInteger('owner_id');
-            $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

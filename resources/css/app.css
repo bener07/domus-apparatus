@@ -1,6 +1,5 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities;
 
 #loader{
     width: 100%;
@@ -9,6 +8,6 @@
     position: fixed;
     justify-content: center;
     align-items: center;
-    background-color: var(--bs-white);
+    background-color: white;
     z-index: 10;
 }

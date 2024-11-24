@@ -1,109 +1,111 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-blue">
-    <div class="container px-4 px-lg-5">
-        <a class="navbar-brand confetti-button">{{ env('APP_NAME') }}</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-        <script>
-            document.getElementsByClassName("confetti-button")[0].addEventListener("click", ()=> {
-                runConfetti();
-                setTimeout(() => {
-                    window.location.href= "/";
-                }, 3000);
-            });
-        </script>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent" style="visibility: visible">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#!">Testing</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Products</a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="/">All</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#!">Popular</a></li>
-                        <li><a class="dropdown-item" href="#!">Newest</a></li>
-                    </ul>
-                </li>
-            </ul>
-            <div class="d-flex">
-                @guest
-                <a class="btn" href="{{ route('login') }}">
-                    <i class="bi bi-box-arrow-in-right me-1"></i>
-                    Login
-                </a>
-                @endguest
-                @auth
-                <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class=" btn inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                <div class="flex justify-content-center align-items-center">
-                                    <i class="bi bi-person px-1"></i>
-                                    {{ Auth::user()->name }}
-                                    <div class="ms-1">
-                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </div>
-                                </div>
-                
-                            </button>
-                        </x-slot>
-                
-                        <x-slot name="content">
-                            <x-dropdown-link :href="route('dashboard')">
-                                {{ __('My Products') }}
-                            </x-dropdown-link>
-                            @isHosting
-                            <x-dropdown-link :href="route('dashboard.events')">
-                                {{ __('My Events') }}
-                            </x-dropdown-link>
-                            @endisHosting
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
-                
-                            <!-- Authentication -->
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                
-                                <x-dropdown-link :href="route('logout')"
-                                        onclick="event.preventDefault();
-                                                    this.closest('form').submit();">
-                                    {{ __('Log Out') }}
-                                </x-dropdown-link>
-                            </form>
-                        </x-slot>
-                    </x-dropdown>
-                </div>
-                @endauth
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+    <!-- Sidebar - Brand -->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index">
+        <div class="sidebar-brand-icon rotate-n-15">
+            <i class="fas fa-laugh-wink"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">Admin <sup>csm</sup></div>
+    </a>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider my-0">
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item @if(request()->is('index')) active @endif">
+        <a class="nav-link" href="/">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Home</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Interface
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+            aria-expanded="true" aria-controls="collapseTwo">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Utilizadores</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Custom Components:</h6>
+                <a class="collapse-item @if(request()->is('buttons')) active @endif" href="/buttons">Buttons</a>
+                <a class="collapse-item @if(request()->is('cards')) active @endif" href="/cards">Cards</a>
             </div>
         </div>
+    </li>
+
+    <!-- Nav Item - Utilities Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+            aria-expanded="true" aria-controls="collapseUtilities">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Equipamentos</span>
+        </a>
+        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+            data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Custom Utilities:</h6>
+                <a class="collapse-item @if(request()->is('utilities-color')) active @endif" href="/utilities-color">Colors</a>
+                <a class="collapse-item @if(request()->is('utilities-border')) active @endif" href="/utilities-border">Borders</a>
+                <a class="collapse-item @if(request()->is('utilities-animation')) active @endif" href="/utilities-animation">Animations</a>
+                <a class="collapse-item @if(request()->is('utilities-other')) active @endif" href="/utilities-other">Other</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
+        Addons
     </div>
-    <script>
-        function runConfetti() {
-            var duration = 1000*3;
-            var animationEnd = Date.now() + duration;
-            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
-            function randomInRange(min, max) {
-            return Math.random() * (max - min) + min;
-            }
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-fw fa-folder"></i>
+            <span>Gestão</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Login Screens:</h6>
+                <a class="collapse-item @if(request()->is('login')) active @endif" href="/login">Login</a>
+                <a class="collapse-item @if(request()->is('register')) active @endif" href="/register">Register</a>
+                <a class="collapse-item @if(request()->is('forgot-password')) active @endif" href="/forgot-password">Forgot Password</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Other Pages:</h6>
+                <a class="collapse-item @if(request()->is('404')) active @endif" href="/404">404 Page</a>
+                <a class="collapse-item @if(request()->is('blank')) active @endif" href="/blank">Blank Page</a>
+            </div>
+        </div>
+    </li>
 
-            var interval = setInterval(function() {
-            var timeLeft = animationEnd - Date.now();
 
-            if (timeLeft <= 0) {
-                return clearInterval(interval);
-            }
+    <!-- Nav Item - Tables -->
+    <li class="nav-item @if(request()->is('tables')) active @endif">
+        <a class="nav-link" href="tables">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Tables</span>
+        </a>
+    </li>
 
-            var particleCount = 50 * (timeLeft / duration);
-            // since particles fall down, start a bit higher than random
-            confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
-            confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
-            }, 250);
-        }
-    </script>
-</nav>
+    <!-- Divider -->
+    <hr class="sidebar-divider d-none d-md-block">
+
+    <!-- Sidebar Toggler (Sidebar) -->
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+
+</ul>

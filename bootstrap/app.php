@@ -3,7 +3,8 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\isHost;
+use App\Http\Middleware\isAdmin;
+use App\Http\Middleware\API\IsAdmin as ApiAdmin;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,7 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ]);
         $middleware->alias([
-            'isHost' => isHost::class
+            'isAdmin' => isAdmin::class,
+            'ApiAdmin' => ApiAdmin::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

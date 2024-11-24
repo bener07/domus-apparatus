@@ -49,6 +49,6 @@ export class Products{
         return Products.makeAuthenticatedRequest('/api/user/'+type, "GET", {}, ()=>{});
     }
     static removeUserFromProduct(ProductId, successFunction){
-        return Products.makeAuthenticatedRequest('/api/user/Product', 'DELETE', {ProductId:ProductId}, successFunction);
+        return Products.makeAuthenticatedRequest('/api/user/product', 'DELETE', {ProductId:ProductId}, successFunction);
     }
 }

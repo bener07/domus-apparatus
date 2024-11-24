@@ -8,13 +8,8 @@ class Product extends Model
 {
     protected $fillable = [
         'name',
-        'description',
         'details',
-        'price',
-        'location',
         'images',
-        'featured_image',
-        'owner_id'
     ];
 
     protected $casts = [
@@ -33,7 +28,7 @@ class Product extends Model
     }
 
     public function users(){
-        return $this->belongsToMany(User::class, 'product_users');
+        return $this->belongsToMany(User::class, 'requisicoes');
     }
     
     public function owner(){
@@ -42,5 +37,22 @@ class Product extends Model
 
     public function tags(){
         return $this->belongsToMany(Tags::class, 'product_tag');
+    }
+
+    public function requisicoes(){
+        return $this->hasMany(Requisicao::class);
+    }
+
+    public function updateStatus($status){
+        $this->status = $status;
+        $this->save();
+    }
+
+    public function getDisponivel(){
+        return $this->status == 'disponivel';
+    }
+
+    public function getEmConfirmacao(){
+        return $this->status == 'em confirmacao';
     }
 }
