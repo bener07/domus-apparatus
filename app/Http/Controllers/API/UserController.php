@@ -51,6 +51,6 @@ class UserController extends Controller
     }
     
     public function getPendentes(Request $request){
-        return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->pendentes), '', 200);
+        return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->pendentes()->get()), '', 200);
     }
 }

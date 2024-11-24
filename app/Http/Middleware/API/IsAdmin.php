@@ -5,7 +5,6 @@ namespace App\Http\Middleware\API;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Classes\ApiResponseClass;
 
@@ -18,7 +17,7 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::user();
+        $user = $request->user();
 
         if($user->isAdmin()){
             Log::info("Administrador acedeu a uma route");

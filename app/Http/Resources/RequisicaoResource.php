@@ -19,8 +19,8 @@ class RequisicaoResource extends JsonResource
         return [
             'id' => $this->id,
             'status' => $this->status,
-            'user' => optional(User::find($this->user_id))->name, // Access the name directly
-            'admin' => optional(User::find($this->admin_id))->name, // Access the name directly
+            'user' => $this->user->name, // Access the name directly
+            'admin' => $this->admin->name, // Access the name directly
             'entrega_prevista' => $this->entrega_prevista,
             'entrega_real' => $this->entrega_real,
             'product' => optional(Product::find($this->product_id))->name, // Access the name directly

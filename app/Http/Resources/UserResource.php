@@ -20,8 +20,8 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'is_admin' => $this->isAdmin(),
             'roles' => $this->roles->pluck('name'),
-            'links' => $this->socialLinks->pluck('name'),
-            'avatar' => $this->avatar ? asset('storage/' . $this->avatar) : null,
+            'links' => $this->socialLinks->pluck('platform'),
+            'avatar' => $this->avatar ? asset($this->avatar) : null,
         ];
     }
 }

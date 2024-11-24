@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\Gate;
 use App\Models\Requisicao;
 use App\Observers\RequisicaoObserver;
 use App\Observers\UserObserver;
+use App\Observers\AdminConfirmationObserver;
+use App\Policies\UserPolicy;
 use App\Models\User;
 use App\Models\AdminConfirmation;
-use App\Observers\AdminConfirmationObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
         AdminConfirmation::observe(AdminConfirmationObserver::class);
         User::observe(UserObserver::class);
         Requisicao::observe(RequisicaoObserver::class);
+        
         // Register the user Policy
         Gate::policy(User::class, UserPolicy::class);
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -51,6 +52,19 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Set default value when creating a new user
+        static::creating(function ($user) {
+            if (is_null($user->password)) {
+                $user->password = Hash::make(now()); // Default role
+            }
+        });
+    }
+
+
     public static function handleThirdProduct($platform, $third_Product){
         $user = User::firstOrCreate(
             ['email' => $third_Product->getEmail()],
@@ -71,15 +85,15 @@ class User extends Authenticatable
      */
     public function requisicoes()
     {
-        return $this->belongsToMany(Product::class, 'requisicoes')->where('requisicoes.status', 'requisitado');
+        return $this->hasMany(Requisicao::class, 'user_id')->where('requisicoes.status', 'requisitado');
     }
 
     public function entregues(){
-        return $this->belongsToMany(Product::class, 'requisicoes')->where('requisicoes.status', 'entregue');
+        return $this->hasMany(Requisicao::class, 'user_id')->where('requisicoes.status', 'entregue');
     }
 
     public function pendentes(){
-        return $this->belongsToMany(Product::class, 'requisicoes')->where('requisicoes.status', 'pendente');
+        return $this->hasMany(Requisicao::class, 'user_id')->where('requisicoes.status', 'pendente');
     }
 
     public function requisitar($request){
