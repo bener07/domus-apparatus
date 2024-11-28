@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Classes\ApiResponseClass;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class UserAdminController extends Controller
 {
@@ -17,7 +18,6 @@ class UserAdminController extends Controller
 
     public function store(StoreUserRequest $request) {
         if($request->has('avatar')){
-            $imageNames = [];
             $image = $request->file('avatar');
             $fileName = '/images/image_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
             $content = file_get_contents($image->getRealPath());
@@ -39,13 +39,22 @@ class UserAdminController extends Controller
         return ApiResponseClass::sendResponse([], 'User not found', 404);
     }
 
-    public function update(Request $request, $id) {
+    public function update(UpdateUserRequest $request, $id) {
         $user = User::find($id);
-        if($user) {
-            $user->update($request->all());
-            return ApiResponseClass::sendResponse(new UserResource($user), 'User updated successfully', 200);
+        if(!$user) {
+            return ApiResponseClass::sendResponse([], 'User not found', 404);
         }
-        return ApiResponseClass::sendResponse([], 'User not found', 404);
+        if($request->has('roles')) {
+            $user->addRole($request->roles);
+        }
+        if($request->has('images')) {
+            $image = $request->file('avatar');
+            $fileName = '/images/image_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $content = file_get_contents($image->getRealPath());
+            auth()->user()->saveFile($fileName, $content);
+        }
+        $user->update($request->all());
+        return ApiResponseClass::sendResponse(new UserResource($user), 'User updated successfully', 200);
     }
 
     public function destroy($id) {

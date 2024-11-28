@@ -57,16 +57,12 @@ class ProductController extends Controller
     }
 
     public function update(UpdateProductRequest $request, $id){
-        $details =[
-            'name' => $request->name,
-            'details' => $request->details
-        ];
         DB::beginTransaction();
         try{
-             $Product = $this->ProductRepositoryInterface->update($id, $details);
+             $Product = $this->ProductRepositoryInterface->update($id, $request);
 
              DB::commit();
-             return ApiResponseClass::sendResponse(new ProductResource($Product), 'Product Update Successful', 200);
+             return ApiResponseClass::sendResponse(ProductResource::make($Product), 'Product Update Successful', 200);
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);

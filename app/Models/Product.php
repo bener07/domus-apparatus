@@ -16,7 +16,8 @@ class Product extends Model
         'images' => 'array'
     ];
 
-    public function addTag($tag_id){
+    public function addTag($tag_name){
+        $tag_id = Tags::findTag($tag_name)->id;
         if (!$this->tags->contains($tag_id))
             $this->tags()->attach($tag_id);
     }

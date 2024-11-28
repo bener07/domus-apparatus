@@ -4,7 +4,9 @@ namespace App\Repositories;
 
 use App\Interfaces\ProductRepositoryInterface;
 use App\Models\Product;
+use App\Models\Tags;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdateProductRequest;
 
 
 class ProductRepository implements ProductRepositoryInterface
@@ -38,8 +40,25 @@ class ProductRepository implements ProductRepositoryInterface
         return $newProduct;
     }
 
-    public function update(array $data, $id){
-        return Product::whereId($id)->update($data);
+    public function update($id, UpdateProductRequest $data){
+        $product = Product::find($id);
+        if($data->has('tags')){
+            $tags = $data->tags;
+            $tagIds = Tags::whereIn('name', $tags)
+                ->pluck('id', 'name') // Retrieves existing tags
+                ->union(
+                    collect($tags)
+                        ->diff(Tags::pluck('name')) // Finds new tags not yet in the database
+                        ->mapWithKeys(fn($tagName) => [Tags::create(['name' => $tagName])->name => Tags::latest('id')->first()->id]) // Creates new tags and maps them to IDs
+                )
+                ->values()
+                ->toArray();
+            $product->tags()->sync($tagIds);
+        }
+        if($product->update($data->all())){
+            return $product;
+        }
+        return null;
     }
 
     public function delete($id){
