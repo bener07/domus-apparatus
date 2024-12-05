@@ -47,9 +47,9 @@ class ProductRepository implements ProductRepositoryInterface
             $tagIds = Tags::whereIn('name', $tags)
                 ->pluck('id', 'name') // Retrieves existing tags
                 ->union(
-                    collect($tags)
-                        ->diff(Tags::pluck('name')) // Finds new tags not yet in the database
-                        ->mapWithKeys(fn($tagName) => [Tags::create(['name' => $tagName])->name => Tags::latest('id')->first()->id]) // Creates new tags and maps them to IDs
+                collect($tags)
+                    ->diff(Tags::pluck('name')) // Finds new tags not yet in the database
+                    ->mapWithKeys(fn($tagName) => [Tags::create(['name' => $tagName])->name => Tags::latest('id')->first()->id]) // Creates new tags and maps them to IDs
                 )
                 ->values()
                 ->toArray();

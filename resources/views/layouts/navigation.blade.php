@@ -24,33 +24,33 @@
 
     <!-- Heading -->
     <div class="sidebar-heading">
-        Interface
+        Administração
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-            aria-expanded="true" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#utilizadoresDropdown"
+            aria-expanded="true" aria-controls="utilizadoresDropdown">
             <i class="fas fa-fw fa-cog"></i>
             <span>Utilizadores</span>
         </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="utilizadoresDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Components:</h6>
-                <a class="collapse-item @if(request()->is('buttons')) active @endif" href="/buttons">Buttons</a>
-                <a class="collapse-item @if(request()->is('cards')) active @endif" href="/cards">Cards</a>
+                <h6 class="collapse-header">Gestão de Utilizadores:</h6>
+                <a class="collapse-item @if(request()->is('dashboard/users')) active @endif" href="{{route('admin.users')}}">Lista de Utilizadores</a>
+                <a class="collapse-item @if(request()->is('dashboard/users/add')) active @endif" href="{{ route('admin.users.add') }}">+ Adicionar</a>
             </div>
         </div>
     </li>
 
     <!-- Nav Item - Utilities Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-            aria-expanded="true" aria-controls="collapseUtilities">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#equipamentosDropdown"
+            aria-expanded="true" aria-controls="equipamentosDropdown">
             <i class="fas fa-fw fa-wrench"></i>
             <span>Equipamentos</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+        <div id="equipamentosDropdown" class="collapse" aria-labelledby="headingUtilities"
             data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Custom Utilities:</h6>
@@ -67,7 +67,7 @@
 
     <!-- Heading -->
     <div class="sidebar-heading">
-        Addons
+        Componentes da Template
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
@@ -91,10 +91,24 @@
         </div>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#componentesDropdown"
+            aria-expanded="true" aria-controls="componentesDropdown">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Pequenos componentes</span>
+        </a>
+        <div id="componentesDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Custom Components:</h6>
+                <a class="collapse-item @if(request()->is('buttons')) active @endif" href="/buttons">Buttons</a>
+                <a class="collapse-item @if(request()->is('cards')) active @endif" href="/cards">Cards</a>
+            </div>
+        </div>
+    </li>
 
     <!-- Nav Item - Tables -->
     <li class="nav-item @if(request()->is('tables')) active @endif">
-        <a class="nav-link" href="tables">
+        <a class="nav-link" href="/tables">
             <i class="fas fa-fw fa-table"></i>
             <span>Tables</span>
         </a>

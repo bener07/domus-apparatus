@@ -6,12 +6,19 @@
     </slot>
 
     <!-- Begin Page Content -->
-    <div class="container-fluid">
+    <div class="container-fluid app-center">
 
         <!-- Page Heading -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">O que deseja fazer?</h1>
+        <div class="text-center my-4">
+            <h1 class="display-4 text-gray-800">O que deseja fazer?</h1>
         </div>
-
-            <!-- /.container-fluid -->
+        <div class="d-flex flex-wrap justify-content-center">
+            <a href="/entregar" class="btn btn-primary btn-lg mx-4 my-3">
+                Entregar
+            </a>
+            <a href="/requisitar" class="btn btn-secondary btn-lg mx-4 my-3">
+                Requisitar
+            </a>
+        </div>
+    </div>           
 </x-app-layout>

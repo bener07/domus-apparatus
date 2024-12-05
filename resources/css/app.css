@@ -11,3 +11,20 @@
     background-color: white;
     z-index: 10;
 }
+.app-center{
+    height: 100%;
+    display: flex;
+    align-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-direction: column;
+    height: 80vh;
+}
+label sup{
+    color: red;
+}
+
+.swal-form{
+    width: 69%;
+}

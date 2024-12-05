@@ -32,7 +32,9 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-        @include('layouts.navigation')
+        @if (auth()->user()->isAdmin())
+            @include('layouts.navigation')
+        @endif
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->
@@ -42,6 +44,11 @@
                 @include('layouts.top-navigation')
                 <!-- Main Content -->
                 <div class="container-fluid">
+                    @isset($header)
+                     <h1 class="h3 mb-4 text-gray-800">
+                        {{ $header }}
+                     </h1>
+                    @endisset
                     {{ $slot }}
                 </div>
                 <!-- End of Main Content -->

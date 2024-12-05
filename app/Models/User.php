@@ -121,7 +121,20 @@ class User extends Authenticatable
             $this->roles()->attach($roleId);
         }
     }
-    public function removeRoll($role_name){
+
+    public function getRoleIds($roles){
+        $roleIds = [];
+        foreach($roles as $role){
+            array_push($roleIds, Roles::findRole($role)->id);
+        }
+        return $roleIds;
+    }
+
+    public function syncRoles($roles){
+        $this->roles()->sync($this->getRoleIds($roles));
+    }
+
+    public function removeRole($role_name){
         $role = Roles::findRole($role_name);
         if($this->roles->contains($role->id)){
             $this->roles()->detach($role->id);

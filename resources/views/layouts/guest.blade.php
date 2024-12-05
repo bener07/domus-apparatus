@@ -21,13 +21,14 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     </head>
     <body class="bg-gradient-primary">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
+        <div class="d-flex flex-col flex-wrap flex-column items-center pt-5 sm:pt-0 bg-gray-100 dark:bg-gray-900"
+        style="height:100%;">
+        <div class="container">
             <div>
                 <a href="/">
                     <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
                 </a>
             </div>
-        <div class="container">
             <!-- Outer Row -->
             <div class="row justify-content-center">
 

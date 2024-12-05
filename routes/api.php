@@ -6,8 +6,11 @@ use App\Http\Controllers\API\ProductController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserAdminController;
+use App\Http\Controllers\API\RoleAdminController;
 use App\Classes\ApiResponseClass;
 use App\Http\Resources\UserResource;
+use App\Models\Roles;
+use App\Http\Resources\RolesResource;
 
 
 
@@ -34,9 +37,10 @@ Route::group([
     'prefix' => 'admin',
     'name' => 'admin.',
 ], function(){
-    Route::apiResource('requisicao', ProductController::class);
+    Route::apiResource('requisicao', ProductController::class); // admin edit of product\
     Route::apiResource('users', UserAdminController::class);
 });
+Route::apiResource('roles', RoleAdminController::class)->middleware(['auth:sanctum', 'ApiAdmin']);
 
 
 

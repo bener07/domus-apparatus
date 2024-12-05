@@ -11,9 +11,40 @@ use App\Http\Requests\UpdateUserRequest;
 
 class UserAdminController extends Controller
 {
-    public function index() {
+    public function index(Request $request) {
+        if ($request->ajax()) {
+            $start = $request->get('start');
+            $length = $request->get('length');
+            $search = $request->get('search');
+            $sortDirection = $request->get('orderDir');
+            $orderByColumn = $request->get('orderColumn')+1;
+            $query = User::query();
+
+            if (!empty($search)) {
+                $query->where(function($query) use ($search) {
+                    $query->where('name', 'like', "%$search%")
+                          ->orWhere('email', 'like', "%$search%");
+                });
+            }
+
+            $totalData = $query->count();
+
+            $users = $query->offset($start)
+                           ->limit($length)
+                           ->orderBy('id', $sortDirection)
+                           ->get();
+
+            $totalFiltered = $query->count();
+
+            return ApiResponseClass::dataTables([
+                "draw" => intval($request->input('draw')),
+                "total" => $totalData,
+                "filtered" => $totalFiltered,
+                "data" => UserResource::collection($users)
+            ]);
+        }
         $users = User::all();
-        return ApiResponseClass::sendResponse(UserResource::collection($users), '', 200);
+        return ApiResponseClass::dataTables(UserResource::collection($users), '', 200);
     }
 
     public function store(StoreUserRequest $request) {
@@ -26,8 +57,11 @@ class UserAdminController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'avatar' => $fileName,
+            'avatar' => $fileName ?? 'http://localhost/storage/images/avatar.png',
         ]);
+        if($request->has('roles')){
+            $user->syncRoles($request->roles);
+        }
         return ApiResponseClass::sendResponse(new UserResource($user), 'User created successfully', 201);
     }
 
@@ -45,7 +79,7 @@ class UserAdminController extends Controller
             return ApiResponseClass::sendResponse([], 'User not found', 404);
         }
         if($request->has('roles')) {
-            $user->addRole($request->roles);
+            $user->syncRoles($request->roles);
         }
         if($request->has('images')) {
             $image = $request->file('avatar');

@@ -11,15 +11,16 @@ Route::middleware(['auth'])->group(function () {
         return view('pages.index');
     })->name('home');
 
-    Route::get('/tables', function () {
-        return view('pages.tables');
+    Route::get('/entregar', function (){
+        return view('entregar');
     });
-    Route::get('/blank', function () {
-        return view('pages.blank');
+    
+    Route::get('/requisitar', function (){
+        return view('requisitar');
     });
 
     
-    Route::resource('Product', ProductController::class);
+    Route::resource('product', ProductController::class);
     Route::resource('tag', TagsController::class);
     Route::get('/admin', function () {
         return view('admin');
@@ -27,10 +28,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::group([
-    'middleware' => ['auth', 'verified'],        // Apply middleware
+    'middleware' => ['auth', 'verified', 'isAdmin'],        // Apply middleware
     'prefix' => 'dashboard',           // URL prefix
+    'name' => 'dashboard',
 ], function () {
     Route::get('/', function () {return view('pages.index');})->name('dashboard');
+    Route::get('/users', function(){return view('dashboard.users.gestao');})->name('admin.users');
+    Route::get('/users/add', function(){return view('dashboard.users.add');})->name('admin.users.add');
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

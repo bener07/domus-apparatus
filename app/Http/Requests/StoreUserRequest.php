@@ -33,6 +33,6 @@ class StoreUserRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        throw new HttpResponseException(ApiResponseClass::sendResponse($validator->errors(), 'Parametros invalidos', 422));
+        throw new HttpResponseException(ApiResponseClass::sendResponse($validator->errors(), '', 422));
     }
 }

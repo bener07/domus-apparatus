@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/index.js',
                 'resources/js/template.js',
+                'resources/js/dashboard/users.js',
             ],
             refresh: true,
         }),

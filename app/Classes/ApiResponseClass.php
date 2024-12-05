@@ -20,6 +20,15 @@ class ApiResponseClass
         throw new HttpResponseException(response()->json(["error"=>$e,"message"=> $message], 500));
     }
 
+    public static function dataTables($data){
+        return response()->json([
+            'draw' => request('draw', 1),
+            'total' => $data['total'],
+            'filtered' => $data['filtered'],
+            'data' => $data['data']
+        ]);
+    }
+
     public static function sendResponse($result, $message, $code=200){
         $response = [
             'success' => true,
