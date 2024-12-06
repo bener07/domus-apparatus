@@ -139,26 +139,23 @@ export function eliminarUser(userId) {
 
 // Function to handle user editing
 export function editarUser(userId, user) {
-    // Fetch roles and departments from the API
     $.ajax({
-        url: '/api/admin/roles', // Replace with your API URL for roles
+        url: '/api/admin/roles',
         method: 'GET',
         dataType: 'json',
         success: function (rolesData) {
-            // Fetch departments from the API
             $.ajax({
-                url: '/api/admin/departments', // Replace with your API URL for departments
+                url: '/api/admin/departments',
                 method: 'GET',
                 dataType: 'json',
                 success: function (departmentsData) {
                     const roles = rolesData.data;
                     const departments = departmentsData.data;
 
-                    // Initialize user roles and departments
                     let userRoles = user.roles || [];
                     let userDepartments = user.departments || [];
+                    let uploadedImage = null; // Store uploaded image
 
-                    // Function to render roles list
                     function updateRoleList() {
                         const roleListHtml = userRoles
                             .map(role => `
@@ -171,20 +168,14 @@ export function editarUser(userId, user) {
                         $('#role-list tbody').html(roleListHtml);
                     }
 
-                    // Function to render departments list
                     function updateDepartmentList() {
-                        
-                        const departmentListHtml = `
-                                <tr>
+                        const departmentListHtml = userDepartments.name
+                            ? `<tr>
                                     <td>${userDepartments.name}</td>
                                     <td><button type="button" class="btn btn-danger btn-sm remove-department" data-department-id="${userDepartments.id}">Remover</button></td>
-                                </tr>
-                            `;
-                        if(userDepartments.length === 0)
-                            $('#department-list tbody').html('');   
-                        else{
-                            $('#department-list tbody').html(departmentListHtml);
-                        }
+                                </tr>`
+                            : '';
+                        $('#department-list tbody').html(departmentListHtml);
                     }
 
                     SwalDialog.defaultAlert(
@@ -192,99 +183,105 @@ export function editarUser(userId, user) {
                         'Editar utilizador',
                         '',
                         (result) => {
-                            Users.updateUser(userId, JSON.stringify(result.value))
-                                .then(function () {
+                            const formData = new FormData();
+                            formData.append('name', result.value.name);
+                            formData.append('email', result.value.email);
+                            formData.append('roles', JSON.stringify(result.value.roles));
+                            formData.append('departments', JSON.stringify(result.value.departments));
+                            if (uploadedImage) {
+                                formData.append('avatar', uploadedImage); // Append image
+                            }
+
+                            $.ajax({
+                                url: `/api/users/${userId}`, // Adjust endpoint if needed
+                                method: 'POST', // Or 'PUT' depending on your API
+                                processData: false,
+                                contentType: false,
+                                data: formData,
+                                success: function () {
                                     Swal.fire('Guardado!', 'Detalhes atualizados.', 'success');
                                     window.table.ajax.reload();
-                                })
-                                .catch(function (error) {
+                                },
+                                error: function (error) {
                                     Swal.fire('Erro!', 'Não foi possível guardar os detalhes.', 'error');
                                     console.error('Error updating user:', error);
-                                });}
-                        ,() => {},
+                                }
+                            });
+                        },
+                        () => {},
                         {
                             html: `
-                        <div class="row">
-                            <div class="col-lg-8 d-flex flex-column">
-                                <label for="swal-input-nome" style="display:block; margin-bottom:5px;">Nome</label>
-                                <input id="swal-input-nome" class="swal2-input" value="${user.name}">
-                                
-                                <label for="swal-input-email" style="display:block; margin-top:10px; margin-bottom:5px;">Email</label>
-                                <input id="swal-input-email" class="swal2-input" value="${user.email}">
-                            </div>
-                            <div class="col-lg-4">
-                                <!-- Imagem de utilizador -->
-                                <div class="mb-3">
-                                    <label for="userImage" class="form-label">Imagem de Utilizador</label>
-                                    <input type="file" class="form-control" style="display:none;" id="userImage" name="avatar" accept="image/*">
-                                    <div class="col image_container" id="image-container">
-                                        <img src="${user.avatar}" alt="Featured Image" id="featured">
-                                        <img src="https://cdn-icons-png.flaticon.com/512/84/84380.png" alt="Overlay" class="overlay-image">
+                                <div class="row">
+                                    <div class="col-lg-8 d-flex flex-column">
+                                        <label for="swal-input-nome" style="display:block; margin-bottom:5px;">Nome</label>
+                                        <input id="swal-input-nome" class="swal2-input" value="${user.name}">
+                                        
+                                        <label for="swal-input-email" style="display:block; margin-top:10px; margin-bottom:5px;">Email</label>
+                                        <input id="swal-input-email" class="swal2-input" value="${user.email}">
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-3">
+                                            <label for="userImage" class="form-label">Imagem de Utilizador</label>
+                                            <input type="file" class="form-control" style="display:none;" id="userImage" name="avatar" accept="image/*">
+                                            <div class="col image_container" id="image-container">
+                                                <img src="${user.avatar}" alt="Featured Image" id="featured">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/84/84380.png" alt="Overlay" class="overlay-image">
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-5 mt-4">
-                                <table id="role-list" class="table table-bordered">
-                                    <caption>Cargos</caption>
-                                    <tbody>
-                                        <!-- Dynamically populated roles -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="2" style="padding: 0px">
-                                                <div class="d-flex flex-row">
-                                                    <select class="form-select col-lg-8" id="rolesSelection" name="roles">
-                                                        <option value="" disabled selected>Selecione um cargo</option>
-                                                        ${roles.map(role => `<option value="${role.id}">${role.name}</option>`).join('')}
-                                                    </select>
-                                                    <button id="addRole" type="button" class="btn btn-primary col-lg-4" style="border-radius: 0 10px 10px 0px;">Adicionar Cargo</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                            <div class="col-lg-7 mt-4">
-                                <table id="department-list" class="table table-bordered">
-                                    <caption>
-                                        Departamento
-                                    </caption>
-                                    <tbody>
-                                        <!-- Dynamically populated departments -->
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td colspan="2" style="padding: 0px">
-                                                <div class="d-flex flex-row">
-                                                    <select class="form-select col-lg-8" id="departmentSelection" name="departments">
-                                                        <option value="" disabled selected>Selecione um departamento</option>
-                                                        ${departments.map(department => `<option value="${department.id}">${department.name}</option>`).join('')}
-                                                    </select>
-                                                    <button id="addDepartment" type="button" class="btn btn-primary col-lg-4" style="border-radius: 0 10px 10px 0px;">Adicionar Departamento</button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
+                                <div class="row">
+                                    <div class="col-lg-5 mt-4">
+                                        <table id="role-list" class="table table-bordered">
+                                            <caption>Cargos</caption>
+                                            <tbody></tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="2" style="padding: 0px">
+                                                        <div class="d-flex flex-row">
+                                                            <select class="form-select col-lg-8" id="rolesSelection" name="roles">
+                                                                <option value="" disabled selected>Selecione um cargo</option>
+                                                                ${roles.map(role => `<option value="${role.id}">${role.name}</option>`).join('')}
+                                                            </select>
+                                                            <button id="addRole" type="button" class="btn btn-primary col-lg-4" style="border-radius: 0 10px 10px 0px;">Adicionar Cargo</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                    <div class="col-lg-7 mt-4">
+                                        <table id="department-list" class="table table-bordered">
+                                            <caption>Departamento</caption>
+                                            <tbody></tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <td colspan="2" style="padding: 0px">
+                                                        <div class="d-flex flex-row">
+                                                            <select class="form-select col-lg-8" id="departmentSelection" name="departments">
+                                                                <option value="" disabled selected>Selecione um departamento</option>
+                                                                ${departments.map(department => `<option value="${department.id}">${department.name}</option>`).join('')}
+                                                            </select>
+                                                            <button id="addDepartment" type="button" class="btn btn-primary col-lg-4" style="border-radius: 0 10px 10px 0px;">Adicionar Departamento</button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
                             `,
                             focusConfirm: false,
                             showCancelButton: true,
                             confirmButtonText: 'Salvar',
                             customClass: 'swal-form',
                             didOpen: function () {
-                                // Initial render of user roles and departments
                                 updateRoleList();
                                 updateDepartmentList();
 
-                                // Add role
                                 $('#addRole').on('click', function () {
                                     const selectedRoleId = $('#rolesSelection').val();
                                     const selectedRole = roles.find(role => role.id == selectedRoleId);
-
                                     if (selectedRole && !userRoles.some(r => r.id == selectedRoleId)) {
                                         userRoles.push(selectedRole);
                                         updateRoleList();
@@ -293,18 +290,15 @@ export function editarUser(userId, user) {
                                     }
                                 });
 
-                                // Remove role
                                 $('#role-list').on('click', '.remove-role', function () {
                                     const roleIdToRemove = $(this).data('role-id');
                                     userRoles = userRoles.filter(role => role.id != roleIdToRemove);
                                     updateRoleList();
                                 });
 
-                                // Add department
                                 $('#addDepartment').on('click', function () {
                                     const selectedDepartmentId = $('#departmentSelection').val();
                                     const selectedDepartment = departments.find(department => department.id == selectedDepartmentId);
-
                                     if (selectedDepartment) {
                                         userDepartments = selectedDepartment;
                                         updateDepartmentList();
@@ -313,21 +307,33 @@ export function editarUser(userId, user) {
                                     }
                                 });
 
-                                // Remove department
                                 $('#department-list').on('click', '.remove-department', function () {
                                     userDepartments = [];
                                     updateDepartmentList();
+                                });
+
+                                $('#image-container').on('click', () => $('#userImage').click());
+                                $('#userImage').on('change', function () {
+                                    const file = this.files[0];
+                                    if (file && file.type.startsWith('image/')) {
+                                        const reader = new FileReader();
+                                        reader.onload = function (e) {
+                                            $('#featured').attr('src', e.target.result);
+                                        };
+                                        reader.readAsDataURL(file);
+                                        uploadedImage = file;
+                                    } else {
+                                        alert('Por favor, carregue uma imagem válida.');
+                                    }
                                 });
                             },
                             preConfirm: function () {
                                 const name = $('#swal-input-nome').val();
                                 const email = $('#swal-input-email').val();
-
                                 if (!name || !email || userRoles.length === 0 || userDepartments.length === 0) {
                                     Swal.showValidationMessage('Nome, Email, pelo menos um Cargo e um Departamento são necessários!');
                                     return null;
                                 }
-
                                 return {
                                     name,
                                     email,
@@ -340,16 +346,15 @@ export function editarUser(userId, user) {
                 },
                 error: function (xhr, status, error) {
                     console.error('Error fetching departments:', error);
-                    Swal.fire('Erro!', 'Não foi possível carregar os departamentos.', 'error');
                 }
             });
         },
         error: function (xhr, status, error) {
             console.error('Error fetching roles:', error);
-            Swal.fire('Erro!', 'Não foi possível carregar os cargos.', 'error');
         }
     });
 }
+
 
 
 
