@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
-class UpdateProductRequest extends FormRequest
+use App\Http\Requests\ApiRequest;
+
+class UpdateProductRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,12 +30,4 @@ class UpdateProductRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'success'   => false,
-            'message'   => 'Validation errors',
-            'data'      => $validator->errors()
-        ]));
-    }
 }

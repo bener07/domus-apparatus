@@ -43,13 +43,15 @@
                 {{-- Top Navbar --}}
                 @include('layouts.top-navigation')
                 <!-- Main Content -->
-                <div class="container-fluid">
-                    @isset($header)
-                     <h1 class="h3 mb-4 text-gray-800">
-                        {{ $header }}
-                     </h1>
-                    @endisset
-                    {{ $slot }}
+                <div {{ $attributes->merge(['class' => 'container-fluid']) }}>
+                    <div>
+                        @isset($header)
+                         <h1 class="h3 mb-4 text-gray-800">
+                            {{ $header }}
+                         </h1>
+                        @endisset
+                        {{ $slot }}
+                    </div>
                 </div>
                 <!-- End of Main Content -->
             </div>

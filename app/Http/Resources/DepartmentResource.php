@@ -4,9 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
 
-class ProductResource extends JsonResource
+class DepartmentResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,10 +17,8 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'details' => $this->details,
-            'img' => $this->images,
-            'featured_image' => Arr::first($this->images),
-            'tags' => $this->tags->pluck('name'),
+            'manager_id' => $this->manager_id,
+            'manager' => new UserResource($this->manager) // eager load the related user
         ];
     }
 }

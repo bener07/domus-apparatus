@@ -15,11 +15,14 @@ class TagResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
+            'color' => $this->color,
             'name' => $this->name,
             'details' => $this->details,
             'image' => $this->image ? asset('storage/' . $this->image) : null,
             'description' => $this->description,
             'products' => $this->products->pluck('name'),
+            'owner' => $this->user
         ];
     }
 }

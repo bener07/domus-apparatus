@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Users;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\ApiRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Classes\ApiResponseClass;
 
-class StoreUserRequest extends FormRequest
+class StoreUserRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,8 +31,4 @@ class StoreUserRequest extends FormRequest
         ];
     }
 
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(ApiResponseClass::sendResponse($validator->errors(), '', 422));
-    }
 }

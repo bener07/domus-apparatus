@@ -27,6 +27,7 @@ class User extends Authenticatable
         'avatar',
         'email',
         'password',
+        'department_id',
     ];
 
     /**
@@ -60,6 +61,9 @@ class User extends Authenticatable
         static::creating(function ($user) {
             if (is_null($user->password)) {
                 $user->password = Hash::make(now()); // Default role
+            }
+            if(is_null($user->department_id)){
+                $user->department_id = Department::first()->id ?? 1; // Default department
             }
         });
     }
@@ -96,6 +100,12 @@ class User extends Authenticatable
         return $this->hasMany(Requisicao::class, 'user_id')->where('requisicoes.status', 'pendente');
     }
 
+    /**
+     * The user requests a requisicao with the requested product id
+     * it's then sent a confirmation to an administrator
+     * 
+     * @param Request $request
+     */
     public function requisitar($request){
         $product = Product::find($request->product_id);
         return Requisicao::requisitar($this, $product, $request);
@@ -168,5 +178,24 @@ class User extends Authenticatable
         }
         return null;
     }
-    
+
+    public function department(){
+        return $this->belongsTo(Department::class);
+    }
+
+    public function ownedDepartment(): HasOne
+    {
+        return $this->hasOne(Department::class, 'manager_id');
+    }
+
+    public function attachDepartment($department){
+        $department = Department::findDepartment($department);
+
+        $this->department()->associate($department);
+        $this->save();
+    }
+
+    public function tags(){
+        return $this->hasMany(Tags::class, 'tags');
+    }
 }

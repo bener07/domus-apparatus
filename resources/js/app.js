@@ -27,7 +27,7 @@ if ( $.active > 0){
         $(document).ajaxStart(function() {
             showLoading(100);
         });
-    
+
         // Hide loader when any AJAX request completes
         $(document).ajaxStop(function() {
             hideLoading(500);

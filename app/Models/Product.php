@@ -16,6 +16,14 @@ class Product extends Model
         'images' => 'array'
     ];
 
+    public function users(){
+        return $this->belongsToMany(User::class, 'requisicoes');
+    }
+
+    public function tags(){
+        return $this->belongsToMany(Tags::class, 'product_tag');
+    }
+
     public function addTag($tag_name){
         $tag_id = Tags::findTag($tag_name)->id;
         if (!$this->tags->contains($tag_id))
@@ -28,18 +36,6 @@ class Product extends Model
         }
     }
 
-    public function users(){
-        return $this->belongsToMany(User::class, 'requisicoes');
-    }
-    
-    public function owner(){
-        return $this->belongsTo(User::class, 'owner_id');
-    }
-
-    public function tags(){
-        return $this->belongsToMany(Tags::class, 'product_tag');
-    }
-
     public function requisicoes(){
         return $this->hasMany(Requisicao::class);
     }
@@ -49,11 +45,11 @@ class Product extends Model
         $this->save();
     }
 
-    public function getDisponivel(){
+    public function disponivel(){
         return $this->status == 'disponivel';
     }
 
-    public function getEmConfirmacao(){
+    public function emConfirmacao(){
         return $this->status == 'em confirmacao';
     }
 }

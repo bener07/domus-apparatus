@@ -13,7 +13,7 @@
                     </div>
                     <thead class="table-dark">
                         <tr>
-                            <th scope="col">id</th>
+                            <th scope="col">#</th>
                             <th scope="col">Perfil</th>
                             <th scope="col">Email</th>
                             <th scope="col">Departamento</th>

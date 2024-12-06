@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Product;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
+use App\Http\Requests\ApiRequest;
 
-class StoreProductRequest extends FormRequest
+class StoreProductRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,13 +30,5 @@ class StoreProductRequest extends FormRequest
             'featured_image' => "required|file|mimes:jpg,jpeg,png|max:4096",
             "images.*" => "nullable|required|file|mimes:jpg,jpeg,png|max:8192",
         ];
-    }
-
-    public function failedValidator(Validator $validator){
-        throw new HttpResponseException(response()->json([
-            'success' => false,
-            'message' => 'Validation errors',
-            'data' => $validator->errors()
-        ]));
     }
 }

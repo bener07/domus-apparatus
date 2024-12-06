@@ -25,10 +25,14 @@ class Tags extends Model
     }
 
     public function products(){
-        return $this->belongsToMany(Product::class, 'Product_tag');
+        return $this->belongsToMany(Product::class, 'product_tag');
     }
 
     public static function findTag($tag_name){
         return Tags::where('name', $tag_name)->first();
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -3,9 +3,31 @@
     
 
     <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
+    <ul class="navbar-nav">
+        <li class="dropdown no-arrow">
+            <a class="btn btn-link d-md-none rounded-circle mr-3" href="#" id="menuDropdown" role="button"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-bars"></i>
+            </a>
+            <!-- Dropdown - User Information -->
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                aria-labelledby="menuDropdown">
+                <a class="dropdown-item" href="/requisitar">
+                    <i class="bi bi-motherboard fa-sm fa-fw mr-2 text-gray-600"></i>
+                    Requisitar
+                </a>
+                <a class="dropdown-item" href="/entregar">
+                    <i class="bi bi-box-arrow-down fa-sm fa-fw mr-2 text-gray-600"></i>
+                    Entregar
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="/activity">
+                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-500"></i>
+                    Atividade
+                </a>
+            </div>
+        </li>
+    </ul>
 
     <!-- Topbar Search -->
     <form
@@ -59,9 +81,9 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ auth()->user()->name }}</span>
                 <img class="img-profile rounded-circle"
-                    src="/img/undraw_profile.svg">
+                    src="{{ auth()->user()->avatar }}">
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"

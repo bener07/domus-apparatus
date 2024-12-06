@@ -7,17 +7,15 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
-                <table class="table table-striped table-bordered" id="usersTable">
+                <table class="table table-striped table-bordered" id="productsTable">
                     <div>
                         <button type="button" class="btn btn-primary" id="addNewBtn">Adicionar Utilizador</button>
                     </div>
                     <thead class="table-dark">
                         <tr>
                             <th scope="col">id</th>
-                            <th scope="col">Perfil</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Departamento</th>
-                            <th scope="col">Cargo</th>
+                            <th scope="col">Produto</th>
+                            <th scope="col">Categorias</th>
                             <th scope="col">Ações</th>
                         </tr>
                     </thead>
@@ -34,7 +32,7 @@
     <x-slot name="scripts">
         <!-- DataTables JS -->
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
-        @vite(['resources/js/dashboard/users.js'])
+        @vite(['resources/js/dashboard/products.js'])
     </x-slot>
     
 </x-app-layout>

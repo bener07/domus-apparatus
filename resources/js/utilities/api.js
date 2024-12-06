@@ -3,7 +3,7 @@ export class API{
         this.Products = [];
     }
 
-    static makeAuthenticatedRequest(url, method, data='', successFunction=() => {Products.getUserProducts()}){
+    static makeAuthenticatedRequest(url, method, data='', successFunction=() => {}){
         let csrfToken = $('meta[name="csrf-token"]').attr('content');
         return new Promise((resolve, reject) => {
             $.ajax({
@@ -16,7 +16,8 @@ export class API{
                 xhrFields: {
                     withCredentials: true
                  },                       
-                contentType: 'application/json; charset=utf-8',
+                contentType: data instanceof FormData ? false : 'application/json; charset=utf-8',
+                processData: !(data instanceof FormData),
                 success: function(data){
                     resolve(data);
                     successFunction(data);

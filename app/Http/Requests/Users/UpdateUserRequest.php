@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use App\Classes\ApiResponseClass;
+use App\Http\Requests\ApiRequest;
 
-class UpdateUserRequest extends FormRequest
+class UpdateUserRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -31,10 +32,5 @@ class UpdateUserRequest extends FormRequest
             'password' => ['nullable','string','min:8','confirmed'],
             'role' => ['nullable','string','in:user,admin'],
         ];
-    }
-
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(ApiResponseClass::sendResponse($validator->errors(), 'Parametros invalidos', 422));
     }
 }

@@ -1,4 +1,4 @@
-import { Products } from './products';
+import { Products } from './utilities/products';
 
 function loadProducts() {
     Products.getProducts()

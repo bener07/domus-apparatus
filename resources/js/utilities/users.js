@@ -1,4 +1,4 @@
-import { API } from '../api_interface';
+import { API } from './api';
 
 export class Users extends API {
     static getUsers(data, callback) {

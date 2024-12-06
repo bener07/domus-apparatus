@@ -2,20 +2,22 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\ProductsAdminController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\UserAdminController;
 use App\Http\Controllers\API\RoleAdminController;
-use App\Classes\ApiResponseClass;
+use App\Http\Controllers\API\DepartmentAdminController;
+use App\Http\Controllers\API\TagsAdminController;
 use App\Http\Resources\UserResource;
-use App\Models\Roles;
 use App\Http\Resources\RolesResource;
+use App\Classes\ApiResponseClass;
+use App\Models\Roles;
 
 
 
 
-// ação de utilizadores
+// routes do utilizador
 Route::group([
     'middleware' => 'auth:sanctum',        // Apply middleware
     'prefix' => 'user',           // URL prefix
@@ -32,20 +34,22 @@ Route::group([
     });
 });
 
+// adminitração
 Route::group([
     'middleware' => ['auth:sanctum', 'ApiAdmin'],
     'prefix' => 'admin',
     'name' => 'admin.',
 ], function(){
-    Route::apiResource('requisicao', ProductController::class); // admin edit of product\
     Route::apiResource('users', UserAdminController::class);
+    Route::apiResource('roles', RoleAdminController::class);
+    Route::apiResource('departments', DepartmentAdminController::class);
+    Route::apiResource('products', ProductsAdminController::class);
+    Route::apiResource('tags', TagsAdminController::class);
 });
-Route::apiResource('roles', RoleAdminController::class)->middleware(['auth:sanctum', 'ApiAdmin']);
 
-
-
-// gestão de equipamento
-Route::get('/product', [ProductController::class, 'index'])->name('products.index');
+// gerais só com autenticação
+Route::middleware('auth:sanctum')->group(function () {
+});
 
 // Sanctum Autentication
 // Route::post('register',[AuthController::class,'register']);

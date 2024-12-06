@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\Department;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,6 +26,12 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'remember_token' => Str::random(10)
         ]);
+        Department::create([
+            'name' => 'base',
+            'details' => 'Department for marketing activities',
+            'manager_id' => 1
+        ]);
+        $user->attachDepartment('base');
         $user->addRole('admin');
         User::create([
             'name' => 'tmonky',
