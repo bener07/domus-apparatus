@@ -22,7 +22,7 @@ class UserResource extends JsonResource
             'roles' => RolesResource::collection($this->roles),
             'departments' => UserDepartmentResource::make($this->department),
             'links' => $this->socialLinks->pluck('platform'),
-            'avatar' => $this->avatar ? asset($this->avatar) : null,
+            'avatar' => $this->avatar ? $this->avatar : '/storage/images/avatar.png',
         ];
     }
 }

@@ -2,66 +2,6 @@
     <x-slot name="header">
         Adicionar Utilizadores
     </x-slot>
-    <style>
-        .img-thumbnail {
-            width: 50px;
-            height: 50px;
-            margin: 10px 0;
-            cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-        .thumbnail-container {
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-    
-        }
-        #mainImage{
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            transition: filter 1s ease;
-            margin: 0;
-        }
-
-        .image_container{
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            width: 50%;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: nowrap;
-        }
-
-        .image_container:hover img{
-            filter: opacity(0.7) blur(2px) url("");
-            cursor: pointer;
-        }
-        #featured{
-            transition: filter 1s ease-in-out;
-            object-fit: cover;
-            object-position: 50% 50%;
-            width: 200px;
-            height: 200px;
-            border-radius: 100px; 
-        }
-        .overlay-image {
-            position: absolute;
-            width: 100px; /* Set a specific size for the overlay image */
-            height: auto;
-            display: none;
-            filter: none !important;
-        }
-        .image_container:hover .overlay-image{
-            display: block;
-        }
-        #role-list{
-            border-radius: 10px;
-            padding: 0px;
-        }
-    </style>
     Caso tenha um domínio google ou microsoft é possível sincronizar os utilizadores com a plataforma
     <div class="text-center w-full d-flex justify-content-center my-4">
         <button class="btn btn-outline-primary d-flex align-items-center gap-2 mx-5 btn-google">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Department;
 use App\Classes\ApiResponseClass;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\Users\StoreUserRequest;
@@ -62,7 +63,11 @@ class UserAdminController extends Controller
         if($request->has('roles')){
             $user->syncRoles($request->roles);
         }
-        return ApiResponseClass::sendResponse(new UserResource($user), 'User created successfully', 201);
+        if($request->has('departments')){
+            $user->department_id = $request->departments['id'];
+            $user->save();
+        }
+        return ApiResponseClass::sendResponse(UserResource::make($user), 'User created successfully', 201);
     }
 
     public function show($id) {
@@ -81,6 +86,12 @@ class UserAdminController extends Controller
         if($request->has('roles')) {
             $user->syncRoles($request->roles);
         }
+        if($request->has('departments')){
+            $department = Department::find($request->departments['id']);
+            $user->department_id = $department->id;
+            $user->save();
+        }
+
         if($request->has('images')) {
             $image = $request->file('avatar');
             $fileName = '/images/image_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();

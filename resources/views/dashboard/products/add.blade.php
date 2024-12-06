@@ -3,6 +3,10 @@
         Adicionar Utilizadores
     </x-slot>
     <style>
+
+.img-pr{
+    margin-left: 85px;
+}
 .img-thumbnail {
     width: 150px; /* Increased width for clear rectangle shape */
     height: 100px; /* Proportional height for a rectangle */
@@ -34,6 +38,7 @@
     width: 50%;
     justify-content: center;
     align-items: center;
+    margin-left: 90px;
 }
 
 .image_container:hover img {
@@ -69,17 +74,6 @@
 
 
     </style>
-    Caso tenha um domínio google ou microsoft é possível sincronizar os utilizadores com a plataforma
-    <div class="text-center w-full d-flex justify-content-center my-4">
-        <button class="btn btn-outline-primary d-flex align-items-center gap-2 mx-5 btn-google">
-            <i class="fab fa-google"></i> Sincronizar com domínio Google
-        </button>
-        
-        <!-- Microsoft Button -->
-        <button class="btn btn-outline-secondary d-flex align-items-center gap-2 mx-5 btn-microsoft">
-            <i class="fab fa-windows"></i> Sincronizar com domínio Microsoft
-        </button>
-    </div>
     <form id="addProductForm" enctype="multipart/form-data" class="p-4 border rounded shadow">
         <div class="row">
             <div class="row col-lg-8">
@@ -92,15 +86,15 @@
                 
                 <!-- Email -->
                 <div class="mb-3">
-                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Digite o email" required>
+                    <label for="email" class="form-label">Detalhes do produto <span class="text-danger">*</span></label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Detalhes do produto" required>
                     <div class="invalid-feedback">Por favor, insira um email válido.</div>
                 </div>
             </div>
             <div class="col-lg-4">
                 <!-- Imagem de utilizador -->
                 <div class="mb-3">
-                    <label for="productImage" class="form-label">Imagens dos Produtos</label>
+                    <label for="productImage" class="form-label img-pr">Imagens dos Produtos</label>
                     <input type="file" class="form-control" style="display:none;" id="productImage" name="avatar" accept="image/*">
                     <div class="col image_container" id="image-container">
                         <img src="https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg" alt="Featured Image" id="featured">

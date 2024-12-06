@@ -30,13 +30,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/', function () {return view('pages.index');})->name('dashboard');
 
 Route::group([
     'middleware' => ['auth', 'verified', 'isAdmin'],        // Apply middleware
     'prefix' => 'dashboard',           // URL prefix
     'name' => 'dashboard',
 ], function () {
-    Route::get('/', function () {return view('pages.index');})->name('dashboard');
     Route::get('/users', function(){return view('dashboard.users.gestao');})->name('admin.users');
     Route::get('/users/add', function(){return view('dashboard.users.add');})->name('admin.users.add');
     

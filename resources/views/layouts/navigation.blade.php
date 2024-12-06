@@ -37,7 +37,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h5 class="collapse-header">Equipamentos:</h5>
                 <a class="collapse-item @if(request()->is('dashboard/products')) active @endif" href="{{route('admin.products')}}">Gerir Equipamentos </a>
-                <a class="collapse-item @if(request()->is('dashboard/products/add')) active @endif" href="{{ route('admin.products.add') }}">+ Adicionar</a>
+                <button class="collapse-item" id="addNewProduct">+ Adicionar</button>
             </div>
         </div>
     </li>
@@ -52,7 +52,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h5 class="collapse-header">Utilizadores:</h5>
                 <a class="collapse-item @if(request()->is('dashboard/users')) active @endif" href="{{route('admin.users')}}">Editar Utilizadores</a>
-                <a class="collapse-item @if(request()->is('dashboard/users/add')) active @endif" href="{{ route('admin.users.add') }}">+ Adicionar</a>
+                <button class="collapse-item" id="addNewUser">+ Adicionar</button>
             </div>
         </div>
     </li>

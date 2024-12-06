@@ -9,7 +9,7 @@
                 </div>
                 <table class="table table-striped table-bordered" id="usersTable">
                     <div>
-                        <button type="button" class="btn btn-primary" id="addNewBtn">Adicionar Utilizador</button>
+                        <button type="button" class="btn btn-primary" id="addNewUser">Adicionar Utilizador</button>
                     </div>
                     <thead class="table-dark">
                         <tr>
