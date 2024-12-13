@@ -15,7 +15,7 @@ export class API{
                 },
                 xhrFields: {
                     withCredentials: true
-                 },                       
+                 },
                 contentType: data instanceof FormData ? false : 'application/json; charset=utf-8',
                 processData: !(data instanceof FormData),
                 success: function(data){

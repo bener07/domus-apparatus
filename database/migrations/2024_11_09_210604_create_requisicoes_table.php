@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('requisicoes', function (Blueprint $table) {
             $table->id();
+            $table->integer('quantity')->default(1);
+            $table->dateTime('date_of_pickup')->default(now());
+            $table->string('token')->nullable();
             $table->string('status')->default('pendente');
             $table->foreignId('admin_id')->on('users')->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->dateTime('entrega_prevista')->nullable();
             $table->dateTime('entrega_real')->nullable();
             $table->timestamps();

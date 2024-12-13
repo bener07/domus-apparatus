@@ -23,6 +23,8 @@ class UserController extends Controller
         $requisicao = $request->user()->requisitar($request);
         if($requisicao)
             return ApiResponseClass::sendResponse(RequisicaoResource::make($requisicao), 'A espera de confirmacao!', 200);
+        else if($requisicao==1)
+            return ApiResponseClass::sendResponse([], 'Produtos indisponivéis', 200);
         else
             return ApiResponseClass::sendResponse([], 'Utilizador já excedeu o seu máximo de requisicoes simultaneas!', 409);
     }

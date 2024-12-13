@@ -28,12 +28,10 @@
         </div>
     </div>
     
-    <!-- DataTables CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css">
+    
 
     <x-slot name="scripts">
-        <!-- DataTables JS -->
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
+        
         @vite(['resources/js/dashboard/users.js'])
     </x-slot>
     

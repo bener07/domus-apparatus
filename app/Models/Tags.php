@@ -25,7 +25,7 @@ class Tags extends Model
     }
 
     public function products(){
-        return $this->belongsToMany(Product::class, 'product_tag');
+        return $this->belongsToMany(BaseProduct::class. 'base_product_tag');
     }
 
     public static function findTag($tag_name){

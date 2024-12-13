@@ -1,11 +1,11 @@
 services:
     laravel.test:
         build:
-            context: './vendor/laravel/sail/runtimes/8.3'
+            context: ./vendor/laravel/sail/runtimes/8.3
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
-        image: 'sail-8.3/app'
+        image: sail-8.3/app
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -23,6 +23,7 @@ services:
             - sail
         depends_on:
             - mysql
+            - mailpit
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -47,17 +48,31 @@ services:
                 - '-p${DB_PASSWORD}'
             retries: 3
             timeout: 5s
-
     phpmyadmin:
         image: phpmyadmin
         restart: always
         ports:
-          - 8080:80
+            - '8080:80'
         networks:
-          - sail
+            - sail
         environment:
-          - PMA_ARBITRARY=1
-
+            - PMA_ARBITRARY=1
+    mailpit:
+        image: axllent/mailpit
+        container_name: mailpit
+        restart: unless-stopped
+        volumes:
+            - './data:/data'
+        ports:
+            - '8025:8025'
+            - '1025:1025'
+        environment:
+            MP_MAX_MESSAGES: 5000
+            MP_DATABASE: /data/mailpit.db
+            MP_SMTP_AUTH_ACCEPT_ANY: 1
+            MP_SMTP_AUTH_ALLOW_INSECURE: 1
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge

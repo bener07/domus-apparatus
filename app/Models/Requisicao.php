@@ -9,7 +9,7 @@ use App\Models\Admin;
 use App\Models\AdminConfirmation;
 use Illuminate\Support\Facades\Hash;
 
-define("MAX_REQUISICAO_PER_USER","3");
+define("MAX_REQUISICAO_PER_USER","10");
 
 class Requisicao extends Model
 {
@@ -21,7 +21,9 @@ class Requisicao extends Model
         'user_id',
         'product_id',
         'entrega_prevista',
-        'entrega_real'
+        'entrega_real',
+        'date_of_pickup',
+        'token'
     ];
 
     protected static function booted()
@@ -31,49 +33,6 @@ class Requisicao extends Model
                 unset($requisicao->status); // Allow the database default to take effect
             }
         });
-    }
-
-    public static function requisitar(User $user, Product $product, $request){
-        if($user->pendentes->count() >= MAX_REQUISICAO_PER_USER){
-            return 0;
-        }
-        $chosenAdmin = Requisicao::chooseAdmin();
-        if (!$chosenAdmin) {
-            $chosenAdmin = Admin::all()->get()->first();
-        }
-        $requisicao = Requisicao::create([
-            'status' => 'pendente',
-            'admin_id' => $chosenAdmin->id,
-            'user_id' => $user->id,
-            'product_id' => $product->id,
-            'entrega_prevista' => $request->previsto,
-        ]);
-        $requisicao->pedirConfirmacao($chosenAdmin);
-        return $requisicao;
-    }
-
-    public function pedirConfirmacao($admin, $status='em confirmacao'){
-        return AdminConfirmation::create([
-            'requisicao_id' => $this->id,
-            'admin_id' => $admin->id,
-            'status' => $status,
-            'token' => Hash::make(now().$admin->name.$admin->id)
-        ]);
-    }
-
-    public function pedirEntrega($admin){
-        $this->updateStatus('em confirmacao');
-        $this->pedirConfirmacao($admin);
-    }
-
-    public function entregar(){
-        $this->updateStatus('entregue');
-        $this->entrega_real = now();
-        $this->save();
-        $product = Product::find($this->product_id);
-        $product->status = 'disponivel';
-        $product->save();
-        return $this;
     }
 
     public function confirmacao(){
@@ -88,8 +47,15 @@ class Requisicao extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
     
-    public function product(){
-        return $this->belongsTo(Product::class, 'product_id');
+    public function products(){
+        return $this->hasMany(Product::class, 'product_id');
+    }
+
+    public static function emRequisicao($product){
+        if(!$product->requisicao)
+            return false;
+        $status = $product->requisicao->status;
+        return $status=='confirmado' || $status == 'pendente' || $status == 'em confirmacao';
     }
 
     public function updateStatus($status){
@@ -122,10 +88,50 @@ class Requisicao extends Model
         return $this->entrega_real;
     }
 
-    public static function chooseAdmin(){
-        $adminWithFewestRequisicoes = Admin::withCount(['requisicoes' => function ($query) {
-            $query->where('requisicoes.status', 'pendente');
-        }])->orderBy('requisicoes_count', 'asc')->get()->first();
-        return $adminWithFewestRequisicoes;
+    public function getConfirmationToken(){
+        return $this->token;
+    }
+
+    /**
+     * Update the status of the products associated with this requisition
+     */
+    public function updateProductsStatus($status){
+        $this->products->each(function ($product) use ($status) {
+            $product->updateStatus($status);
+        });
+    }
+
+    /**
+     * Ask for confirmation and create a token
+     */
+    public function pedirConfirmacao($admin, $status='em confirmacao'){
+        $this->updateProductsStatus($status);
+        $confirmation = AdminConfirmation::create([
+            'requisicao_id' => $this->id,
+            'admin_id' => $admin->id,
+            'status' => $status,
+            'token' => $this->token
+        ]);
+        return $confirmation;
+    }
+
+    public function authorization_url(){
+        return route('confirmation', ['id' => $this->id, 'token' => $this->token]);
+    }
+    
+    public function denial_url(){
+        return route('denial', ['id' => $this->id, 'token' => $this->token]);
+    }
+
+    public function authorize($confirmation){
+        $this->updateStatus('confirmado');
+        $confirmation->confirm();
+    }
+
+    public function isConfirmedForPickUp(){
+        $confirmation = $this->confirmacao();
+        return $this->status == 'confirmado' && 
+               $this->getOriginal('status') == 'em confirmacao' &&
+               $confirmation->isConfirmed();
     }
 }

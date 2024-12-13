@@ -22,6 +22,7 @@ class isAdmin
         if($user->isAdmin()){
             return $next($request);
         }
+        \Log::info("Someone tried to login");
         //return $next($request);
         return redirect()->back()->withErrors('Não é administrador');
     }

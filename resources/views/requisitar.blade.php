@@ -9,68 +9,16 @@
                 {{ __("Requisite o(s) equipamentos") }}
             </p>
         </header>
-    
-        <div class="row">
-          <div class="col-sm-4 mb-3">
-            <div class="card">
-              <img src="/img/talmao.jpg" class="card-img-top" alt="">
-              <div class="card-body">
-                <h5 class="card-title">laptop</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <button type="button" class="btn btn-success">Disponivel</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4 mb-3">
-            <div class="card">
-              <img src="/img/talmao.jpg" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">laptop</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <button type="button" class="btn btn-success">Disponivel</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4 mb-3">
-            <div class="card">
-              <img src="/img/talmao.jpg" class="card-img-top" alt="">
-              <div class="card-body">
-                <h5 class="card-title">laptop</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <button type="button" class="btn btn-success">Disponivel</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4 mb-3">
-            <div class="card">
-              <img src="/img/talmao.jpg" class="card-img-top" alt="">
-              <div class="card-body">
-                <h5 class="card-title">laptop</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <button type="button" class="btn btn-success">Disponivel</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4 mb-3">
-            <div class="card">
-              <img src="/img/talmao.jpg" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">laptop</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <button type="button" class="btn btn-danger">Requisitado</button>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4 mb-3">
-              <div class="card">
-                <img src="/img/talmao.jpg" class="card-img-top" alt="">
-                <div class="card-body">
-                  <h5 class="card-title">laptop</h5>
-                  <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                  <button type="button" class="btn btn-warning">Pendente</button>
-                </div>
-              </div>
+        
+        <!-- Card Container -->
+        <div class="container">
+            <div class="row" id="productsGrid">
+                <!-- Cards will be dynamically inserted here -->
             </div>
         </div>
+
     
+  <slot name="scripts">
+    @vite(['resources/js/user/requisitar.js'])
+  </slot>
 </x-app-layout>

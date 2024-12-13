@@ -3,24 +3,19 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
-use App\Interfaces\ProductRepositoryInterface;
+use App\Http\Requests\Product\StoreProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
 use App\Classes\ApiResponseClass;
 use App\Http\Resources\ProductResource;
+use App\Models\Product;
+use App\Models\BaseProducts;
 use Illuminate\Support\Facades\DB;
 
 
 class ProductController extends Controller
 {
-    private ProductRepositoryInterface $ProductRepositoryInterface;
-
-    public function __construct(ProductRepositoryInterface $ProductRepositoryInterface){
-        $this->ProductRepositoryInterface = $ProductRepositoryInterface;
-    }
-
     public function index(Request $request){
-        $data = $this->ProductRepositoryInterface->index();
+        $data = BaseProducts::all();
 
         return ApiResponseClass::sendResponse(ProductResource::collection($data), '',200);
     }
@@ -32,10 +27,9 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request){
         DB::beginTransaction();
         try{
-             $Product = $this->ProductRepositoryInterface->store($request);
-
-             DB::commit();
-             return ApiResponseClass::sendResponse(new ProductResource($Product), 'Product Create Successful', 201);
+            $Product = [];
+            DB::commit();
+            return ApiResponseClass::sendResponse(new ProductResource($Product), 'Product Create Successful', 201);
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
@@ -43,7 +37,7 @@ class ProductController extends Controller
     }
 
     public function show($id){
-        $Product = $this->ProductRepositoryInterface->getById($id);
+        $Product = [];
 
         if($Product){
             return ApiResponseClass::sendResponse(new ProductResource($Product), 'Product retrieved successfully', 200);
@@ -59,7 +53,7 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, $id){
         DB::beginTransaction();
         try{
-             $Product = $this->ProductRepositoryInterface->update($id, $request);
+            $Product = [];
 
              DB::commit();
              return ApiResponseClass::sendResponse(ProductResource::make($Product), 'Product Update Successful', 200);

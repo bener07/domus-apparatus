@@ -1,5 +1,5 @@
 import { Users } from '../utilities/users';
-import { Roles } from '../utilities/roles';
+import { Tags } from '../utilities/tags';
 import { Departments } from '../utilities/departments';
 import { SwalDialog } from '../utilities/dialog';
 
@@ -36,9 +36,9 @@ $(document).ready(function() {
     // Hide initial loading wheel
     $('#loadingWheel').hide();
 
-    Roles.getRoles().then(function (response){
-        response.data.forEach(role => {
-            $('#rolesSelection').append(`<option value="${role.id}">${role.name}</option>`);
+    Tags.gettags().then(function (response){
+        response.data.forEach(tag => {
+            $('#tagsSelection').append(`<option value="${tag.id}">${tag.name}</option>`);
         });
     });
 
@@ -90,9 +90,9 @@ function loadTable(){
                 }
             },
             {
-                "data": "roles",
+                "data": "tags",
                 "render": function(data, type, row) {
-                    return data.map(role => role.name);
+                    return data.map(tag => tag.name);
                 },
                 "title": "Cargo"
             },
@@ -140,32 +140,32 @@ export function eliminarUser(userId) {
 // Function to handle user editing
 export function editarUser(userId, user) {
     $.ajax({
-        url: '/api/admin/roles',
+        url: '/api/tags',
         method: 'GET',
         dataType: 'json',
-        success: function (rolesData) {
+        success: function (tagsData) {
             $.ajax({
-                url: '/api/admin/departments',
+                url: '/api/departments',
                 method: 'GET',
                 dataType: 'json',
                 success: function (departmentsData) {
-                    const roles = rolesData.data;
+                    const tags = tagsData.data;
                     const departments = departmentsData.data;
 
-                    let userRoles = user.roles || [];
+                    let usertags = user.tags || [];
                     let userDepartments = user.departments || [];
                     let uploadedImage = null; // Store uploaded image
 
-                    function updateRoleList() {
-                        const roleListHtml = userRoles
-                            .map(role => `
+                    function updatetagList() {
+                        const tagListHtml = usertags
+                            .map(tag => `
                                 <tr>
-                                    <td>${role.name}</td>
-                                    <td><button type="button" class="btn btn-danger btn-sm remove-role" data-role-id="${role.id}">Remover</button></td>
+                                    <td>${tag.name}</td>
+                                    <td><button type="button" class="btn btn-danger btn-sm remove-tag" data-tag-id="${tag.id}">Remover</button></td>
                                 </tr>
                             `)
                             .join('');
-                        $('#role-list tbody').html(roleListHtml);
+                        $('#tag-list tbody').html(tagListHtml);
                     }
 
                     function updateDepartmentList() {
@@ -186,15 +186,15 @@ export function editarUser(userId, user) {
                             const formData = new FormData();
                             formData.append('name', result.value.name);
                             formData.append('email', result.value.email);
-                            formData.append('roles', JSON.stringify(result.value.roles));
+                            formData.append('tags', JSON.stringify(result.value.tags));
                             formData.append('departments', JSON.stringify(result.value.departments));
                             if (uploadedImage) {
                                 formData.append('avatar', uploadedImage); // Append image
                             }
 
                             $.ajax({
-                                url: `/api/users/${userId}`, // Adjust endpoint if needed
-                                method: 'POST', // Or 'PUT' depending on your API
+                                url: `/api/admin/users/${userId}`, // Adjust endpoint if needed
+                                method: 'PUT', 
                                 processData: false,
                                 contentType: false,
                                 data: formData,
@@ -232,18 +232,18 @@ export function editarUser(userId, user) {
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-5 mt-4">
-                                        <table id="role-list" class="table table-bordered">
+                                        <table id="tag-list" class="table table-bordered">
                                             <caption>Cargos</caption>
                                             <tbody></tbody>
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="2" style="padding: 0px">
                                                         <div class="d-flex flex-row">
-                                                            <select class="form-select col-lg-8" id="rolesSelection" name="roles">
+                                                            <select class="form-select col-lg-8" id="tagsSelection" name="tags">
                                                                 <option value="" disabled selected>Selecione um cargo</option>
-                                                                ${roles.map(role => `<option value="${role.id}">${role.name}</option>`).join('')}
+                                                                ${tags.map(tag => `<option value="${tag.id}">${tag.name}</option>`).join('')}
                                                             </select>
-                                                            <button id="addRole" type="button" class="btn btn-primary col-lg-4" style="border-radius: 0 10px 10px 0px;">Adicionar Cargo</button>
+                                                            <button id="addtag" type="button" class="btn btn-primary col-lg-4" style="border-radius: 0 10px 10px 0px;">Adicionar Cargo</button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -276,24 +276,24 @@ export function editarUser(userId, user) {
                             confirmButtonText: 'Salvar',
                             customClass: 'swal-form',
                             didOpen: function () {
-                                updateRoleList();
+                                updatetagList();
                                 updateDepartmentList();
 
-                                $('#addRole').on('click', function () {
-                                    const selectedRoleId = $('#rolesSelection').val();
-                                    const selectedRole = roles.find(role => role.id == selectedRoleId);
-                                    if (selectedRole && !userRoles.some(r => r.id == selectedRoleId)) {
-                                        userRoles.push(selectedRole);
-                                        updateRoleList();
+                                $('#addtag').on('click', function () {
+                                    const selectedtagId = $('#tagsSelection').val();
+                                    const selectedtag = tags.find(tag => tag.id == selectedtagId);
+                                    if (selectedtag && !usertags.some(r => r.id == selectedtagId)) {
+                                        usertags.push(selectedtag);
+                                        updatetagList();
                                     } else {
                                         alert('Este cargo já foi adicionado.');
                                     }
                                 });
 
-                                $('#role-list').on('click', '.remove-role', function () {
-                                    const roleIdToRemove = $(this).data('role-id');
-                                    userRoles = userRoles.filter(role => role.id != roleIdToRemove);
-                                    updateRoleList();
+                                $('#tag-list').on('click', '.remove-tag', function () {
+                                    const tagIdToRemove = $(this).data('tag-id');
+                                    usertags = usertags.filter(tag => tag.id != tagIdToRemove);
+                                    updatetagList();
                                 });
 
                                 $('#addDepartment').on('click', function () {
@@ -330,14 +330,14 @@ export function editarUser(userId, user) {
                             preConfirm: function () {
                                 const name = $('#swal-input-nome').val();
                                 const email = $('#swal-input-email').val();
-                                if (!name || !email || userRoles.length === 0 || userDepartments.length === 0) {
+                                if (!name || !email || usertags.length === 0 || userDepartments.length === 0) {
                                     Swal.showValidationMessage('Nome, Email, pelo menos um Cargo e um Departamento são necessários!');
                                     return null;
                                 }
                                 return {
                                     name,
                                     email,
-                                    roles: userRoles.map(role => role.name),
+                                    tags: usertags.map(tag => tag.name),
                                     departments: userDepartments
                                 };
                             }
@@ -350,7 +350,7 @@ export function editarUser(userId, user) {
             });
         },
         error: function (xhr, status, error) {
-            console.error('Error fetching roles:', error);
+            console.error('Error fetching tags:', error);
         }
     });
 }
@@ -361,34 +361,34 @@ export function editarUser(userId, user) {
 
 export function addNewUser() {
     $.ajax({
-        url: '/api/admin/roles', // Replace with your API URL for roles
+        url: '/api/tags', // Replace with your API URL for tags
         method: 'GET',
         dataType: 'json',
-        success: function (rolesData) {
+        success: function (tagsData) {
             // Fetch departments from the API
             $.ajax({
-                url: '/api/admin/departments', // Replace with your API URL for departments
+                url: '/api/departments', // Replace with your API URL for departments
                 method: 'GET',
                 dataType: 'json',
                 success: function (departmentsData) {
-                    const roles = rolesData.data;
+                    const tags = tagsData.data;
                     const departments = departmentsData.data;
 
-                    // Initialize user roles and departments
-                    let userRoles = [];
+                    // Initialize user tags and departments
+                    let usertags = [];
                     let userDepartments = [];
 
-                    // Function to render roles list
-                    function updateRoleList() {
-                        const roleListHtml = userRoles
-                            .map(role => `
+                    // Function to render tags list
+                    function updatetagList() {
+                        const tagListHtml = usertags
+                            .map(tag => `
                                 <tr>
-                                    <td>${role.name}</td>
-                                    <td><button type="button" class="btn btn-danger btn-sm remove-role" data-role-id="${role.id}">Remover</button></td>
+                                    <td>${tag.name}</td>
+                                    <td><button type="button" class="btn btn-danger btn-sm remove-tag" data-tag-id="${tag.id}">Remover</button></td>
                                 </tr>
                             `)
                             .join('');
-                        $('#role-list tbody').html(roleListHtml);
+                        $('#tag-list tbody').html(tagListHtml);
                     }
 
                     // Function to render departments list
@@ -438,20 +438,20 @@ export function addNewUser() {
                         </div>
                         <div class="row">
                             <div class="col-lg-5 mt-4">
-                                <table id="role-list" class="table table-bordered">
+                                <table id="tag-list" class="table table-bordered">
                                     <caption>Cargos</caption>
                                     <tbody>
-                                        <!-- Dynamically populated roles -->
+                                        <!-- Dynamically populated tags -->
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <td colspan="2" style="padding: 0px">
                                                 <div class="d-flex flex-row">
-                                                    <select class="form-select col-lg-8" id="rolesSelection" name="roles">
+                                                    <select class="form-select col-lg-8" id="tagsSelection" name="tags">
                                                         <option value="" disabled selected>Selecione um cargo</option>
-                                                        ${roles.map(role => `<option value="${role.id}">${role.name}</option>`).join('')}
+                                                        ${tags.map(tag => `<option value="${tag.id}">${tag.name}</option>`).join('')}
                                                     </select>
-                                                    <button id="addRole" type="button" class="btn btn-primary col-lg-4" style="border-radius: 0 10px 10px 0px;">Adicionar Cargo</button>
+                                                    <button id="addtag" type="button" class="btn btn-primary col-lg-4" style="border-radius: 0 10px 10px 0px;">Adicionar Cargo</button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -488,28 +488,28 @@ export function addNewUser() {
                             confirmButtonText: 'Salvar',
                             customClass: 'swal-form',
                             didOpen: function () {
-                                // Initial render of user roles and departments
-                                updateRoleList();
+                                // Initial render of user tags and departments
+                                updatetagList();
                                 updateDepartmentList();
 
-                                // Add role
-                                $('#addRole').on('click', function () {
-                                    const selectedRoleId = $('#rolesSelection').val();
-                                    const selectedRole = roles.find(role => role.id == selectedRoleId);
+                                // Add tag
+                                $('#addtag').on('click', function () {
+                                    const selectedtagId = $('#tagsSelection').val();
+                                    const selectedtag = tags.find(tag => tag.id == selectedtagId);
 
-                                    if (selectedRole && !userRoles.some(r => r.id == selectedRoleId)) {
-                                        userRoles.push(selectedRole);
-                                        updateRoleList();
+                                    if (selectedtag && !usertags.some(r => r.id == selectedtagId)) {
+                                        usertags.push(selectedtag);
+                                        updatetagList();
                                     } else {
                                         alert('Este cargo já foi adicionado.');
                                     }
                                 });
 
-                                // Remove role
-                                $('#role-list').on('click', '.remove-role', function () {
-                                    const roleIdToRemove = $(this).data('role-id');
-                                    userRoles = userRoles.filter(role => role.id != roleIdToRemove);
-                                    updateRoleList();
+                                // Remove tag
+                                $('#tag-list').on('click', '.remove-tag', function () {
+                                    const tagIdToRemove = $(this).data('tag-id');
+                                    usertags = usertags.filter(tag => tag.id != tagIdToRemove);
+                                    updatetagList();
                                 });
 
                                 // Add department
@@ -535,7 +535,7 @@ export function addNewUser() {
                                 const name = $('#swal-input-nome').val();
                                 const email = $('#swal-input-email').val();
 
-                                if (!name || !email || userRoles.length === 0 || userDepartments.length === 0) {
+                                if (!name || !email || usertags.length === 0 || userDepartments.length === 0) {
                                     Swal.showValidationMessage('Nome, Email, pelo menos um Cargo e um Departamento são necessários!');
                                     return null;
                                 }
@@ -543,7 +543,7 @@ export function addNewUser() {
                                 return {
                                     name,
                                     email,
-                                    roles: userRoles.map(role => role.name),
+                                    tags: usertags.map(tag => tag.name),
                                     departments: userDepartments
                                 };
                             }
@@ -557,7 +557,7 @@ export function addNewUser() {
             });
         },
         error: function (xhr, status, error) {
-            console.error('Error fetching roles:', error);
+            console.error('Error fetching tags:', error);
             Swal.fire('Erro!', 'Não foi possível carregar os cargos.', 'error');
         }
     });

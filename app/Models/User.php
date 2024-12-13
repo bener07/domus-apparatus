@@ -101,10 +101,9 @@ class User extends Authenticatable
     }
 
     /**
-     * The user requests a requisicao with the requested product id
-     * it's then sent a confirmation to an administrator
-     * 
-     * @param Request $request
+     * Needs following http attributes:
+     *     - product_id
+     *     - previsto (data prevista, formato: 2024-12-26 10:44:05)
      */
     public function requisitar($request){
         $product = Product::find($request->product_id);

@@ -18,6 +18,8 @@
     <!-- Javascript Core -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- DataTables Css -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css">
     <!-- Scripts -->
     @vite(['resources/css/template.css', 'resources/css/app.css'])
 
@@ -45,6 +47,12 @@
                 <!-- Main Content -->
                 <div {{ $attributes->merge(['class' => 'container-fluid']) }}>
                     <div>
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
                         @isset($header)
                          <h1 class="h3 mb-4 text-gray-800">
                             {{ $header }}
@@ -115,6 +123,9 @@
     <script src="/vendor/chart.js/Chart.min.js"></script>
     <script src="/js/demo/chart-area-demo.js"></script>
     <script src="/js/demo/chart-pie-demo.js"></script>
+
+    <!-- DataTables Library -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
     <!-- Custom scripts for all pages-->
     @vite(['resources/js/template.js', 'resources/js/app.js' ])
     @isset($scripts)

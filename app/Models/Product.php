@@ -9,35 +9,19 @@ class Product extends Model
     protected $fillable = [
         'name',
         'details',
-        'images',
+        'requisicao_id'
     ];
 
     protected $casts = [
         'images' => 'array'
     ];
 
-    public function users(){
-        return $this->belongsToMany(User::class, 'requisicoes');
+    public function base(){
+        return $this->belongsTo(BaseProducts::class, 'base_id');
     }
 
-    public function tags(){
-        return $this->belongsToMany(Tags::class, 'product_tag');
-    }
-
-    public function addTag($tag_name){
-        $tag_id = Tags::findTag($tag_name)->id;
-        if (!$this->tags->contains($tag_id))
-            $this->tags()->attach($tag_id);
-    }
-
-    public function removeTag($tag_id){
-        if($this->tags->contains($tag_id)){
-            $this->tags()->detach($tag_id);
-        }
-    }
-
-    public function requisicoes(){
-        return $this->hasMany(Requisicao::class);
+    public function requisicao(){
+        return $this->belongsTo(Requisicao::class, 'requisicao_id');
     }
 
     public function updateStatus($status){

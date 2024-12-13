@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TagsController;
+use App\Http\Controllers\ConfirmationController;
 
 
 Route::middleware(['auth'])->group(function () {
@@ -25,12 +26,14 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/confirmation/{id}', [ConfirmationController::class, 'confirmation'])->name('confirmation');
+    Route::get('/denial/{id}', [ConfirmationController::class, 'denial'])->name('denial');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/', function () {return view('pages.index');})->name('dashboard');
 });
 
-Route::get('/', function () {return view('pages.index');})->name('dashboard');
 
 Route::group([
     'middleware' => ['auth', 'verified', 'isAdmin'],        // Apply middleware
