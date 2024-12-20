@@ -7,18 +7,41 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\SendConfirmationRequest;
 use App\Mail\NotifyUserOnRequest;
 use App\Mail\NotifyUserOnConfirmation;
+use App\Classes\GestorDeRequisicoes;
 
 class RequisicaoObserver
 {
     public function created(Requisicao $requisicao){
-        Mail::to($requisicao->user->email)
-            ->send(new NotifyUserOnRequest($requisicao->user, $requisicao, $requisicao->products));
+        \Log::info("Nova requisicao feita");
+    }
+
+    public function handleStatus(Requisicao $requisicao){
+        switch ($requisicao->status) {
+            case 'em confirmacao':
+                \Log::error("Requisicao ". $requisicao->title . " em confirmacao");
+                break;
+            case 'confirmado':
+                \Log::error("Requisicao ". $requisicao->title . " confirmada");
+                break;
+            case 'entregue':
+                \Log::error("Requisicao ". $requisicao->title . " entregue");
+                break;
+            case 'pendente':
+                \Log::error("Requisicao ". $requisicao->title . " pendente");
+                break;
+            case 'rejeitado': 
+                \Log::error("Requisicao ". $requisicao->title . " rejeitado");
+                break;
+            default:
+                \Log::error("No action on requisicao status");
+                return ;
+        }
     }
 
     public function updated(Requisicao $requisicao){
-        if($requisicao->isDirty('status') && $requisicao->isConfirmedForPickUp()){
-            Mail::to($requisicao->user())
-                ->send(new NotifyUserOnConfirmation($requisicao->user, $requisicao, $requisicao->products));
+        if($requisicao->isDirty('status')){
+            GestorDeRequisicoes::notifyUser($requisicao->status);
+            $this->handleStatus($requisicao);
         }
     }
 }

@@ -25,9 +25,14 @@ Route::middleware(['auth'])->group(function () {
     })->middleware('isAdmin');
 });
 
+
+Route::middleware(['auth', 'verified', 'isAdmin', 'confirmation'])->group(function (){
+    Route::get('/confirmation', [ConfirmationController::class, 'confirmation'])->name('confirmation');
+    Route::get('/denial', [ConfirmationController::class, 'denial'])->name('denial');
+});
+
+
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/confirmation/{id}', [ConfirmationController::class, 'confirmation'])->name('confirmation');
-    Route::get('/denial/{id}', [ConfirmationController::class, 'denial'])->name('denial');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Mail\User;
+namespace App\Mail\Admin;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,6 +11,7 @@ use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Requisicao;
 use App\Models\Product;
+use App\Classes\GestorDeRequisicoes;
 
 class SendConfirmationRequest extends Mailable
 {
@@ -19,11 +20,12 @@ class SendConfirmationRequest extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct
-    (
-        public Requisicao $requisicao,
-        public $product
-    ){}
+    public function __construct($requisicao)
+    {
+        $this->admin = $requisicao->admin;
+        $this->products = $requisicao->products;
+        $this->requisicao = $requisicao->requisicao;
+    }
 
     /**
      * Get the message envelope.
@@ -42,7 +44,7 @@ class SendConfirmationRequest extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.confirmRequisicao',
+            markdown: 'mail.admin.confirmRequisicao',
         );
     }
 

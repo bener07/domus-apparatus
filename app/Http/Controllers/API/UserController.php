@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Http\Resources\ProductResource;
-use App\Classes\ApiResponseClass;
 use App\Http\Resources\RequisicaoResource;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\GestorResource;
+use App\Classes\ApiResponseClass;
+use App\Classes\GestorDeRequisicoes;
+use Illuminate\Http\Request;
 use App\Models\Requisicao;
 use App\Models\User;
-use App\Models\Product;
+use App\Models\BaseProducts;
 
 class UserController extends Controller
 {
@@ -20,13 +22,17 @@ class UserController extends Controller
     }
 
     public function addRequisicao(Request $request){
-        $requisicao = $request->user()->requisitar($request);
-        if($requisicao)
-            return ApiResponseClass::sendResponse(RequisicaoResource::make($requisicao), 'A espera de confirmacao!', 200);
-        else if($requisicao==1)
-            return ApiResponseClass::sendResponse([], 'Produtos indisponivéis', 200);
-        else
-            return ApiResponseClass::sendResponse([], 'Utilizador já excedeu o seu máximo de requisicoes simultaneas!', 409);
+        try {
+            $product = BaseProducts::find($request->product_id);
+            $requisicao = GestorDeRequisicoes::requisitar($request->user(), $product, $request);
+            return ApiResponseClass::sendResponse(GestorResource::make($requisicao), 'A espera de confirmacao!', 200);
+        }
+        catch (UserException $ue) {
+            return ApiResponseClass::sendResponse([], $ue->getMessage(), 400);
+        }
+        catch (ArgumentException $ue) {
+            return ApiResponseClass::sendResponse([], $ue->getMessage(), 409);
+        }
     }
 
     public function deliverRequisicao(Request $request){

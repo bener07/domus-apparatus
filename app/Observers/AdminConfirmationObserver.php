@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\AdminConfirmation;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendConfirmationRequest;
+use App\Classes\GestorDeRequisicoes;
 
 
 class AdminConfirmationObserver
@@ -13,9 +14,9 @@ class AdminConfirmationObserver
         Log::info("New confirmation created please check your inbox");
         $requisicao = $confirmation->requisicao;
 
-        // enviar email para administrador
-        Mail::to($requisicao->admin->email)
-            ->send(new SendConfirmationRequest($requisicao, $requisicao->products));
-        $requisicao->updateProductsStatus('em confirmacao');
+        // send email to administrator with product information and other information
+        $requisicao = new GestorDeRequisicoes($requisicao);
+        // notifies administrator and user of the requisition
+        $requisicao->notifyOnAction('em confirmacao', true, true);
     }
 }

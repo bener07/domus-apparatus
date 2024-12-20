@@ -16,14 +16,16 @@ class Requisicao extends Model
     protected $table ='requisicoes';
     
     protected $fillable = [
+        'title',
         'status',
         'admin_id',
         'user_id',
-        'product_id',
-        'entrega_prevista',
+        'base_product_id',
+        'start',
+        'end',
         'entrega_real',
-        'date_of_pickup',
-        'token'
+        'quantity',
+        'token',
     ];
 
     protected static function booted()
@@ -40,7 +42,7 @@ class Requisicao extends Model
     }
 
     public function admin(){
-        return $this->belongsTo(User::class, 'admin_id');
+        return $this->belongsTo(Admin::class, 'admin_id');
     }
 
     public function user(){
@@ -48,7 +50,15 @@ class Requisicao extends Model
     }
     
     public function products(){
-        return $this->hasMany(Product::class, 'product_id');
+        return $this->hasMany(Product::class);
+    }
+
+    public function productsByDate($start, $end){
+        return $this->products->whereBetween('start', [$start, $end]);
+    }
+
+    public function product(){
+        return $this->belongsTo(BaseProducts::class, 'base_product_id');
     }
 
     public static function emRequisicao($product){
@@ -56,6 +66,10 @@ class Requisicao extends Model
             return false;
         $status = $product->requisicao->status;
         return $status=='confirmado' || $status == 'pendente' || $status == 'em confirmacao';
+    }
+
+    public function getEntregaPrevista(){
+        return $this->end;
     }
 
     public function updateStatus($status){
@@ -74,18 +88,6 @@ class Requisicao extends Model
 
     public function getAdministrador(){
         return $this->admin->name;
-    }
-
-    public function getNomeDoProduto(){
-        return $this->product->name;
-    }
-
-    public function getEntregaPrevista(){
-        return $this->entrega_prevista;
-    }
-
-    public function getEntregaReal(){
-        return $this->entrega_real;
     }
 
     public function getConfirmationToken(){
@@ -115,17 +117,29 @@ class Requisicao extends Model
         return $confirmation;
     }
 
+    public static function quantityOnDate($product_id, $start, $end, $extraQuantity){
+        $requisicoes = BaseProducts::find($product_id)
+            ->requisicoes()
+            ->whereBetween('start', [$start, $end])
+            ->pluck('quantity')->toArray();
+        array_push($requisicoes, $extraQuantity);
+        return array_sum($requisicoes);
+    }
+
     public function authorization_url(){
-        return route('confirmation', ['id' => $this->id, 'token' => $this->token]);
+        return route('confirmation', ['token' => $this->token]);
     }
     
     public function denial_url(){
-        return route('denial', ['id' => $this->id, 'token' => $this->token]);
+        return route('denial', ['token' => $this->token]);
     }
 
-    public function authorize($confirmation){
+    public function authorize(){
         $this->updateStatus('confirmado');
-        $confirmation->confirm();
+    }
+
+    public function deny(){
+        $this->updateStatus('rejeitado');
     }
 
     public function isConfirmedForPickUp(){

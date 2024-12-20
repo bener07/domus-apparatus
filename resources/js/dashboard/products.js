@@ -37,6 +37,7 @@ function loadTable(){
                 },
                 "title": "Produto"
             },
+            { "data": "quantity", "title": "Quantidade"},
             { 
                 "data": "tags",
                 "title": "Categorias"

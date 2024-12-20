@@ -101,16 +101,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Needs following http attributes:
-     *     - product_id
-     *     - previsto (data prevista, formato: 2024-12-26 10:44:05)
-     */
-    public function requisitar($request){
-        $product = Product::find($request->product_id);
-        return Requisicao::requisitar($this, $product, $request);
-    }
-
-    /**
      * The roles that belong to the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

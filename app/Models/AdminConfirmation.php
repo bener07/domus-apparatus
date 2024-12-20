@@ -24,16 +24,26 @@ class AdminConfirmation extends Model
     }
 
     public function confirm(){
+        $this->requisicao->authorize();
         $this->status = 'confirmado';
         $this->save();
     }
 
-    public function rejeitar(){
+    public function deny(){
+        $this->requisicao->deny();
         $this->status ='rejeitado';
         $this->save();
     }
 
-    public function getAdminConfirmado(){
+    public static function getByToken($token){
+        return self::where('token', $token)->first();
+    }
+
+    public function isConfirmado(){
         return $this->status === 'confirmado';
+    }
+
+    public function isDenied(){
+        return $this->status ==='rejeitado';
     }
 }

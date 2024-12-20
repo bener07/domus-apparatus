@@ -11,6 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 use App\Models\Requisicao;
 use App\Models\Product;
+use App\Classes\GestorDeRequisicoes;
 
 class NotifyUserOnRequest extends Mailable
 {
@@ -19,12 +20,12 @@ class NotifyUserOnRequest extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(
-        public User $user,
-        public Requisicao $requisicao,
-        public $products,
-    )
-    {}
+    public function __construct(public GestorDeRequisicoes $requisicao)
+    {
+        $this->user = $requisicao->user;
+        $this->admin = $requisicao->admin;
+        $this->products = $requisicao->products;
+    }
 
     /**
      * Get the message envelope.

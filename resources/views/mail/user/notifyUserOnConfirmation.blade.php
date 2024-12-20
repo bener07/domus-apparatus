@@ -1,7 +1,7 @@
 <x-mail::message>
 # A sua requisição foi autorizada
 
-O administrador {{ $requisicao->admin->name }} autorizou a sua requisição, pode levantá-la a {{ $requisicao->date_of_pickup }}
+O administrador {{ $requisicao->admin->name }} autorizou a sua requisição, pode levantá-la a {{ $requisicao->start }}
 e tem a entrega prevista para {{ $requisicao->entrega_prevista }}
 
 <x-mail::button :url="''">

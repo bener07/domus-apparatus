@@ -15,6 +15,7 @@
                         <tr>
                             <th scope="col">id</th>
                             <th scope="col">Produto</th>
+                            <th scope="col">Quantidade</th>
                             <th scope="col">Categorias</th>
                             <th scope="col">Ações</th>
                         </tr>
@@ -25,7 +26,6 @@
             </div>
         </div>
     </div>
-    
     
 
     <x-slot name="scripts">

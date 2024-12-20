@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Classes\ApiResponseClass;
-use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductsResource;
 use App\Models\Product;
 use App\Models\BaseProducts;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +17,7 @@ class ProductController extends Controller
     public function index(Request $request){
         $data = BaseProducts::all();
 
-        return ApiResponseClass::sendResponse(ProductResource::collection($data), '',200);
+        return ApiResponseClass::sendResponse(ProductsResource::collection($data), '',200);
     }
     
     public function create(){
@@ -29,7 +29,7 @@ class ProductController extends Controller
         try{
             $Product = [];
             DB::commit();
-            return ApiResponseClass::sendResponse(new ProductResource($Product), 'Product Create Successful', 201);
+            return ApiResponseClass::sendResponse(new ProductsResource($Product), 'Product Create Successful', 201);
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);
@@ -40,7 +40,7 @@ class ProductController extends Controller
         $Product = [];
 
         if($Product){
-            return ApiResponseClass::sendResponse(new ProductResource($Product), 'Product retrieved successfully', 200);
+            return ApiResponseClass::sendResponse(new ProductsResource($Product), 'Product retrieved successfully', 200);
         }else {
             return ApiResponseClass::sendResponse([], 'Product not found', 404);
         }
@@ -56,7 +56,7 @@ class ProductController extends Controller
             $Product = [];
 
              DB::commit();
-             return ApiResponseClass::sendResponse(ProductResource::make($Product), 'Product Update Successful', 200);
+             return ApiResponseClass::sendResponse(ProductsResource::make($Product), 'Product Update Successful', 200);
 
         }catch(\Exception $ex){
             return ApiResponseClass::rollback($ex);

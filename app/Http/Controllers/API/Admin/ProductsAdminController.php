@@ -5,8 +5,9 @@ namespace App\Http\Controllers\API\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\BaseProducts;
 use App\Classes\ApiResponseClass;
-use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductsResource;
 use App\Http\Requests\Products\StoreProductRequest;
 use App\Http\Requests\Products\UpdateProductRequest;
 
@@ -20,7 +21,7 @@ class ProductsAdminController extends Controller
             $search = $request->get('search');
             $sortDirection = $request->get('orderDir');
             $orderByColumn = $request->get('orderColumn')+1;
-            $query = Product::query();
+            $query = BaseProducts::query();
 
             if (!empty($search)) {
                 $query->where(function($query) use ($search) {
@@ -42,37 +43,37 @@ class ProductsAdminController extends Controller
                 "draw" => intval($request->input('draw')),
                 "total" => $totalData,
                 "filtered" => $totalFiltered,
-                "data" => ProductResource::collection($products)
+                "data" => ProductsResource::collection($products)
             ]);
         }
-        $products = Product::all();
-        return ApiResponseClass::sendResponse(ProductResource::collection($products), '', 200);
+        $products = BaseProducts::all();
+        return ApiResponseClass::sendResponse(ProductsResource::collection($products), '', 200);
     }
 
     public function store(StoreProductRequest $request){
-        $product = Product::create($request->all());
-        return ApiResponseClass::sendResponse(new ProductResource($product), 'Product created successfully', 201);
+        $product = BaseProducts::create($request->all());
+        return ApiResponseClass::sendResponse(new ProductsResource($product), 'Produtos guardados com sucesso', 201);
     }
 
     public function show($id){
-        $product = Product::find($id);
+        $product = BaseProducts::find($id);
         if($product){
-            return ApiResponseClass::sendResponse(new ProductResource($product), '', 200);
+            return ApiResponseClass::sendResponse(new ProductsResource($product), '', 200);
         }
-        return ApiResponseClass::sendResponse([], 'Product not found', 404);
+        return ApiResponseClass::sendResponse([], 'Produto não encontrado', 404);
     }
 
     public function update(UpdateProductRequest $request, $id){
-        $product = Product::find($id);
+        $product = BaseProducts::find($id);
         if(!$product){
-            return ApiResponseClass::sendResponse([], 'Product not found', 404);
+            return ApiResponseClass::sendResponse([], 'Produto não encontrado', 404);
         }
         $product->update($request->all());
-        return ApiResponseClass::sendResponse(new ProductResource($product), 'Product updated successfully', 200);
+        return ApiResponseClass::sendResponse(new ProductsResource($product), 'Produto atualizado', 200);
     }
 
     public function destroy($id){
-        $product = Product::find($id);
+        $product = BaseProducts::find($id);
         if($product){
             $product->delete();
             return ApiResponseClass::sendResponse([], 'Product deleted successfully', 204);

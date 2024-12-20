@@ -18,13 +18,12 @@ class NotifyUserOnConfirmation extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(
-        public User $user,
-        public Requisicao $requisicao,
-        public $products
-    )
-    {}
-
+    public function __construct(public GestorDeRequisicoes $requisicao)
+    {
+        $this->user = $requisicao->user;
+        $this->admin = $requisicao->admin;
+        $this->products = $requisicao->products;
+    }
     /**
      * Get the message envelope.
      */

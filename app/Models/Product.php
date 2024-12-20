@@ -9,11 +9,7 @@ class Product extends Model
     protected $fillable = [
         'name',
         'details',
-        'requisicao_id'
-    ];
-
-    protected $casts = [
-        'images' => 'array'
+        'requisicao_id',
     ];
 
     public function base(){
