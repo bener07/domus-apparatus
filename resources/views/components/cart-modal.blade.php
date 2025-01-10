@@ -1,7 +1,10 @@
 <div class="dropdown">
     <a class="btn fs-4 m-3" type="button" id="cartDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-        <i class="bi-cart-fill"></i>
+      <!-- Cart number badge -->
+      <span id="cart-number" class="badge bg-danger" style="transform: translate(50px, -20px);">0</span>
+      <i class="bi-cart-fill"></i>
     </a>
+
     <!-- Cart Modal -->
     <ul class="dropdown-menu dropdown-menu-end p-3 shadow" aria-labelledby="cartDropdown" style="width: 400px;">
       <li class="d-flex justify-content-between align-items-center mb-2">
@@ -12,6 +15,13 @@
         <p class="mb-0">Não tem equipamentos para requisitar</p>
       </li>
     </ul>
+    <div id="messager" class="alert alert-danger alert-dismissible fade" role="alert" style="display:none;">
+      <p id="message-text"></p>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  
 </div>
 
 <script>

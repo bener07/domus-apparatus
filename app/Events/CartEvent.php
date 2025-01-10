@@ -10,13 +10,14 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Http\Resources\CartResource;
 
 
 class CartEvent implements ShouldBroadcastNow
 {
     use Dispatchable, SerializesModels;
 
-    public function __construct(public $cart)
+    public function __construct(public $cart, public $message)
     {}
 
     /**
@@ -30,7 +31,8 @@ class CartEvent implements ShouldBroadcastNow
     public function broadcastWith(): array
     {
         return [
-            'cart' => $this->cart,
+            'cart' => new CartResource($this->cart),
+            'message' => $this->message
         ];
     }
 

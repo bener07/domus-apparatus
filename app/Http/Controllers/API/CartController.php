@@ -9,6 +9,7 @@ use App\Models\BaseProducts;
 use App\Http\Resources\CartResource;
 use App\Classes\GestorDeRequisicoes;
 use App\Http\Requests\Cart\AddToCartRequest;
+use App\Http\Requests\Cart\UpdateDateRequest;
 
 class CartController extends Controller
 {
@@ -34,5 +35,12 @@ class CartController extends Controller
         $cart = $request->user()->cart;
         $cart->remove($rowId);
         return ApiResponseClass::sendResponse(new CartResource($cart), 'Product removed from cart', 200);
+    }
+
+    public function registerDate(UpdateDateRequest $request){
+        $cart = $request->user()->cart;
+        $cart->updateDate($request->start, $request->end);
+        return back();
+        // return ApiResponseClass::sendResponse(new CartResource($cart), 'Date registered successfully', 200);
     }
 }

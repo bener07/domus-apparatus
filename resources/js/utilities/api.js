@@ -1,3 +1,5 @@
+import { SwalDialog } from "./dialog";
+
 export class API{
     constructor(){
         this.Products = [];
@@ -25,24 +27,42 @@ export class API{
                 error: function (xhr, status, error) {
                     console.error('Error while making request: ', error);
                     reject(error);
+                    API.showApiErrors(xhr);
                 }
             });
         });
     }
 
     static showApiErrors(apiResponse) {
-        // Extract errors and message from the response
-        const errors = apiResponse.data || [];
+        // Extract errors and message from the response1
+        console.log(apiResponse);
+        apiResponse = apiResponse.responseJSON;
         const message = apiResponse.message || apiResponse;
-    
+        const errors = apiResponse.error || [];
+        
+        let errorMessages = [];
+
+        if (errors.responseJSON) {
+            errorMessages = Object.values(errors.responseJSON);
+        } else if (errors.responseText) {
+            try {
+                const parsedResponse = JSON.parse(errors.responseText);
+                errorMessages = Object.values(parsedResponse);
+            } catch (e) {
+                errorMessages.push('An unknown error occurred.');
+            }
+        } else {
+            errorMessages.push('An unexpected error occurred.');
+        }
+        
         // Build an HTML list of errors
-        const errorListHtml = errors
-            .map(err => `<li>${Object.values(err).join(': ')}</li>`)
-            .join('');
+        const errorListHtml = `<ul>${errorMessages.map(err => `<li>${err}</li>`).join('')}</ul>`;
+        
+        
     
         // Show SweetAlert with the errors
         Swal.fire({
-            title: 'Errors Occurred',
+            title: 'Ocorreu um erro',
             html: `
                 <p>${message}</p>
                 <ul style="text-align: left; color: red; margin-top: 10px;">

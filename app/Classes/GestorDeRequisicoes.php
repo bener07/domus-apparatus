@@ -112,15 +112,31 @@ class GestorDeRequisicoes
     public static function emRequisicao(Product $product){
         return Requisicao::where('product_id', $product->id)->where('status', '!=','rejeitado')->exists();
     }
-
-    public static function verifyRequest(Request $request, BaseProducts $product){
+    public static function verifyDate($request){
         if($request->start > $request->end){
-            throw new UserException("Data de  posterior à data de entrega");
+            throw new UserException("Data de requisicao posterior à data de entrega");
+        }
+    }
+    public static function verifyRequest(Request $request, BaseProducts $product){
+        self::verifyDate($request);
+
+        $cart = $request->user()->cart;
+        
+        if(!$product->exists()){
+            throw new UserException("O produto não existe", 404);
+        }
+        if($request->quantity <= 0){
+            throw new UserException("Quantidade de equipamentos solicitada deve ser superior a 0", 400);
         }
         if($request->quantity > $product->quantity){
             throw new UserException("Quantidade de equipamentos solicitada é superior ao disponível", 400);
         }
-        if ($product->quantity < Requisicao::quantityOnDate($request->product_id, $request->start, $request->end, $request->quantity))
+        if ($product->quantity < Requisicao::quantityOnDate(
+                $request->product_id,
+                $request->start ?? $cart->start,
+                $request->end ?? $cart->end,
+                $request->quantity
+                ))
             throw new ProductException("Não há equipamentos suficientes para a data pedida", 400);
         return true;
     }
@@ -145,10 +161,9 @@ class GestorDeRequisicoes
     }
 
     public static function requisitar(User $user, BaseProducts $product, Request $request){
-        self::verifyRequest($request, $product);
-        $chosenAdmin = self::chooseAdmin();
-        $requisicao = Cart::addToCart($product, $request->quantity, $chosenAdmin);
-        $requisicao->pedirConfirmacao($chosenAdmin);
+        // adiciona a requisição ao carrinho e asseguir manda uma mensagem para o administrador
+        $requisicao = Cart::addToCart($product, $request->quantity, $request);
+        $requisicao->pedirConfirmacao($requisicao->admin);
         return $requisicao;
     }
 

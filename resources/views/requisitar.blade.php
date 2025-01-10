@@ -44,29 +44,29 @@
             
                     <!-- Second Div -->
                     <div id="secondDiv" class="sliding-div text-white d-flex align-items-center justify-content-center">
-                        <form action="{{ route('request.products') }}" method="POST" class="mt-4">
+                        <form action="{{ route('request.products') }}" id="dateForm" method="POST" class="mt-4">
                             @csrf
                             <div class="d-flex justify-content-evenly align-items-center">
                                 <!-- Initial Date -->
                                 <div class="mb-3 mx-4">
                                     <label for="start_date" class="form-label">Data de requisição</label>
-                                    <input type="date" id="start_date" name="start_date" class="form-control" required placeholder="Selecione a data inicial">
+                                    <input type="date" id="start_date" name="start" class="form-control" required placeholder="Selecione a data inicial">
                                 </div>
                                 <i class="bi bi-arrow-right fs-1" style="color: black"></i>
                                 <!-- Final Date -->
                                 <div class="mb-3 mx-4">
                                     <label for="end_date" class="form-label">Data de entrega</label>
-                                    <input type="date" id="end_date" name="end_date" class="form-control" required placeholder="Selecione a data final">
+                                    <input type="date" id="end_date" name="end" class="form-control" required placeholder="Selecione a data final">
                                 </div>
                             </div>
                             <!-- Submit Button -->
-                            <button type="submit" class="btn btn-primary">Solicitar Produtos</button>
                         </form>
                     </div>
                 </div>
                 <!-- Toggle Button -->
                 <div class="text-center mt-4">
                     <button id="toggleButton" class="btn btn-primary">Escolher Datas</button>
+                    <button id="submitForm" class="btn btn-primary d-none">Submeter Datas</button>
                 </div>
             </div>
             @endisDateChoosen
@@ -76,18 +76,21 @@
   <slot name="scripts">
     @vite(['resources/js/user/requisitar.js'])
     <script>
-        document.getElementById('toggleButton').addEventListener('click', function () {
+        const submitBtn = document.getElementById('submitForm');
+        const btn = document.getElementById('toggleButton');
+        btn.addEventListener('click', function () {
             const firstDiv = document.getElementById('firstDiv');
             const secondDiv = document.getElementById('secondDiv');
-            
-            if (firstDiv.style.transform === 'translateX(-100%)') {
-                firstDiv.style.transform = 'translateX(0)';
-                secondDiv.style.transform = 'translateX(100%)';
-            } else {
-                firstDiv.style.transform = 'translateX(-100%)';
-                secondDiv.style.transform = 'translateX(0)';
-            }
+            firstDiv.style.transform = 'translateX(-100%)';
+            secondDiv.style.transform = 'translateX(0)';
+            btn.classList.add('d-none');
+            submitBtn.classList.remove('d-none');
         });
+
+        submitBtn.addEventListener('click', function () {
+            document.getElementById('dateForm').submit();
+        });
+
 
     </script>
   </slot>

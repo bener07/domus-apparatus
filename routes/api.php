@@ -61,7 +61,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/test-cart', function (Request $request){
         $cart = auth()->user()->cart;
-        event(new CartEvent($cart));
+        event(new CartEvent($cart, "Testing"));
         return 'Event BroadCasted';
     });
 });

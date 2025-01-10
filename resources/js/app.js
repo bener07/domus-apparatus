@@ -5,7 +5,8 @@ import { addNewUser } from './dashboard/users.js';
 import { Cart } from './utilities/cart.js';
 // import $ from 'jquery';
 
-window.cart = new Cart('cart-items');
+window.cart = new Cart('#cart-items', '#messager');
+console.log(window.cart)
 
 window.Alpine = Alpine;
 
@@ -26,12 +27,12 @@ function showLoading(timeout) {
     }, timeout);
 }
 
-if ( $.active > 0){
+if ( $.active > 1){
     $(document).ready(function() {
         // Show loader when any AJAX request is sent
-        $(document).ajaxStart(function() {
-            showLoading(100);
-        });
+        // $(document).ajaxStart(function() {
+        //     showLoading(100);
+        // });
 
         // Hide loader when any AJAX request completes
         $(document).ajaxStop(function() {
@@ -39,9 +40,9 @@ if ( $.active > 0){
         });
     
         // Optional: Hide loader on AJAX error
-        $(document).ajaxError(function() {
-            hideLoading(200);
-        });
+        // $(document).ajaxError(function() {
+        //     hideLoading(200);
+        // });
     });
 }else{
     hideLoading(200)

@@ -25,9 +25,8 @@ API.makeAuthenticatedRequest('/api/user', 'GET', () => {}).then(function (respon
     // Listen for updates on the cart channel for the authenticated user
     echo.private(`cart.${userId}`)
         .listen(`.cart`, (event) => {
-            console.log('Cart updated:', event);
             // Handle the event here (e.g., update the UI)
-            // window.cart.updateCart(event.cart);
+            window.cart.updateCart(event);
         });
 
     // Optional: Listen for other general events

@@ -25,8 +25,6 @@ class AddToCartRequest extends ApiRequest
         return [
             'product_id' => 'required|exists:base_products,id',
             'quantity' => 'required|integer|min:1',
-            'start' => 'required|date',
-            'end' => 'required|date|after:start',
         ];
     }
 

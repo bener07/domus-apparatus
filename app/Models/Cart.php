@@ -26,14 +26,16 @@ class Cart extends Model
         return $this->hasMany(Requisicao::class);
     }
 
-    public static function addToCart($product, $quantity, $chosenAdmin){
+    public static function addToCart($product, $quantity, $request){
+        GestorDeRequisicoes::verifyRequest($request, $product);
+        $chosenAdmin = GestorDeRequisicoes::chooseAdmin();
         // Add product to cart
         $user = auth()->user();
-        $cart = $user->cart()->firstOrCreate();
+        $cart = $user->cart;
         $token = GestorDeRequisicoes::generateToken($user->id, $cart->id, $product->id);
 
         // items in the cart are the requisicoes
-        return $cart->items()->create([
+        $requisicao = $cart->items()->create([
             'title' => $product->name . " - ". $user->name,
             'product_id' => $product->id,
             'quantity' => $quantity,
@@ -44,9 +46,29 @@ class Cart extends Model
             'start' => $cart->start,
             'end' => $cart->end,
         ]);
+        if($requisicao){
+            $cart->updateTotal();
+            return $requisicao;
+        }
     }
 
+    
     public function isEmpty() {
         return $this->items()->exists();
+    }
+    
+    function updateTotal(){
+        $totalQuantity = 0;
+        foreach ($this->items as $item) {
+            $totalQuantity += $item['quantity']; // Add up the quantities of each product
+        }
+        $this->total = $totalQuantity; // Update the total in the cart
+        $this->save();
+    }
+    
+    public function updateDate($start, $end){
+        $this->start = $start;
+        $this->end = $end;
+        $this->save();
     }
 }
