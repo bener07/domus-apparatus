@@ -34,9 +34,9 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
 
-        @if (auth()->user()->isAdmin())
+        @isAdmin
             @include('layouts.navigation')
-        @endif
+        @endisAdmin
         <!-- End of Sidebar -->
 
         <!-- Content Wrapper -->

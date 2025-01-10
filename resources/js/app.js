@@ -2,7 +2,10 @@ import './bootstrap.js';
 import Alpine from 'alpinejs';
 import { addNewProduct, eliminarProduto } from './dashboard/products.js';
 import { addNewUser } from './dashboard/users.js';
+import { Cart } from './utilities/cart.js';
 // import $ from 'jquery';
+
+window.cart = new Cart('cart-items');
 
 window.Alpine = Alpine;
 

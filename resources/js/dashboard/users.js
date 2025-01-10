@@ -36,7 +36,7 @@ $(document).ready(function() {
     // Hide initial loading wheel
     $('#loadingWheel').hide();
 
-    Tags.gettags().then(function (response){
+    Tags.getTags().then(function (response){
         response.data.forEach(tag => {
             $('#tagsSelection').append(`<option value="${tag.id}">${tag.name}</option>`);
         });

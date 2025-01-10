@@ -9,6 +9,6 @@ use Illuminate\Support\Str;
 class UserObserver
 {
     public function created(User $user){
-        //
+	$user->cart()->create();
     }
 }

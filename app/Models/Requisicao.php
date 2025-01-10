@@ -20,7 +20,7 @@ class Requisicao extends Model
         'status',
         'admin_id',
         'user_id',
-        'base_product_id',
+        'product_id',
         'start',
         'end',
         'entrega_real',
@@ -48,6 +48,10 @@ class Requisicao extends Model
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function cart(){
+        return $this->belongsTo(Cart::class, 'cart_id');
+    }
     
     public function products(){
         return $this->hasMany(Product::class);
@@ -58,7 +62,7 @@ class Requisicao extends Model
     }
 
     public function product(){
-        return $this->belongsTo(BaseProducts::class, 'base_product_id');
+        return $this->belongsTo(BaseProducts::class, 'product_id');
     }
 
     public static function emRequisicao($product){

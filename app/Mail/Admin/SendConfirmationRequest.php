@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\Requisicao;
 use App\Models\Product;
 use App\Classes\GestorDeRequisicoes;
+use Illuminate\Support\Facades\Log;
 
 class SendConfirmationRequest extends Mailable
 {
@@ -22,9 +23,9 @@ class SendConfirmationRequest extends Mailable
      */
     public function __construct($requisicao)
     {
+        $this->requisicao = $requisicao->requisicao;
         $this->admin = $requisicao->admin;
         $this->products = $requisicao->products;
-        $this->requisicao = $requisicao->requisicao;
     }
 
     /**
@@ -45,6 +46,11 @@ class SendConfirmationRequest extends Mailable
     {
         return new Content(
             markdown: 'mail.admin.confirmRequisicao',
+            with: [
+               'requisicao' => $this->requisicao,
+                'admin' => $this->admin,
+                'products' => $this->products,
+            ],
         );
     }
 

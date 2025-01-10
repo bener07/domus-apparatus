@@ -17,6 +17,7 @@ use App\Mail\User\NotifyUserOnDenial;
 use App\Exceptions\UserException;
 use App\Exceptions\ProductException;
 use Illuminate\Support\Facades\Mail;
+use App\Models\Cart;
 
 class GestorDeRequisicoes
 {
@@ -41,10 +42,10 @@ class GestorDeRequisicoes
      */
     public function notifyOnAction($action, $notifyUser=true, $notifyAdmin=true){
         if($notifyUser){
-            self::notifyUser($action);
+            $this->notifyUser($action);
         }
         if($notifyAdmin){
-            self::notifyAdmin($action);
+            $this->notifyAdmin($action);
         }
     }
 
@@ -113,12 +114,6 @@ class GestorDeRequisicoes
     }
 
     public static function verifyRequest(Request $request, BaseProducts $product){
-        if($request->end < now()){
-            throw new UserException("Data de entrega anterior à data atual");
-        }
-        if($request->start < now()){
-            throw new UserException("Data de requisicao anterior à data atual");
-        }
         if($request->start > $request->end){
             throw new UserException("Data de  posterior à data de entrega");
         }
@@ -145,20 +140,14 @@ class GestorDeRequisicoes
         return $requisicao;
     }
 
+    public static function generateToken($user_id, $cart_id, $product_id){
+        return md5($user_id. $cart_id. $product_id);
+    }
+
     public static function requisitar(User $user, BaseProducts $product, Request $request){
         self::verifyRequest($request, $product);
         $chosenAdmin = self::chooseAdmin();
-        $requisicao = Requisicao::create([
-            'title' => $product->name." - ".$user->name, 
-            'status' => 'pendente',
-            'admin_id' => $chosenAdmin->id,
-            'user_id' => $user->id,
-            'base_product_id' => $product->id,
-            'start' => $request->start,
-            'end' => $request->end,
-            'quantity' => $request->quantity,
-            'token' => md5(now().$chosenAdmin->name.$chosenAdmin->id)
-        ]);
+        $requisicao = Cart::addToCart($product, $request->quantity, $chosenAdmin);
         $requisicao->pedirConfirmacao($chosenAdmin);
         return $requisicao;
     }

@@ -141,3 +141,19 @@ label{
         height: 30vh;
     }
 }
+
+.container-wrapper {
+    position: relative;
+    overflow: hidden;
+    /* height: 200px; */
+}
+.sliding-div {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+}
+#secondDiv {
+    transform: translateX(100%);
+    position:absolute;
+    top:0;
+}

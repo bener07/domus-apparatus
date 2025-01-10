@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\TagsController;
 use App\Http\Controllers\ConfirmationController;
-
+use App\Http\Resources\CartResource;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', function () {
@@ -23,6 +23,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin', function () {
         return view('admin');
     })->middleware('isAdmin');
+
+    Route::get('/cart', function (){
+        $cart = auth()->user()->cart;
+        $data_de_reserva = $cart->start ?? 'sem data';
+        $data_de_entrega_prevista = $cart->end ?? 'sem data';
+        // return new CartResource($cart);
+        return view('pages.cart', compact('data_de_reserva', 'data_de_entrega_prevista', 'cart'));
+    });
 });
 
 

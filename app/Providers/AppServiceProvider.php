@@ -41,14 +41,25 @@ class AppServiceProvider extends ServiceProvider
             return $user->id === $Product->owner_id;
         });
 
-        Blade::if('isHosting', function(){
+        Blade::if('isEmptyCart', function(){
             $user = Auth::user();
+            $cart = $user->cart;
 
-            return $user && $user->ownedProducts()->exists();
+            return $cart->isEmpty();
         });
+
+        Blade::if('isDateChoosen', function (){
+            $cart = Auth::user()->cart;
+
+            return !is_null($cart->start) && !is_null($cart->end);
+        });
+
         Blade::if('isAdmin', function () {
             $user = Auth::user();
             return $user && $user->isAdmin();
         });
+        Gate::define('viewPulse', function (User $user) {
+            return $user->isAdmin();
+        });    
     }
 }

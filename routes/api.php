@@ -8,11 +8,15 @@ use App\Http\Controllers\API\Admin\RoleAdminController;
 use App\Http\Controllers\API\Admin\DepartmentAdminController;
 use App\Http\Controllers\API\Admin\TagsAdminController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ProductController;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\RolesResource;
 use App\Classes\ApiResponseClass;
+use App\Models\Cart;
+use App\Events\CartEvent;
+
 
 
 
@@ -24,6 +28,8 @@ Route::post('logout',[AuthController::class,'logout'])->middleware('auth:sanctum
 
 // gerais só com autenticação
 Route::middleware('auth:sanctum')->group(function () {
+
+    // informações gerais só com autenticação
     Route::get('products', [ProductController::class, 'index']);
     Route::get('roles', [RoleAdminController::class, 'index']);
     Route::get('departments', [DepartmentAdminController::class, 'index']);
@@ -32,15 +38,42 @@ Route::middleware('auth:sanctum')->group(function () {
         return ApiResponseClass::sendResponse(UserResource::make($request->user()), '', 200);
     });
 
-    // routes do utilizador
-    Route::group(['prefix' => 'user','namespace' => 'user', 'name' => 'user.'], function () {
+    // Utilizador
+    Route::group(['prefix' => 'user', 'name' => 'user.'], function () {
+
+        // requisicões
         Route::delete('requisicao', [UserController::class, 'deliverRequisicao']);
         Route::post('requisicao', [UserController::class, 'addRequisicao']);
-        Route::get('requisitados', [UserController::class, 'getRequisicoes']);
+        Route::get('requisicao', [UserController::class, 'getRequisicao']);
         Route::get('entregues', [UserController::class, 'getEntregues']);
         Route::get('pendentes', [UserController::class, 'getPendentes']);
+        Route::post('cart-date', [CartController::class, 'registerDate'])->name('request.products');
+        // Route::post('/cartDate', [CartController::class, 'setCartDate']);
+        
+        // Carrinho do utilizador
+        Route::group(['prefix' => 'cart', 'name' => 'cart'], function (){
+            Route::get('/', [CartController::class, 'index']);
+            Route::post('/', [CartController::class, 'store']);
+            Route::put('/', [CartController::class, 'update']);
+            Route::delete('/', [CartController::class, 'destroy']);
+        });
+    });
+
+    Route::get('/test-cart', function (Request $request){
+        $cart = auth()->user()->cart;
+        event(new CartEvent($cart));
+        return 'Event BroadCasted';
     });
 });
+
+/**
+ * API Resources:
+ *   - METHOD -> function
+ *   - GET -> index
+ *   - POST -> create
+ *   - PUT -> update
+ *   - DELETE -> delete
+ */
 
 // adminitração
 Route::group([

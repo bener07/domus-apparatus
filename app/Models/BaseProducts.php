@@ -48,7 +48,7 @@ class BaseProducts extends Model
         return $this->hasMany(Product::class, 'base_id');
     }
     public function requisicoes(){
-        return $this->hasMany(Requisicao::class, 'base_product_id');
+        return $this->hasMany(Requisicao::class, 'product_id');
     }
     public function tags(){
         return $this->belongsToMany(Tags::class, 'base_product_tag');

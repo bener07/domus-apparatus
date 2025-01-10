@@ -6,24 +6,26 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\RequisicaoResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\GestorResource;
+use App\Http\Resources\CartResource;
 use App\Classes\ApiResponseClass;
 use App\Classes\GestorDeRequisicoes;
 use Illuminate\Http\Request;
 use App\Models\Requisicao;
 use App\Models\User;
 use App\Models\BaseProducts;
+use App\Models\Cart;
+use App\Http\Requests\Cart\AddToCartRequest;
 
 class UserController extends Controller
 {
-    public function getRequisicoes(Request $request){
-        $request->user()->requisicoes();
-        $user_products = $request->user()->requisicoes;
-        return ApiResponseClass::sendResponse(ProductResource::collection($user_products), '', 200);
+    public function getCart(Request $request){
+	    $user_products = $request->user()->cart;
+        return ApiResponseClass::sendResponse(new CartResource($user_products), '', 200);
     }
 
-    public function addRequisicao(Request $request){
+    public function addRequisicao(AddToCartRequest $request){
         try {
-            $product = BaseProducts::find($request->product_id);
+	        $product = BaseProducts::find($request->product_id);
             $requisicao = GestorDeRequisicoes::requisitar($request->user(), $product, $request);
             return ApiResponseClass::sendResponse(GestorResource::make($requisicao), 'A espera de confirmacao!', 200);
         }

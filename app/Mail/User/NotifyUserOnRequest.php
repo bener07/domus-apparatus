@@ -20,11 +20,11 @@ class NotifyUserOnRequest extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public GestorDeRequisicoes $requisicao)
+    public function __construct(public GestorDeRequisicoes $cart)
     {
-        $this->user = $requisicao->user;
-        $this->admin = $requisicao->admin;
-        $this->products = $requisicao->products;
+        $this->user = $cart->user;
+        $this->admin = $cart->admin;
+        $this->products = $cart->products;
     }
 
     /**
