@@ -44,7 +44,9 @@ class ManageRoles extends Command
             return 0;
         }
         if($this->option('remove-role') != null){
-            
+            $user->removeRole($role_name);
+            $this->line("Role '{$role_name}' removed from user '{$user->name}'");
+            return 0;
         }
         if($this->option('create-role') != null){
             $role = Roles::create(['name' => $role_name]);

@@ -6,12 +6,14 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css',
-                'resources/css/styles.css',
-                'resources/css/dark.css',
                 'resources/css/template.css',
+                'resources/js/bootstrap.js',
                 'resources/js/app.js',
                 'resources/js/index.js',
                 'resources/js/template.js',
+                'resources/js/dashboard/users.js',
+                'resources/js/dashboard/products.js',
+                'resources/js/user/requisitar.js',
             ],
             refresh: true,
         }),

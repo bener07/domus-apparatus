@@ -13,7 +13,7 @@ class AddTagToProduct extends Command
      *
      * @var string
      */
-    protected $signature = 'app:tags-to-products {Product_id} {tag_id?} {--remove} {--remove-all}';
+    protected $signature = 'testing:tags-to-products {Product_id} {tag_id?} {--remove} {--remove-all}';
 
     /**
      * The console command description.

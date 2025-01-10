@@ -27,6 +27,7 @@ class User extends Authenticatable
         'avatar',
         'email',
         'password',
+        'department_id',
     ];
 
     /**
@@ -61,6 +62,9 @@ class User extends Authenticatable
             if (is_null($user->password)) {
                 $user->password = Hash::make(now()); // Default role
             }
+            if(is_null($user->department_id)){
+                $user->department_id = Department::first()->id ?? 1; // Default department
+            }
         });
     }
 
@@ -76,6 +80,10 @@ class User extends Authenticatable
         ]);
         $user->addLink($platform,$third_Product);
         return $user;
+    }
+
+    public function cart(){
+    	return $this->hasOne(Cart::class);
     }
 
     /**
@@ -94,11 +102,6 @@ class User extends Authenticatable
 
     public function pendentes(){
         return $this->hasMany(Requisicao::class, 'user_id')->where('requisicoes.status', 'pendente');
-    }
-
-    public function requisitar($request){
-        $product = Product::find($request->product_id);
-        return Requisicao::requisitar($this, $product, $request);
     }
 
     /**
@@ -121,7 +124,20 @@ class User extends Authenticatable
             $this->roles()->attach($roleId);
         }
     }
-    public function removeRoll($role_name){
+
+    public function getRoleIds($roles){
+        $roleIds = [];
+        foreach($roles as $role){
+            array_push($roleIds, Roles::findRole($role)->id);
+        }
+        return $roleIds;
+    }
+
+    public function syncRoles($roles){
+        $this->roles()->sync($this->getRoleIds($roles));
+    }
+
+    public function removeRole($role_name){
         $role = Roles::findRole($role_name);
         if($this->roles->contains($role->id)){
             $this->roles()->detach($role->id);
@@ -155,5 +171,24 @@ class User extends Authenticatable
         }
         return null;
     }
-    
+
+    public function department(){
+        return $this->belongsTo(Department::class);
+    }
+
+    public function ownedDepartment(): HasOne
+    {
+        return $this->hasOne(Department::class, 'manager_id');
+    }
+
+    public function attachDepartment($department){
+        $department = Department::findDepartment($department);
+
+        $this->department()->associate($department);
+        $this->save();
+    }
+
+    public function tags(){
+        return $this->hasMany(Tags::class, 'tags');
+    }
 }

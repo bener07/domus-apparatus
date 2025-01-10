@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Product;
+use App\Models\BaseProducts;
 use App\Models\Tags;
 
 class ProductSeeder extends Seeder
@@ -17,16 +17,23 @@ class ProductSeeder extends Seeder
         // Product::truncate();
         $faker = \Faker\Factory::create();
 
-        for ($i=0; $i < 3; $i++) { 
-            $Product = Product::create([
+        for ($i=0; $i < 3; $i++) {
+            $products = BaseProducts::create([
                 'name' => $faker->name,
                 'details'=> $faker->sentence,
                 'images' => [
-                        'shopping'=>'https://officechai.com/wp-content/uploads/2016/05/online-shoping.jpg',
-                        'testing' => 'https://officechai.com/wp-content/uploads/2016/05/3-Photoshop-Funny-CEO-Falls-Asleep-Work-Employees-Edit-Memes.jpg',
-                    ],
+                    'shopping'=>'https://officechai.com/wp-content/uploads/2016/05/online-shoping.jpg',
+                    'testing' => 'https://officechai.com/wp-content/uploads/2016/05/3-Photoshop-Funny-CEO-Falls-Asleep-Work-Employees-Edit-Memes.jpg',
+                ],
+                'isbns'=> [
+                    $faker->unique()->numberBetween(10000, 100000),
+                    $faker->unique()->numberBetween(10000, 100000),
+                    $faker->unique()->numberBetween(10000, 100000),
+                    $faker->unique()->numberBetween(10000, 100000),
+                    $faker->unique()->numberBetween(10000, 100000),
+                ]
             ]);
-            $Product->tags()->attach(1);
+            $products->tags()->attach(1);
         }
     }
 }

@@ -1,7 +1,7 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
@@ -12,7 +12,7 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item @if(request()->is('index')) active @endif">
+    <li class="nav-item @if(request()->is('/')) active @endif">
         <a class="nav-link" href="/">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Home</span>
@@ -24,50 +24,75 @@
 
     <!-- Heading -->
     <div class="sidebar-heading">
-        Interface
+        Administração
     </div>
-
-    <!-- Nav Item - Pages Collapse Menu -->
+    <!-- Equipments -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-            aria-expanded="true" aria-controls="collapseTwo">
-            <i class="fas fa-fw fa-cog"></i>
-            <span>Utilizadores</span>
-        </a>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Components:</h6>
-                <a class="collapse-item @if(request()->is('buttons')) active @endif" href="/buttons">Buttons</a>
-                <a class="collapse-item @if(request()->is('cards')) active @endif" href="/cards">Cards</a>
-            </div>
-        </div>
-    </li>
-
-    <!-- Nav Item - Utilities Collapse Menu -->
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-            aria-expanded="true" aria-controls="collapseUtilities">
-            <i class="fas fa-fw fa-wrench"></i>
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#equipamentosDropdown"
+            aria-expanded="true" aria-controls="equipamentosDropdown">
+            <i class="bi bi-shop-window"></i>
             <span>Equipamentos</span>
         </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
-            data-parent="#accordionSidebar">
+        <div id="equipamentosDropdown" class="collapse @if(request()->is('dashboard/products') || request()->is('dashboard/products/add')) show @endif " aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <h6 class="collapse-header">Custom Utilities:</h6>
-                <a class="collapse-item @if(request()->is('utilities-color')) active @endif" href="/utilities-color">Colors</a>
-                <a class="collapse-item @if(request()->is('utilities-border')) active @endif" href="/utilities-border">Borders</a>
-                <a class="collapse-item @if(request()->is('utilities-animation')) active @endif" href="/utilities-animation">Animations</a>
-                <a class="collapse-item @if(request()->is('utilities-other')) active @endif" href="/utilities-other">Other</a>
+                <h5 class="collapse-header">Equipamentos:</h5>
+                <a class="collapse-item @if(request()->is('dashboard/products')) active @endif" href="{{route('admin.products')}}">Gerir Equipamentos </a>
+                <button class="collapse-item" id="addNewProduct">+ Adicionar</button>
             </div>
         </div>
     </li>
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#utilizadoresDropdown"
+            aria-expanded="true" aria-controls="utilizadoresDropdown">
+            <i class="bi bi-people-fill"></i>
+            <span>Utilizadores</span>
+        </a>
+        <div id="utilizadoresDropdown" class="collapse @if(request()->is('dashboard/users') || request()->is('dashboard/users/add')) show @endif" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h5 class="collapse-header">Utilizadores:</h5>
+                <a class="collapse-item @if(request()->is('dashboard/users')) active @endif" href="{{route('admin.users')}}">Editar Utilizadores</a>
+                <button class="collapse-item" id="addNewUser">+ Adicionar</button>
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#cargosDropdown"
+            aria-expanded="true" aria-controls="cargosDropdown">
+            <i class="bi bi-award-fill"></i>
+            <span>Cargos</span>
+        </a>
+        <div id="cargosDropdown" class="collapse @if(request()->is('dashboard/roles') || request()->is('dashboard/roles/add')) show @endif" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h5 class="collapse-header">Cargos:</h5>
+                <a class="collapse-item @if(request()->is('dashboard/roles')) active @endif" href="{{route('admin.roles')}}">Editar Cargos</a>
+                <a class="collapse-item @if(request()->is('dashboard/roles/add')) active @endif" href="{{ route('admin.roles.add') }}">+ Adicionar</a>
+            </div>
+        </div>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#departamentosDropdown"
+            aria-expanded="true" aria-controls="departamentosDropdown">
+            <i class="bi bi-building-fill"></i>
+            <span>Departamentos</span>
+        </a>
+        <div id="departamentosDropdown" class="collapse @if(request()->is('dashboard/department') || request()->is('dashboard/department/add')) show @endif " aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h5 class="collapse-header">Departamentos:</h5>
+                <a class="collapse-item @if(request()->is('dashboard/department')) active @endif" href="{{route('admin.departments')}}">Editar Departamentos</a>
+                <a class="collapse-item @if(request()->is('dashboard/department/add')) active @endif" href="{{ route('admin.departments.add') }}">+ Adicionar</a>
+            </div>
+        </div>
+    </li>
+    
 
     <!-- Divider -->
     <hr class="sidebar-divider">
 
     <!-- Heading -->
     <div class="sidebar-heading">
-        Addons
+        Componentes da Template
     </div>
 
     <!-- Nav Item - Pages Collapse Menu -->
@@ -75,7 +100,7 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
             aria-expanded="true" aria-controls="collapsePages">
             <i class="fas fa-fw fa-folder"></i>
-            <span>Gestão</span>
+            <span>Utilizadores</span>
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
@@ -91,10 +116,29 @@
         </div>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#componentesDropdown"
+            aria-expanded="true" aria-controls="componentesDropdown">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Pequenos componentes</span>
+        </a>
+        <div id="componentesDropdown" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Custom Components:</h6>
+                <a class="collapse-item @if(request()->is('buttons')) active @endif" href="/buttons">Buttons</a>
+                <a class="collapse-item @if(request()->is('cards')) active @endif" href="/cards">Cards</a>
+                <h6 class="collapse-header">Custom Utilities:</h6>
+                <a class="collapse-item @if(request()->is('utilities-color')) active @endif" href="/utilities-color">Colors</a>
+                <a class="collapse-item @if(request()->is('utilities-border')) active @endif" href="/utilities-border">Borders</a>
+                <a class="collapse-item @if(request()->is('utilities-animation')) active @endif" href="/utilities-animation">Animations</a>
+                <a class="collapse-item @if(request()->is('utilities-other')) active @endif" href="/utilities-other">Other</a>
+            </div>
+        </div>
+    </li>
 
     <!-- Nav Item - Tables -->
     <li class="nav-item @if(request()->is('tables')) active @endif">
-        <a class="nav-link" href="tables">
+        <a class="nav-link" href="/tables">
             <i class="fas fa-fw fa-table"></i>
             <span>Tables</span>
         </a>

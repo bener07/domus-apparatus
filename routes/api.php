@@ -2,52 +2,88 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\Admin\ProductsAdminController;
+use App\Http\Controllers\API\Admin\UserAdminController;
+use App\Http\Controllers\API\Admin\RoleAdminController;
+use App\Http\Controllers\API\Admin\DepartmentAdminController;
+use App\Http\Controllers\API\Admin\TagsAdminController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\UserAdminController;
-use App\Classes\ApiResponseClass;
+use App\Http\Controllers\API\ProductController;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\RolesResource;
+use App\Classes\ApiResponseClass;
+use App\Models\Cart;
+use App\Events\CartEvent;
 
 
 
-
-// ação de utilizadores
-Route::group([
-    'middleware' => 'auth:sanctum',        // Apply middleware
-    'prefix' => 'user',           // URL prefix
-    'namespace' => 'user',        // Controller namespace
-    'name' => 'user.',             // Name prefix for route names
-], function () {
-    Route::delete('requisicao', [UserController::class, 'deliverRequisicao']);
-    Route::post('requisicao', [UserController::class, 'addRequisicao']);
-    Route::get('requisitados', [UserController::class, 'getRequisicoes']);
-    Route::get('entregues', [UserController::class, 'getEntregues']);
-    Route::get('pendentes', [UserController::class, 'getPendentes']);
-    Route::get('/', function (Request $request) {
-        return ApiResponseClass::sendResponse(UserResource::make($request->user()), '', 200);
-    });
-});
-
-Route::group([
-    'middleware' => ['auth:sanctum', 'ApiAdmin'],
-    'prefix' => 'admin',
-    'name' => 'admin.',
-], function(){
-    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-    Route::post('/product', [ProductController::class, 'store'])->name('products.store');
-    Route::get('/product/{product}', [ProductController::class, 'show'])->name('products.show');
-    Route::put('/product/{product}', [ProductController::class, 'update'])->name('products.update');
-    Route::delete('/product/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
-    Route::apiResource('users', UserAdminController::class);
-});
-
-
-
-// gestão de equipamento
-Route::get('/product', [ProductController::class, 'index'])->name('products.index');
 
 // Sanctum Autentication
 // Route::post('register',[AuthController::class,'register']);
 Route::post('login',[AuthController::class,'login']);
 Route::post('logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
+
+
+// gerais só com autenticação
+Route::middleware('auth:sanctum')->group(function () {
+
+    // informações gerais só com autenticação
+    Route::get('products', [ProductController::class, 'index']);
+    Route::get('roles', [RoleAdminController::class, 'index']);
+    Route::get('departments', [DepartmentAdminController::class, 'index']);
+    Route::get('tags', [TagsAdminController::class, 'index']);
+    Route::get('user', function (Request $request) {
+        return ApiResponseClass::sendResponse(UserResource::make($request->user()), '', 200);
+    });
+
+    // Utilizador
+    Route::group(['prefix' => 'user', 'name' => 'user.'], function () {
+
+        // requisicões
+        Route::delete('requisicao', [UserController::class, 'deliverRequisicao']);
+        Route::post('requisicao', [UserController::class, 'addRequisicao']);
+        Route::get('requisicao', [UserController::class, 'getRequisicao']);
+        Route::get('entregues', [UserController::class, 'getEntregues']);
+        Route::get('pendentes', [UserController::class, 'getPendentes']);
+        Route::post('cart-date', [CartController::class, 'registerDate'])->name('request.products');
+        // Route::post('/cartDate', [CartController::class, 'setCartDate']);
+        
+        // Carrinho do utilizador
+        Route::group(['prefix' => 'cart', 'name' => 'cart'], function (){
+            Route::get('/', [CartController::class, 'index']);
+            Route::post('/', [CartController::class, 'store']);
+            Route::put('/', [CartController::class, 'update']);
+            Route::delete('/', [CartController::class, 'destroy']);
+        });
+    });
+
+    Route::get('/test-cart', function (Request $request){
+        $cart = auth()->user()->cart;
+        event(new CartEvent($cart, "Testing"));
+        return 'Event BroadCasted';
+    });
+});
+
+/**
+ * API Resources:
+ *   - METHOD -> function
+ *   - GET -> index
+ *   - POST -> create
+ *   - PUT -> update
+ *   - DELETE -> delete
+ */
+
+// adminitração
+Route::group([
+    'middleware' => ['auth:sanctum', 'ApiAdmin'],
+    'prefix' => 'admin',
+    'name' => 'admin.',
+], function(){
+    Route::apiResource('users', UserAdminController::class);
+    Route::apiResource('roles', RoleAdminController::class);
+    Route::apiResource('tags', TagsAdminController::class);
+    Route::apiResource('products', ProductsAdminController::class);
+    Route::apiResource('departments', DepartmentAdminController::class);
+});

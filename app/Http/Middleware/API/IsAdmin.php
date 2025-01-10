@@ -20,7 +20,6 @@ class IsAdmin
         $user = $request->user();
 
         if($user->isAdmin()){
-            Log::info("Administrador acedeu a uma route");
             return $next($request);
         }
         return ApiResponseClass::sendResponse([], 'Nao e administrador', 403);

@@ -19,9 +19,10 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'is_admin' => $this->isAdmin(),
-            'roles' => $this->roles->pluck('name'),
+            'roles' => RolesResource::collection($this->roles),
+            'departments' => UserDepartmentResource::make($this->department),
             'links' => $this->socialLinks->pluck('platform'),
-            'avatar' => $this->avatar ? asset($this->avatar) : null,
+            'avatar' => $this->avatar ? $this->avatar : '/storage/images/avatar.png',
         ];
     }
 }

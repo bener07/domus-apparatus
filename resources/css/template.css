@@ -3553,7 +3553,7 @@ input[type="button"].btn-block {
   min-height: 1.5rem;
   padding-left: 1.5rem;
   -webkit-print-color-adjust: exact;
-  color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 .custom-control-inline {
@@ -10896,7 +10896,7 @@ form.user .btn-user {
 
 .btn-google {
   color: #fff;
-  background-color: #ea4335;
+  /* background-color: #ea4335; */
   border-color: #fff;
 }
 
@@ -11282,4 +11282,23 @@ body.sidebar-toggled footer.sticky-footer {
 
 .text-gray-800{
   text-align: center;
+}
+
+.btn-google {
+  border-color: #DB4437; /* Google Red */
+  color: #DB4437;
+  background: none;
+}
+.btn-google:hover {
+  background-color: #DB4437;
+  color: #fff;
+}
+
+.btn-microsoft {
+  border-color: #0078D4; /* Microsoft Blue */
+  color: #0078D4;
+}
+.btn-microsoft:hover {
+  background-color: #0078D4;
+  color: #fff;
 }

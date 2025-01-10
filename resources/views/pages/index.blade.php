@@ -1,17 +1,17 @@
 <x-app-layout>
-    <slot name="head">
-        @vite([
-            'resources/css/styles.css'
-        ])
-    </slot>
 
     <!-- Begin Page Content -->
-    <div class="container-fluid">
-
-        <!-- Page Heading -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">O que deseja fazer?</h1>
+    <div class="container-fluid app-center d-flex flex-wrap justify-content-center">
+        <h1 class="fs-1">
+            Bem-vindo {{ auth()->user()->name }}!
+        </h1>
+        <div class="d-flex flex-row">
+            <a href="/requisitar" class="btn btn-primary btn-lg mx-4 my-3 big-btn">
+                Requisitar
+            </a>
+            <a href="/entregar" class="btn btn-secondary btn-lg mx-4 my-3 big-btn">
+                Entregar
+            </a>
         </div>
-
-            <!-- /.container-fluid -->
+    </div>           
 </x-app-layout>

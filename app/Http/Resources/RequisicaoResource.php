@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Arr;
 use App\Models\User;
 use App\Models\Product;
 
@@ -24,7 +25,8 @@ class RequisicaoResource extends JsonResource
             'entrega_prevista' => $this->entrega_prevista,
             'entrega_real' => $this->entrega_real,
             'product' => optional(Product::find($this->product_id))->name, // Access the name directly
-            'requisicao' => $this->created_at,
+            'img' => Arr::first($this->product->images),
+            'requisitado' => $this->created_at,
             'autorizacao' => $this->confirmacao->pluck('status')
         ];
     }

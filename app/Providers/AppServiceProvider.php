@@ -10,9 +10,11 @@ use App\Models\Requisicao;
 use App\Observers\RequisicaoObserver;
 use App\Observers\UserObserver;
 use App\Observers\AdminConfirmationObserver;
+use App\Observers\CartObserver;
 use App\Policies\UserPolicy;
 use App\Models\User;
 use App\Models\AdminConfirmation;
+use App\Models\Cart;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,6 +35,7 @@ class AppServiceProvider extends ServiceProvider
         AdminConfirmation::observe(AdminConfirmationObserver::class);
         User::observe(UserObserver::class);
         Requisicao::observe(RequisicaoObserver::class);
+        Cart::observe(CartObserver::class);
         
         // Register the user Policy
         Gate::policy(User::class, UserPolicy::class);
@@ -41,14 +44,25 @@ class AppServiceProvider extends ServiceProvider
             return $user->id === $Product->owner_id;
         });
 
-        Blade::if('isHosting', function(){
+        Blade::if('isEmptyCart', function(){
             $user = Auth::user();
+            $cart = $user->cart;
 
-            return $user && $user->ownedProducts()->exists();
+            return $cart->isEmpty();
         });
+
+        Blade::if('isDateChoosen', function (){
+            $cart = Auth::user()->cart;
+
+            return !is_null($cart->start) && !is_null($cart->end);
+        });
+
         Blade::if('isAdmin', function () {
             $user = Auth::user();
             return $user && $user->isAdmin();
         });
+        Gate::define('viewPulse', function (User $user) {
+            return $user->isAdmin();
+        });    
     }
 }

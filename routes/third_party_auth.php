@@ -20,4 +20,11 @@ Route::prefix('auth')->group(function () {
 
         Route::get('callback', function (){return SocialLinks::handleCallback('google');});
     });
+    Route::prefix('microsoft')->group(function (){
+        Route::get('redirect', function(){
+            return Socialite::driver('microsoft')->redirect();
+        })->name('auth.microsoft');
+
+        Route::get('callback', function (){return SocialLinks::handleCallback('microsoft');});
+    });
 });
