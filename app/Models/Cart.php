@@ -38,6 +38,7 @@ class Cart extends Model
 
         // searches for existing products wth the same title, user, and cart id
         $existingCartItem = $cart->items()->where('title', $title)->get();
+        // se não existirem itens no carrinho
         if(!$existingCartItem->isEmpty()){
             dd($existingCartItem);
         }
