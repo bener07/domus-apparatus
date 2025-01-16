@@ -15,6 +15,7 @@ class CartController extends Controller
 {
     public function index(Request $request){
         $cart = $request->user()->cart;
+        // dd($cart->items);
         return ApiResponseClass::sendResponse(new CartResource($cart), '', 200);
     }
 
@@ -22,6 +23,7 @@ class CartController extends Controller
         $cart = $request->user()->cart;
         $product = BaseProducts::find($request->product_id);
         GestorDeRequisicoes::requisitar($request->user(), $product, $request);
+        dd($cart->items->toArray());
         return ApiResponseClass::sendResponse(new CartResource($cart), 'Product added to cart', 201);
     }
 

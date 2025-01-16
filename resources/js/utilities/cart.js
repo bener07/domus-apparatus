@@ -18,7 +18,7 @@ export class Cart {
             <div class="d-flex flex-column p-2">
               <h5 class="card-title mb-1 fs-5">${product.product}</h5>
               <p class="card-text mb-1 fs-7">
-                <strong>Quantity:</strong> <span class="badge bg-secondary">2</span>
+                <strong>Quantity:</strong> <span class="badge bg-secondary">${product.quantity}</span>
               </p>
             </div>
           </div>
