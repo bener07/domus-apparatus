@@ -131,7 +131,7 @@ class GestorDeRequisicoes
         if($request->quantity > $product->quantity){
             throw new UserException("Quantidade de equipamentos solicitada é superior ao disponível", 400);
         }
-        if ($product->quantity < Requisicao::quantityOnDate(
+        if ($product->quantity < Requisicao::futureQuantityOnDate(
                 $request->product_id,
                 $request->start ?? $cart->start,
                 $request->end ?? $cart->end,
@@ -163,7 +163,6 @@ class GestorDeRequisicoes
     public static function requisitar(User $user, BaseProducts $product, Request $request){
         // adiciona a requisição ao carrinho e asseguir manda uma mensagem para o administrador
         $requisicao = Cart::addToCart($product, $request->quantity, $request);
-        $requisicao->pedirConfirmacao($requisicao->admin);
         return $requisicao;
     }
 

@@ -5,13 +5,15 @@ namespace App\Models;
 use App\Exceptions\ArgumentsException;
 use Illuminate\Database\Eloquent\Model;
 use App\Classes\ApiResponseClass;
+use App\Models\Requisicao;
 
 class BaseProducts extends Model
 {
     protected $fillable = [
         'quantity',
         'name',
-        'description'
+        'description',
+        'total'
     ];
 
     protected $casts = [
@@ -31,7 +33,8 @@ class BaseProducts extends Model
             'name' => $data['name'],
             'details' => $data['details'],
             'images' => $data['images'],
-            'quantity' => $quantity
+            'quantity' => $quantity,
+            'total' => $quantity
         ]);
 
         // loop trough all the products and create them
@@ -58,8 +61,14 @@ class BaseProducts extends Model
         return $this->availability() - $quantity> 0;
     }
     
-    public function availability(){
-        return $this->quantity;
+    public function availabilityOnDate(){
+        $cart = auth()->user()->cart;
+        $quantity = $this->quantity - array_sum(Requisicao::quantityOnDate(
+            $this->id,
+            $cart->start,
+            $cart->end
+        ));
+        return $quantity;
     }
 
     public function addQuantity($quantity){
@@ -74,5 +83,14 @@ class BaseProducts extends Model
     public function updateQuantity($quantity){
         $this->quantity = $quantity;
         $this->save();
+    }
+
+    public function updateTotal($quantity){
+        $this->total = $quantity;
+        $this->save();
+    }
+
+    public function requisicao(){
+        return $this->belongsTo(Requisicao::class, 'product_id');
     }
 }

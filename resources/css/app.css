@@ -192,5 +192,20 @@ label{
     scrollbar-width: 10px;
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 30pc;
+    height: 20pc;
+}
+
+/* Define the initial state for the dropup animation */
+.dropdown-menu.dropup-animation {
+    display: none; /* Hide by default */
+    transform: translateY(100%); /* Position it below initially */
+    transition: transform 0.5s ease-out; /* Smooth transition for opening */
+    position: absolute;
+    bottom: 0;
+}
+
+/* When the dropdown is shown, animate it upwards */
+.dropdown.show .dropdown-menu.dropup-animation {
+    display: block; /* Show the dropdown */
+    transform: translateY(0); /* Animate to its normal position */
 }

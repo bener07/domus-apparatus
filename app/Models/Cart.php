@@ -40,36 +40,48 @@ class Cart extends Model
         $existingCartItem = $cart->items()->where('title', $title)->get();
         // se não existirem itens no carrinho
         if(!$existingCartItem->isEmpty()){
-            dd($existingCartItem);
+            $existingCartItem = $existingCartItem->first();
+            $existingCartItem->quantity += $quantity;
+            $existingCartItem->save();
+            $requisicao = $existingCartItem;
+        }else{
+            // items in the cart are the requisicoes
+            $requisicao = $cart->items()->create([
+                'title' => $title,
+                'product_id' => $product->id,
+                'quantity' => $quantity,
+                'admin_id' => $chosenAdmin->id, // Admin not chosen yet
+                'user_id' => $user->id, // User making the request
+                'status' => 'pendente', // Request is pending
+                'token' => $token, //
+                'start' => $cart->start,
+                'end' => $cart->end,
+            ]);
         }
-        
-        // items in the cart are the requisicoes
-        $requisicao = $cart->items()->create([
-            'title' => $title,
-            'product_id' => $product->id,
-            'quantity' => $quantity,
-            'admin_id' => $chosenAdmin->id, // Admin not chosen yet
-            'user_id' => $user->id, // User making the request
-            'status' => 'pendente', // Request is pending
-            'token' => $token, //
-            'start' => $cart->start,
-            'end' => $cart->end,
-        ]);
         if($requisicao){
             $cart->updateTotal();
             return $requisicao;
         }
     }
 
+    public function remove($requisicaoId){
+        $item = $this->items()->find($requisicaoId);
+        if($item){
+            $item->delete();
+            $this->updateTotal();
+        }
+        return $this;
+    }
+
     
     public function isEmpty() {
-        return $this->items()->exists();
+        return !$this->items()->exists();
     }
     
     function updateTotal(){
         $totalQuantity = 0;
         foreach ($this->items as $item) {
-            $totalQuantity += $item['quantity']; // Add up the quantities of each product
+            $totalQuantity += $item->quantity; // Add up the quantities of each product
         }
         $this->total = $totalQuantity; // Update the total in the cart
         $this->save();

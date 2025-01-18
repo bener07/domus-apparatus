@@ -1,7 +1,7 @@
-<div class="dropdown">
-    <a class="btn fs-4 m-3" type="button" id="cartDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+<div class="dropdown mx-5 px-4 py-2">
+    <a class="btn fs-4 m-0 p-0" type="button" id="cartDropdown" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
       <!-- Cart number badge -->
-      <span id="cart-number" class="badge bg-danger" style="transform: translate(50px, -20px);">0</span>
+      <span id="cart-number" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="">0</span>
       <i class="bi-cart-fill"></i>
     </a>
 
@@ -14,7 +14,10 @@
       <li id="cart-items">
         <p class="mb-0">Não tem equipamentos para requisitar</p>
       </li>
-      <button class="btn btn-primary mt-2 w-100">Confirmar Requisição</button>
+      <div>
+        <div id="cart-total-div">Total de equipamentos</div>
+        <x-confirm-cart class="mt-2 w-100"/>
+      </div>
     </ul>
     <div id="messager" class="alert alert-danger alert-dismissible fade" role="alert" style="display:none;">
       <p id="message-text"></p>

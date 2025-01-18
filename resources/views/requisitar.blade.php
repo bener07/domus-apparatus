@@ -18,6 +18,9 @@
             <div class="row" id="productsGrid">
                 <!-- Cards will be dynamically inserted here -->
             </div>
+            <div class="d-flex align-items-center justify-content-center flex-row-reverse w-100 text-right py-3 px-5" style="position: fixed; left: 0;bottom: 0;background-color: white;">
+                <x-confirm-cart class="w-100"/>
+            </div>
 
             @else
             <div class="container-fluid app-center d-flex flex-wrap justify-content-center py-4">
@@ -31,6 +34,7 @@
                                     <li class="list-group-item">Escolha a data para a recolha dos equipamentos e a data para a entrega.</li>
                                     <li class="list-group-item">Na página asseguir, selecione os equipamentos que deseja requisitar.</li>
                                     <li class="list-group-item">Confirme a sua requisição.</li>
+                                    <li class="list-group-item">Espere autorização do administrador.</li>
                                 </ol>
                                 <p class="mb-2"><strong>Depois disso:</strong></p>
                                 <ul class="list-group">
@@ -39,6 +43,8 @@
                                 </ul>
                             </div>
                             {{-- <button class="btn btn-primary mt-3">Escolher datas</button> --}}
+                            <!-- Toggle Button -->
+                            <button id="toggleButton" class="btn btn-primary w-100 mb-0">Escolher Datas</button>
                         </div>
                     </div>
             
@@ -58,15 +64,12 @@
                                     <label for="end_date" class="form-label">Data de entrega</label>
                                     <input type="date" id="end_date" name="end" class="form-control" required placeholder="Selecione a data final">
                                 </div>
+                                
                             </div>
+                            <button id="submitForm" class="btn btn-primary d-none w-100">Submeter Datas</button>
                             <!-- Submit Button -->
                         </form>
                     </div>
-                </div>
-                <!-- Toggle Button -->
-                <div class="text-center mt-4">
-                    <button id="toggleButton" class="btn btn-primary">Escolher Datas</button>
-                    <button id="submitForm" class="btn btn-primary d-none">Submeter Datas</button>
                 </div>
             </div>
             @endisDateChoosen
@@ -83,7 +86,6 @@
             const secondDiv = document.getElementById('secondDiv');
             firstDiv.style.transform = 'translateX(-100%)';
             secondDiv.style.transform = 'translateX(0)';
-            btn.classList.add('d-none');
             submitBtn.classList.remove('d-none');
         });
 

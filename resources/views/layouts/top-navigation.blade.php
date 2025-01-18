@@ -44,13 +44,6 @@
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
 
-        {{-- Cart --}}
-        @isDateChoosen
-            <x-cart-modal/>
-        {{-- @elseisDateChoosen --}}
-
-        @endisDateChoosen
-
         <div class="topbar-divider d-none d-sm-block"></div>
 
         <!-- Nav Item - User Information -->

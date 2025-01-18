@@ -59,6 +59,16 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @endif
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         @isset($header)
                          <h1 class="h3 mb-4 text-gray-800">
                             {{ $header }}
@@ -66,6 +76,13 @@
                         @endisset
                         {{ $slot }}
                     </div>
+                    @isDateChoosen
+                        <div class="d-flex align-items-center justify-content-center flex-row-reverse w-100 text-right py-3 px-5" style="position: fixed; left: 0;bottom: 0;background-color: white;">
+                            <x-confirm-cart class="w-100">
+                                <x-cart-modal/>
+                            </x-confirm-cart>
+                        </div>
+                    @endisDateChoosen
                 </div>
                 <!-- End of Main Content -->
             </div>

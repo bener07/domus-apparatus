@@ -6,7 +6,6 @@ import { Cart } from './utilities/cart.js';
 // import $ from 'jquery';
 
 window.cart = new Cart('#cart-items', '#messager');
-console.log(window.cart)
 
 window.Alpine = Alpine;
 

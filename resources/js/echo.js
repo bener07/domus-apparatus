@@ -1,6 +1,7 @@
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { API } from './utilities/api.js';
+import { loadProducts } from './user/requisitar.js';
 
 // Fetch user information (this should be your authenticated user data)
 API.makeAuthenticatedRequest('/api/user', 'GET', () => {}).then(function (response) {

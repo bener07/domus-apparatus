@@ -10,6 +10,7 @@ use App\Http\Resources\CartResource;
 use App\Classes\GestorDeRequisicoes;
 use App\Http\Requests\Cart\AddToCartRequest;
 use App\Http\Requests\Cart\UpdateDateRequest;
+use App\Http\Requests\Cart\UpdateCartRequest;
 
 class CartController extends Controller
 {
@@ -23,19 +24,28 @@ class CartController extends Controller
         $cart = $request->user()->cart;
         $product = BaseProducts::find($request->product_id);
         GestorDeRequisicoes::requisitar($request->user(), $product, $request);
-        dd($cart->items->toArray());
         return ApiResponseClass::sendResponse(new CartResource($cart), 'Product added to cart', 201);
     }
 
-    public function update(Request $request){
+    public function update(UpdateCartRequest $request){
         $cart = $request->user()->cart;
-        $cart->update($request);
+
+        if (isset($request->quantity) && isset($request->id)) {
+            // Find the item (Requisicao) associated with the cart and product_id
+            $item = $cart->items()->where('id', $request->id)->first();
+            if ($item) {
+                // Update the quantity of the item
+                $item->updateQuantity($request->quantity);
+            } else {
+                return ApiResponseClass::sendResponse([], 'Equipamento não encontrado!', 404);
+            }
+        }
         return ApiResponseClass::sendResponse(new CartResource($cart), 'Cart updated', 200);
     }
 
-    public function destroy($rowId){
-        $cart = $request->user()->cart;
-        $cart->remove($rowId);
+    public function destroy($requisicaoId){
+        $cart = auth()->user()->cart;
+        $cart->remove($requisicaoId);
         return ApiResponseClass::sendResponse(new CartResource($cart), 'Product removed from cart', 200);
     }
 

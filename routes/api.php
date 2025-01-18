@@ -48,14 +48,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('entregues', [UserController::class, 'getEntregues']);
         Route::get('pendentes', [UserController::class, 'getPendentes']);
         Route::post('cart-date', [CartController::class, 'registerDate'])->name('request.products');
-        // Route::post('/cartDate', [CartController::class, 'setCartDate']);
-        
+
         // Carrinho do utilizador
         Route::group(['prefix' => 'cart', 'name' => 'cart'], function (){
             Route::get('/', [CartController::class, 'index']);
             Route::post('/', [CartController::class, 'store']);
             Route::put('/', [CartController::class, 'update']);
-            Route::delete('/', [CartController::class, 'destroy']);
+            Route::delete('/{id}', [CartController::class, 'destroy']);
         });
     });
 

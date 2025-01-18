@@ -57,10 +57,6 @@ class Requisicao extends Model
         return $this->hasMany(Product::class);
     }
 
-    public function productsByDate($start, $end){
-        return $this->products->whereBetween('start', [$start, $end]);
-    }
-
     public function product(){
         return $this->belongsTo(BaseProducts::class, 'product_id');
     }
@@ -98,6 +94,11 @@ class Requisicao extends Model
         return $this->token;
     }
 
+    public function updateQuantity($quantity){
+        $this->quantity = $quantity;
+        $this->save();
+    }
+
     /**
      * Update the status of the products associated with this requisition
      */
@@ -121,11 +122,15 @@ class Requisicao extends Model
         return $confirmation;
     }
 
-    public static function quantityOnDate($product_id, $start, $end, $extraQuantity){
-        $requisicoes = BaseProducts::find($product_id)
+    public static function quantityOnDate($product_id, $start, $end){
+        return BaseProducts::find($product_id)
             ->requisicoes()
             ->whereBetween('start', [$start, $end])
             ->pluck('quantity')->toArray();
+    }
+
+    public static function futureQuantityOnDate($product_id, $start, $end, $extraQuantity){
+        $requisicoes = self::quantityOnDate($product_id, $start, $end);
         array_push($requisicoes, $extraQuantity);
         return array_sum($requisicoes);
     }
