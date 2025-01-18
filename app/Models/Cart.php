@@ -34,9 +34,18 @@ class Cart extends Model
         $cart = $user->cart;
         $token = GestorDeRequisicoes::generateToken($user->id, $cart->id, $product->id);
 
+        $title = $product->name . " - ". $user->name;
+
+        // searches for existing products wth the same title, user, and cart id
+        $existingCartItem = $cart->items()->where('title', $title)->get();
+        // se não existirem itens no carrinho
+        if(!$existingCartItem->isEmpty()){
+            dd($existingCartItem);
+        }
+        
         // items in the cart are the requisicoes
         $requisicao = $cart->items()->create([
-            'title' => $product->name . " - ". $user->name,
+            'title' => $title,
             'product_id' => $product->id,
             'quantity' => $quantity,
             'admin_id' => $chosenAdmin->id, // Admin not chosen yet

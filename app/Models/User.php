@@ -69,7 +69,7 @@ class User extends Authenticatable
     }
 
 
-    public static function handleThirdProduct($platform, $third_Product){
+    public static function handleThirdParty($platform, $third_Product){
         $user = User::firstOrCreate(
             ['email' => $third_Product->getEmail()],
             [

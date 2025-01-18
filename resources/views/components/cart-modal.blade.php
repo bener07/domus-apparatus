@@ -14,6 +14,7 @@
       <li id="cart-items">
         <p class="mb-0">Não tem equipamentos para requisitar</p>
       </li>
+      <button class="btn btn-primary mt-2 w-100">Confirmar Requisição</button>
     </ul>
     <div id="messager" class="alert alert-danger alert-dismissible fade" role="alert" style="display:none;">
       <p id="message-text"></p>
@@ -21,7 +22,6 @@
           <span aria-hidden="true">&times;</span>
       </button>
     </div>
-  
 </div>
 
 <script>

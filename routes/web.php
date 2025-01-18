@@ -31,6 +31,10 @@ Route::middleware(['auth'])->group(function () {
         // return new CartResource($cart);
         return view('pages.cart', compact('data_de_reserva', 'data_de_entrega_prevista', 'cart'));
     });
+
+    Route::get('/cart/checkout', function (){
+        return view('checkout');
+    });
 });
 
 
