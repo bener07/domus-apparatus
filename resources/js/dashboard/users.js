@@ -90,9 +90,9 @@ function loadTable(){
                 }
             },
             {
-                "data": "tags",
+                "data": "roles",
                 "render": function(data, type, row) {
-                    return data.map(tag => tag.name);
+                    return data;
                 },
                 "title": "Cargo"
             },

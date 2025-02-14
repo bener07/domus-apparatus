@@ -20,7 +20,6 @@ class Requisicao extends Model
         'status',
         'admin_id',
         'user_id',
-        'product_id',
         'start',
         'end',
         'entrega_real',
@@ -52,13 +51,19 @@ class Requisicao extends Model
     public function cart(){
         return $this->belongsTo(Cart::class, 'cart_id');
     }
+
+    public function calendar(){
+        return $this->belongsToMany(Calendar::class, 'requisicoes_id')->withPivot('start', 'end');
+    }
     
     public function products(){
-        return $this->hasMany(Product::class);
+        return $this->belongsToMany(Product::class, 'calendar')
+                ->using(Calendar::class)
+                ->withPivot('start', 'end', 'quantity');    
     }
 
-    public function product(){
-        return $this->belongsTo(BaseProducts::class, 'product_id');
+    public static function generateToken($user_id, $cart_id, $start){
+        return md5($user_id. $cart_id. $start);
     }
 
     public static function emRequisicao($product){
@@ -112,9 +117,7 @@ class Requisicao extends Model
      * Ask for confirmation and create a token
      */
     public function pedirConfirmacao($admin, $status='em confirmacao'){
-        $this->updateProductsStatus($status);
-        $confirmation = AdminConfirmation::create([
-            'requisicao_id' => $this->id,
+        $confirmation = $this->confirmacao()->create([
             'admin_id' => $admin->id,
             'status' => $status,
             'token' => $this->token
@@ -122,23 +125,10 @@ class Requisicao extends Model
         return $confirmation;
     }
 
-    public static function quantityOnDate($product_id, $start, $end){
-        return BaseProducts::find($product_id)
-            ->requisicoes()
-            ->whereBetween('start', [$start, $end])
-            ->pluck('quantity')->toArray();
-    }
-
-    public static function futureQuantityOnDate($product_id, $start, $end, $extraQuantity){
-        $requisicoes = self::quantityOnDate($product_id, $start, $end);
-        array_push($requisicoes, $extraQuantity);
-        return array_sum($requisicoes);
-    }
-
     public function authorization_url(){
         return route('confirmation', ['token' => $this->token]);
     }
-    
+
     public function denial_url(){
         return route('denial', ['token' => $this->token]);
     }
@@ -156,5 +146,15 @@ class Requisicao extends Model
         return $this->status == 'confirmado' && 
                $this->getOriginal('status') == 'em confirmacao' &&
                $confirmation->isConfirmed();
+    }
+
+    public static function choseAdmin(){
+        $adminWithFewestRequisicoes = Admin::withCount(['requisicoes' => function ($query) {
+            $query->where('requisicoes.status', 'pendente');
+        }])->orderBy('requisicoes_count', 'asc')->get()->first();
+        if (!$adminWithFewestRequisicoes) {
+            $adminWithFewestRequisicoes = Admin::all()->get()->first();
+        }
+        return $adminWithFewestRequisicoes;
     }
 }

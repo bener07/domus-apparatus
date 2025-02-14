@@ -16,8 +16,10 @@ class Product extends Model
         return $this->belongsTo(BaseProducts::class, 'base_id');
     }
 
-    public function requisicao(){
-        return $this->belongsTo(Requisicao::class, 'requisicao_id');
+    public function requisicoes(){
+        return $this->belongsToMany(Requisicao::class, 'requisicao_id')
+                ->using(Calendar::class)
+                ->withPivot('start', 'end', 'quantity');
     }
 
     public function updateStatus($status){

@@ -13,6 +13,7 @@ class BaseProducts extends Model
         'quantity',
         'name',
         'description',
+        'quantity',
         'total'
     ];
 
@@ -59,16 +60,6 @@ class BaseProducts extends Model
     
     public function isAvailable($quantity){
         return $this->availability() - $quantity> 0;
-    }
-    
-    public function availabilityOnDate(){
-        $cart = auth()->user()->cart;
-        $quantity = $this->quantity - array_sum(Requisicao::quantityOnDate(
-            $this->id,
-            $cart->start,
-            $cart->end
-        ));
-        return $quantity;
     }
 
     public function addQuantity($quantity){

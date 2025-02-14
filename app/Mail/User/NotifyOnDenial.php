@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Classes\Notifications;
 
 class NotifyOnDenial extends Mailable
 {
@@ -16,7 +17,7 @@ class NotifyOnDenial extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public GestorDeRequisicoes $requisicao)
+    public function __construct(public Notifications $requisicao)
     {
         $this->user = $requisicao->user;
         $this->admin = $requisicao->admin;

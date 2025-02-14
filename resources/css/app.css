@@ -121,9 +121,10 @@ label{
     padding: 0px;
 }
 .product-img{
-    width: 100%;
-    height: 45vh; 
+    width: 110px;
+    height: 100%;
     object-fit: cover;
+    border-radius: 8px;
 }
 
 @media screen and (max-width: 600px){
@@ -137,8 +138,8 @@ label{
         padding: 0px !important;
         width: 100% !important;
     }
-    .product-img{
-        height: 30vh;
+    .container-fluid{
+        padding: 0px!important;
     }
 }
 
@@ -161,15 +162,15 @@ label{
     border-radius: 10px;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    width: 80px;
-    height: 100px;
+    width: 100px;
+    height: 180px;
     margin: 0px;
     padding: 0;
 }
 
 #messager {
     position: fixed;
-    top: 90px;
+    top: 10px;
     right: 10px;
     z-index: 1000; /* Ensures it overlaps everything */
     padding: 10px 20px;
@@ -188,24 +189,52 @@ label{
     display: block !important;
 }
 
-#cart-items{
+#cart_items{
     scrollbar-width: 10px;
     overflow-y: scroll;
     overflow-x: hidden;
-    height: 20pc;
+    height: 100%;
 }
 
-/* Define the initial state for the dropup animation */
-.dropdown-menu.dropup-animation {
-    display: none; /* Hide by default */
-    transform: translateY(100%); /* Position it below initially */
-    transition: transform 0.5s ease-out; /* Smooth transition for opening */
-    position: absolute;
-    bottom: 0;
+.slide-up-div {
+    position: fixed;
+    bottom: -100%; /* Start hidden below the screen */
+    left: 0;
+    width: 100%; /* Full width */
+    height: 80%; /* Covers 70% of the screen height */
+    background-color: #fff;
+    box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1050; /* Higher than most Bootstrap components */
+    transition: bottom 0.5s ease-out; /* Smooth slide-up animation */
 }
 
-/* When the dropdown is shown, animate it upwards */
-.dropdown.show .dropdown-menu.dropup-animation {
-    display: block; /* Show the dropdown */
-    transform: translateY(0); /* Animate to its normal position */
+.slide-up-div.show {
+    bottom: 0; /* Slide up into view */
+}
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1049; /* Slightly below the div */
+    display: none;
+}
+
+.backdrop.show {
+    display: block;
+}
+
+/* Input with no arrows for all browsers*/
+input.number-no-arrows::-webkit-inner-spin-button,
+input.number-no-arrows::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* for firefox */
+input.number-no-arrows {
+    -moz-appearance: textfield;
 }

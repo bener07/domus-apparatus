@@ -11,23 +11,34 @@ use App\Classes\GestorDeRequisicoes;
 use App\Http\Requests\Cart\AddToCartRequest;
 use App\Http\Requests\Cart\UpdateDateRequest;
 use App\Http\Requests\Cart\UpdateCartRequest;
+use App\Http\Requests\Cart\CartCheckoutRequest;
+use App\Models\Requisicao;
+use App\Models\Calendar;
+use App\Models\Cart;
 
 class CartController extends Controller
 {
     public function index(Request $request){
         $cart = $request->user()->cart;
-        // dd($cart->items);
         return ApiResponseClass::sendResponse(new CartResource($cart), '', 200);
     }
 
+    /**
+     * Add a new item to the cart
+     * @return ApiResponseClass
+     */
     public function store(AddToCartRequest $request){
         $cart = $request->user()->cart;
         $product = BaseProducts::find($request->product_id);
-        GestorDeRequisicoes::requisitar($request->user(), $product, $request);
+        $requisicao = Cart::addToCart($product, $request->quantity, $request);
         return ApiResponseClass::sendResponse(new CartResource($cart), 'Product added to cart', 201);
     }
 
-    public function update(UpdateCartRequest $request){
+    /**
+     * Change quantities in the cart
+     * @return ApiResponseClass
+     */
+    public function update(AddToCartRequest $request){
         $cart = $request->user()->cart;
 
         if (isset($request->quantity) && isset($request->id)) {
@@ -40,19 +51,38 @@ class CartController extends Controller
                 return ApiResponseClass::sendResponse([], 'Equipamento não encontrado!', 404);
             }
         }
+        $cart->updateTotal();
         return ApiResponseClass::sendResponse(new CartResource($cart), 'Cart updated', 200);
     }
 
+    /**
+     * Remove items from the cart
+     * @return ApiResponseClass
+     */
     public function destroy($requisicaoId){
         $cart = auth()->user()->cart;
         $cart->remove($requisicaoId);
         return ApiResponseClass::sendResponse(new CartResource($cart), 'Product removed from cart', 200);
     }
 
+    /**
+     * Register cart date
+     * @return Response
+     */
     public function registerDate(UpdateDateRequest $request){
         $cart = $request->user()->cart;
         $cart->updateDate($request->start, $request->end);
         return back();
         // return ApiResponseClass::sendResponse(new CartResource($cart), 'Date registered successfully', 200);
+    }
+
+    /**
+     * Checkout cart and send it for confirmation
+     * @return ApiResponseClass
+     */
+    public function checkout(CartCheckoutRequest $request){
+        $cart = $request->user()->cart;
+        $cart->checkout();
+        return ApiResponseClass::sendResponse([], 'A sua requisição foi enviada para confirmação', 200);
     }
 }

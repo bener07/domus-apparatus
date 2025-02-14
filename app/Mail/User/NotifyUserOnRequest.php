@@ -11,7 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 use App\Models\Requisicao;
 use App\Models\Product;
-use App\Classes\GestorDeRequisicoes;
+use App\Classes\Notifications;
 
 class NotifyUserOnRequest extends Mailable
 {
@@ -20,11 +20,13 @@ class NotifyUserOnRequest extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public GestorDeRequisicoes $cart)
+    public function __construct(public Notifications $notification)
     {
-        $this->user = $cart->user;
-        $this->admin = $cart->admin;
-        $this->products = $cart->products;
+        $cart = $notification->cart;
+        $this->cart = $cart;
+        $this->user = $notification->user;
+        $this->admin = $notification->admin;
+        $this->products = $notification->cart->items()->with('product')->get()->pluck('product');
     }
 
     /**
@@ -44,6 +46,13 @@ class NotifyUserOnRequest extends Mailable
     {
         return new Content(
             markdown: 'mail.user.notifyUserOnRequest',
+            with: [
+                'cart' => $this->cart,
+                'user' => $this->user,
+                'admin' => $this->admin,
+                'products' => $this->products,
+                'quantity' => $this->cart->total,
+            ]
         );
     }
 

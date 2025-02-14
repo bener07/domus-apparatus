@@ -3,127 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart Modal</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Card Layout Example</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <style>
-        /* Modal styling */
-        .cart-modal {
-            position: fixed;
-            bottom: -70%; /* Initially hide the modal off the screen */
-            left: 0;
-            width: 100%;
-            height: 70%;
-            background-color: #fff;
-            box-shadow: 0px -4px 15px rgba(0, 0, 0, 0.2);
-            transition: bottom 0.5s ease-out; /* Smooth slide-up animation */
-            z-index: 9999;
-            display: none; /* Hidden by default */
+        .product-img {
+            max-height: 100px;
+            object-fit: cover;
+            border-radius: 10px;
         }
-
-        .cart-modal.show {
-            display: block;
-            bottom: 0; /* Slide up to the bottom of the screen */
+        .number-no-arrows::-webkit-inner-spin-button,
+        .number-no-arrows::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
-
-        .cart-content {
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        #closeCartButton {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        /* Cart Button */
-        #cartButton {
-            font-size: 2rem;
-            padding: 10px 20px;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10000;
-        }
-
-        /* Optional: Styling for cart content */
-        #cart-items {
-            margin-top: 20px;
+        .number-no-arrows {
+            -moz-appearance: textfield;
         }
     </style>
 </head>
 <body>
+    <div class="container mt-4">
+        <i class="bi-trash bi"></i>
+        <ul id="cart_items" class="list-unstyled">
+            <!-- First Card -->
+            <li>
+                <div class="card mb-3" style="max-width: 100%; border-radius: 10px; display: grid; grid-template-columns: auto 1fr auto; align-items: center;">
+                    <!-- Image -->
+                    <img src="https://officechai.com/wp-content/uploads/2016/05/3-Photoshop-Funny-CEO-Falls-Asleep-Work-Employees-Edit-Memes.jpg" alt="Elody Crist" class="product-img">
+                    
+                         <!-- Card Body -->
+                    <div class="p-2">
+                        <div>
+                            <h5 class="card-title mb-1" style="font-size: large;">Computador Acer 1234</h5>
+                        </div>
+                        <div class="container">
+                            <div class="col-10">
+                                <p class="card-text"><small class="text-body-secondary">Adicionad há 24 min</small></p>
+                                <div class="container row" style="width: 120%">
+                                    <div class="input-group mb-3 col-8" id="quantity-5cart_items" style="width: 130px;">
+                                        <button class="btn btn-outline-secondary btn-decrement m-0" type="button">-</button>
+                                        <input type="number" class="number-no-arrows form-control text-center m-0 quantity-input" value="5" max="5" min="1" style="max-width: 50px;">
+                                        <button class="btn btn-outline-secondary btn-increment" type="button">+</button>
+                                    </div>
+                                    <a class="fs-1 btn btn-danger col-4" id="remove-product-btn-5cart_items">
+                                        <i class="bi bi-trash" style="color:black"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- Remove Button -->
+                        </div>
+                    </div>
+                    
+                </div>
+            </li>
 
-    <!-- Cart Button -->
-    <button id="cartButton" class="btn btn-primary">
-        🛒 Cart <span id="cart-number" class="badge bg-danger">0</span>
-    </button>
-
-    <!-- Cart Modal -->
-    <div id="cartModal" class="cart-modal">
-        <div class="cart-content">
-            <button id="closeCartButton" class="btn-close" aria-label="Close"></button>
-            <h5 class="fs-5">Your Cart</h5>
-            <div id="cart-items">
-                <p>No items in the cart.</p>
-            </div>
-            <div id="cart-total-div">
-                <p>Total items: <span id="total-items">0</span></p>
-            </div>
-        </div>
+            <!-- Second Card -->
+            <li>
+                <div class="card mb-3" style="max-width: 100%; border-radius: 10px; display: grid; grid-template-columns: auto 1fr auto; align-items: center;">
+                    <!-- Image -->
+                    <img src="https://officechai.com/wp-content/uploads/2016/05/3-Photoshop-Funny-CEO-Falls-Asleep-Work-Employees-Edit-Memes.jpg" 
+                         alt="Victoria Gerhold" 
+                         class="product-img">
+                    
+                    <!-- Card Body -->
+                    <div class="p-2">
+                        <h5 class="card-title mb-1" style="font-size: large;">Victoria Gerhold</h5>
+                        <p class="card-text"><small class="text-body-secondary">Adicionado agora</small></p>
+                        <p class="card-text mb-1 fs-6">
+                            <strong>Quantidade:</strong> <span class="badge bg-secondary">1</span>    
+                        </p>
+                        <div class="input-group mb-3" id="quantity-6cart_items">
+                            <button class="btn btn-outline-secondary btn-decrement m-0" type="button">-</button>
+                            <input type="number" class="number-no-arrows form-control text-center m-0 quantity-input" value="1" max="5" min="1" style="max-width: 50px;">
+                            <button class="btn btn-outline-secondary btn-increment" type="button">+</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Remove Button -->
+                    <div class="text-end" style="padding: 10px;">
+                        <button class="btn btn-danger btn-sm me-2" id="remove-product-btn-6cart_items">Remover Tudo</button>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const cartButton = document.getElementById('cartButton');
-            const cartModal = document.getElementById('cartModal');
-            const closeCartButton = document.getElementById('closeCartButton');
-            const cartNumber = document.getElementById('cart-number');
-            const cartItems = document.getElementById('cart-items');
-            const totalItems = document.getElementById('total-items');
-            const cartData = [
-                { id: 1, product: 'Product 1', quantity: 3 },
-                { id: 2, product: 'Product 2', quantity: 1 },
-                { id: 3, product: 'Product 3', quantity: 2 }
-            ];
-
-            // Function to update cart content
-            function updateCart() {
-                let total = 0;
-                cartItems.innerHTML = '';
-                cartData.forEach(item => {
-                    total += item.quantity;
-                    cartItems.innerHTML += `<p>${item.product} - Quantity: ${item.quantity}</p>`;
-                });
-                totalItems.textContent = total;
-                cartNumber.textContent = total;
-            }
-
-            // Show the cart modal when the cart button is clicked
-            cartButton.addEventListener('click', function () {
-                cartModal.classList.add('show');
-            });
-
-            // Close the cart modal when the close button is clicked
-            closeCartButton.addEventListener('click', function () {
-                cartModal.classList.remove('show');
-            });
-
-            // Close the cart modal when clicking outside the modal
-            window.addEventListener('click', function (event) {
-                if (event.target === cartModal) {
-                    cartModal.classList.remove('show');
-                }
-            });
-
-            // Initial cart update
-            updateCart();
-        });
-    </script>
-
-    <!-- Bootstrap JS (for dropdown functionality if needed) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

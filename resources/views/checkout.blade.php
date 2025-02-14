@@ -14,8 +14,10 @@
 
         <!-- Card Container -->
         <div class="container">
-            <div id="checkoutDiv" class="row d-flex justify-content-center">
-            </div>
+            <ul>
+                <li id="checkoutDiv" class="row d-flex justify-content-center">
+                </li>
+            </ul>
         </div>
     </section>
     

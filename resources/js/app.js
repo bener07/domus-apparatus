@@ -3,22 +3,23 @@ import Alpine from 'alpinejs';
 import { addNewProduct, eliminarProduto } from './dashboard/products.js';
 import { addNewUser } from './dashboard/users.js';
 import { Cart } from './utilities/cart.js';
+import { loadProducts } from './user/requisitar.js';
 // import $ from 'jquery';
 
-window.cart = new Cart('#cart-items', '#messager');
-
+window.products = loadProducts();
+window.cart = new Cart('#cart_items', '#messager');
 window.Alpine = Alpine;
 
 Alpine.start();
 
-function hideLoading(timeout) {
+export function hideLoading(timeout) {
     setTimeout(() => {
         $('#loader').fadeOut(500, () => {
             $('#loader').css('visibility', 'hidden');
         });
     }, timeout);
 }
-function showLoading(timeout) {
+export function showLoading(timeout) {
     setTimeout(() => {
         $('#loader').fadeIn(timeout, () => {
             $('#loader').css('visibility', 'visible');

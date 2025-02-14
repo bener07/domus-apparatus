@@ -8,6 +8,7 @@ use App\Models\Admin;
 use App\Models\Product;
 use App\Models\BaseProducts;
 use App\Models\Requisicao;
+use App\Models\Calendar;
 use App\Models\AdminConfirmation;
 use App\Mail\Admin\SendConfirmationRequest as NotifyAdminOnConfirmationRequest;
 use App\Mail\Admin\NotifyAdminOnDenial as NotifyAdminOnDenialRequest;
@@ -95,7 +96,7 @@ class GestorDeRequisicoes
         }
     }
 
-    public static function chooseAdmin(){
+    public static function choseAdmin(){
         $adminWithFewestRequisicoes = Admin::withCount(['requisicoes' => function ($query) {
             $query->where('requisicoes.status', 'pendente');
         }])->orderBy('requisicoes_count', 'asc')->get()->first();
@@ -131,12 +132,13 @@ class GestorDeRequisicoes
         if($request->quantity > $product->quantity){
             throw new UserException("Quantidade de equipamentos solicitada é superior ao disponível", 400);
         }
-        if ($product->quantity < Requisicao::futureQuantityOnDate(
-                $request->product_id,
-                $request->start ?? $cart->start,
-                $request->end ?? $cart->end,
-                $request->quantity
-                ))
+        $productsOnDate = Calendar::baseProductsQuantityOnDate(
+            $request->product_id,
+            $request->start ?? $cart->start,
+            $request->end ?? $cart->end,
+            $request->quantity
+        );
+        if ($product->quantity < array_sum($productsOnDate))
             throw new ProductException("Não há equipamentos suficientes para a data pedida", 400);
         return true;
     }
@@ -158,12 +160,6 @@ class GestorDeRequisicoes
 
     public static function generateToken($user_id, $cart_id, $product_id){
         return md5($user_id. $cart_id. $product_id);
-    }
-
-    public static function requisitar(User $user, BaseProducts $product, Request $request){
-        // adiciona a requisição ao carrinho e asseguir manda uma mensagem para o administrador
-        $requisicao = Cart::addToCart($product, $request->quantity, $request);
-        return $requisicao;
     }
 
     public static function confirmRequisicao(User $user, Product $product, Request $request){

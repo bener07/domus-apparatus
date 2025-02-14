@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
-use App\Models\BaseProducts;
+use App\Models\Calendar;
 
 class ProductsResource extends JsonResource
 {
@@ -16,7 +16,8 @@ class ProductsResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $availability = $this->availabilityOnDate();
+        $cart = $request->user()->cart;
+        $availability = $this->quantity - Calendar::baseProductsQuantityOnDate($this->id, $cart->start, $cart->end)->sum('quantity');
         return [
             'id' => $this->id,
             'name' => $this->name,

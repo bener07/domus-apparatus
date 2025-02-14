@@ -7,6 +7,8 @@ use App\Http\Controllers\API\Admin\UserAdminController;
 use App\Http\Controllers\API\Admin\RoleAdminController;
 use App\Http\Controllers\API\Admin\DepartmentAdminController;
 use App\Http\Controllers\API\Admin\TagsAdminController;
+use App\Http\Controllers\API\Admin\ClassAdminController;
+use App\Http\Controllers\API\Admin\DisciplinesAdminController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\CartController;
 use App\Http\Controllers\API\AuthController;
@@ -30,10 +32,12 @@ Route::post('logout',[AuthController::class,'logout'])->middleware('auth:sanctum
 Route::middleware('auth:sanctum')->group(function () {
 
     // informações gerais só com autenticação
-    Route::get('products', [ProductController::class, 'index']);
+    Route::get('products', [ProductController::class, 'index'])->middleware('isDateChoosen');
     Route::get('roles', [RoleAdminController::class, 'index']);
     Route::get('departments', [DepartmentAdminController::class, 'index']);
     Route::get('tags', [TagsAdminController::class, 'index']);
+    Route::get('classes', [ClassAdminController::class, 'index']);
+    Route::get('disciplines', [DisciplinesAdminController::class, 'index']);
     Route::get('user', function (Request $request) {
         return ApiResponseClass::sendResponse(UserResource::make($request->user()), '', 200);
     });
@@ -44,7 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // requisicões
         Route::delete('requisicao', [UserController::class, 'deliverRequisicao']);
         Route::post('requisicao', [UserController::class, 'addRequisicao']);
-        Route::get('requisicao', [UserController::class, 'getRequisicao']);
+        Route::get('requisicoes', [UserController::class, 'getRequisicoes']);
         Route::get('entregues', [UserController::class, 'getEntregues']);
         Route::get('pendentes', [UserController::class, 'getPendentes']);
         Route::post('cart-date', [CartController::class, 'registerDate'])->name('request.products');
@@ -52,9 +56,10 @@ Route::middleware('auth:sanctum')->group(function () {
         // Carrinho do utilizador
         Route::group(['prefix' => 'cart', 'name' => 'cart'], function (){
             Route::get('/', [CartController::class, 'index']);
+            Route::delete('/{id}', [CartController::class, 'destroy']);
+            Route::post('checkout', [CartController::class, 'checkout']);
             Route::post('/', [CartController::class, 'store']);
             Route::put('/', [CartController::class, 'update']);
-            Route::delete('/{id}', [CartController::class, 'destroy']);
         });
     });
 
@@ -85,4 +90,5 @@ Route::group([
     Route::apiResource('tags', TagsAdminController::class);
     Route::apiResource('products', ProductsAdminController::class);
     Route::apiResource('departments', DepartmentAdminController::class);
+    Route::apiResource('classes', ClassAdminController::class);
 });

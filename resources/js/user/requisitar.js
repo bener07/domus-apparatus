@@ -18,6 +18,7 @@ export function loadProducts() {
   // Fetch and load products
   let html = '';
   Products.getProducts(function (products) {
+    window.products = products;
 
     // Loop through the products and add them to the grid
     products.data.forEach(product => {
@@ -52,7 +53,7 @@ export function loadProducts() {
       let cardHtml = `
       <div class="col-sm-4 mb-4">
         <div class="card">
-          <img src="${product.featured_image}" class="card-img-top product-img" alt="${product.name}">
+          <img src="${product.featured_image}" class="card-img-top product-img" alt="${product.name}" style="width: 100%; height: 200px;">
           <div class="card-body">
             <a class="card-title fs-5" href="/product/${product.id}">${truncatedTitle}</a>
             <p class="card-text" style="height: 50px">${truncatedDescription}</p>
@@ -95,4 +96,3 @@ function addToCart(productId, quantity) {
     quantity: quantity
   }, ()=>{});
 }
-loadProducts();

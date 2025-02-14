@@ -76,37 +76,41 @@
                         @endisset
                         {{ $slot }}
                     </div>
-                    @isDateChoosen
-                        <div class="d-flex align-items-center justify-content-center flex-row-reverse w-100 text-right py-3 px-5" style="position: fixed; left: 0;bottom: 0;background-color: white;">
-                            <x-confirm-cart class="w-100">
-                                <x-cart-modal/>
-                            </x-confirm-cart>
-                        </div>
-                    @endisDateChoosen
                 </div>
                 <!-- End of Main Content -->
             </div>
-
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-                <div class="container my-auto">
-                    <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Domus Apparatus 2020</span>
-                    </div>
+            
+            @isDateChoosen
+                <div class="d-flex align-items-center justify-content-center flex-row-reverse w-100 text-right py-1 px-3" style="position: fixed; left: 0;bottom: 0;background-color: white;">
+                    @if(request()->is('checkout'))
+                        <a class="w-100 btn btn-success" id="checkoutBtn">Confirmar Requisicão</a>
+                    @else
+                    <x-cart-modal class="w-100">
+                        Carrinho
+                    </x-cart-modal>
+                    @endif
                 </div>
-            </footer>
-            <!-- End of Footer -->
-
+            @else
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Domus Apparatus 2020</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+            @endisDateChoosen
         </div>
         <!-- End of Content Wrapper -->
-
+        
     </div>
     <!-- End of Page Wrapper -->
 
-    <!-- Scroll to Top Button-->
+    {{-- <!-- Scroll to Top Button-->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
-    </a>
+    </a> --}}
 
     <!-- Logout Modal-->
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

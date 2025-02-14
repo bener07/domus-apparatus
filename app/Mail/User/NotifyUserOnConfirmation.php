@@ -10,6 +10,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 use App\Models\Requisicao;
+use App\Classes\Notifications;
 
 class NotifyUserOnConfirmation extends Mailable
 {
@@ -18,7 +19,7 @@ class NotifyUserOnConfirmation extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public GestorDeRequisicoes $requisicao)
+    public function __construct(public Notifications $requisicao)
     {
         $this->user = $requisicao->user;
         $this->admin = $requisicao->admin;

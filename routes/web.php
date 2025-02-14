@@ -8,7 +8,7 @@ use App\Http\Controllers\ConfirmationController;
 use App\Http\Resources\CartResource;
 use App\Http\Resources\RequisicaoResource;
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'cart-required'])->group(function () {
     Route::get('/', function () {
         return view('pages.index');
     })->name('home');
@@ -33,7 +33,7 @@ Route::middleware(['auth'])->group(function () {
         return view('pages.cart', compact('data_de_reserva', 'data_de_entrega_prevista', 'cart'));
     });
 
-    Route::get('/cart/checkout', function (){
+    Route::get('/checkout', function (){
         $cart = auth()->user()->cart;
         $items = RequisicaoResource::collection($cart->items);
 

@@ -9,6 +9,8 @@ use App\Mail\NotifyUserOnRequest;
 use App\Mail\NotifyUserOnConfirmation;
 use App\Classes\GestorDeRequisicoes;
 use App\Events\CartEvent;
+use App\Models\Calendar;
+use App\Models\AdminConfirmation;
 
 class RequisicaoObserver
 {
@@ -45,7 +47,7 @@ class RequisicaoObserver
             event(new CartEvent($cart, 'Carrinho atualizado!'));
         }
         if($requisicao->isDirty('status')){
-            GestorDeRequisicoes::notifyUser($requisicao->status);
+            // GestorDeRequisicoes::notifyUser($requisicao->status);
             $this->handleStatus($requisicao);
         }
     }

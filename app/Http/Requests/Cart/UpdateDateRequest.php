@@ -23,7 +23,7 @@ class UpdateDateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'start' => 'required|date',
+            'start' => 'required|date|after_or_equal:today',
             'end' => 'required|date|after_or_equal:start',
         ];
     }
@@ -33,6 +33,7 @@ class UpdateDateRequest extends FormRequest
         return [
             'start.required' => 'Data de requisição é obrigatória',
             'start.date' => 'Data de requisição tem de ser uma data válida',
+            'start.after_or_equal' => 'Data de requisição tem de ser posterior a hoje!',
             'end.required' => 'Data de entrega é obrigatória',
             'end.date' => 'Data de entrega tem de ser uma data válida',
             'end.after_or_equal' => 'Data de entrega tem de ser posterior à Data de requisição!'

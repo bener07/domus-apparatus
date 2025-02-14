@@ -17,7 +17,7 @@ class CartResource extends JsonResource
         return [
             'id' => $this->id,
             'total' => $this->total,
-            'requisicoes' => RequisicaoResource::collection($this->items),
+            'items' => CartItemResource::collection($this->items),
             'user_id' => $this->user_id,
             'start' => $this->start,
             'end' => $this->end,

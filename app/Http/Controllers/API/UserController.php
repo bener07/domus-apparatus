@@ -56,6 +56,16 @@ class UserController extends Controller
         return ApiResponseClass::sendResponse(RequisicaoResource::make($requisicao), 'Produto entregue com sucesso!', 200);
     }
 
+    public function getRequisicoes(Request $request){
+        if($request->input('get') == 'entregues'){
+            return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->entregues()->get()), '', 200);
+        }
+        if($request->input('get') == 'pendentes'){
+            return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->pendentes()->get()), '', 200);
+        }
+        return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->requisicoes), '', 200);
+    }
+
     public function getEntregues(Request $request){
         return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->entregues), '', 200);
     }
