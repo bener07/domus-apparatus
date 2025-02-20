@@ -44,6 +44,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Utilizador
     Route::group(['prefix' => 'user', 'name' => 'user.'], function () {
+        Route::post('/deliveryMessage', [UserController::class, 'updateUserDeliveryMessage']);
 
         // requisicões
         Route::delete('requisicao', [UserController::class, 'deliverRequisicao']);

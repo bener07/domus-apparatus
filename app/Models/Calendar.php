@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Exceptions\ProductException;
 use App\Classes\Notifications;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class Calendar extends Model
+class Calendar extends Pivot
 {
     protected $fillable = [
         'product_id',

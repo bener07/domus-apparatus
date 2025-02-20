@@ -21,6 +21,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->foreignId('department_id')->nullable();
+            $table->boolean('showDeliveryMessage')->default(1);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

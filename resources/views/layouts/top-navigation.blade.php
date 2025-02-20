@@ -3,6 +3,16 @@
 
     <!-- Sidebar Toggle (Topbar) -->
     <ul class="navbar-nav">
+        <li class="d-none d-md-block">
+            <a class="btn @if(request()->is('requisitar')) btn-primary @else btn-outline-secondary @endif" href="/requisitar">
+                <i class="bi bi-motherboard fa-sm fa-fw mr-2"></i>
+                Requisitar
+            </a>
+            <a class="btn @if(request()->is('entregar')) btn-primary @else btn-outline-secondary @endif" href="/entregar">
+                <i class="bi bi-box-arrow-down fa-sm fa-fw mr-2"></i>
+                Entregar
+            </a>
+        </li>
         <li class="dropdown no-arrow">
             <a class="btn btn-link d-md-none rounded-circle mr-3" href="#" id="menuDropdown" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

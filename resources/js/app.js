@@ -1,7 +1,5 @@
 import './bootstrap.js';
 import Alpine from 'alpinejs';
-import { addNewProduct, eliminarProduto } from './dashboard/products.js';
-import { addNewUser } from './dashboard/users.js';
 import { Cart } from './utilities/cart.js';
 import { loadProducts } from './user/requisitar.js';
 // import $ from 'jquery';
@@ -48,12 +46,6 @@ if ( $.active > 1){
     hideLoading(200)
     console.log('No ajax requests');
 }
-
-$('#addNewUser').on('click', addNewUser);
-$('#addNewProduct').on('click', addNewProduct);
-// $('#addNewCargo').on('click', addNewCargo);
-// $('#addNewDepartment').on('click', addNewDepartment);
-
 
 // Configure the change of the image
 // Handle click on image containers

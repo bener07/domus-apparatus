@@ -7,6 +7,7 @@ use App\Http\Resources\RequisicaoResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\GestorResource;
 use App\Http\Resources\CartResource;
+use App\Http\Resources\UserResource;
 use App\Classes\ApiResponseClass;
 use App\Classes\GestorDeRequisicoes;
 use Illuminate\Http\Request;
@@ -63,7 +64,7 @@ class UserController extends Controller
         if($request->input('get') == 'pendentes'){
             return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->pendentes()->get()), '', 200);
         }
-        return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->requisicoes), '', 200);
+        return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->allRequisicoes()->get()), '', 200);
     }
 
     public function getEntregues(Request $request){
@@ -72,5 +73,15 @@ class UserController extends Controller
     
     public function getPendentes(Request $request){
         return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->pendentes()->get()), '', 200);
+    }
+
+    public function updateUserDeliveryMessage(Request $request){
+        if(isset($request->showDeliveryMessage)){
+            $request->user()->showDeliveryMessage = $request->showDeliveryMessage == 'true' ? 1 : 0;
+            $request->user()->save();
+        }else{
+            return ApiResponseClass::sendResponse([], 'Parâmetro inválido!', 400);
+        }
+        return ApiResponseClass::sendResponse(new UserResource(auth()->user()), '', 200);
     }
 }

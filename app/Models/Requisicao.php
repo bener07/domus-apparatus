@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Admin;
 use App\Models\AdminConfirmation;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Arr;
 
 define("MAX_REQUISICAO_PER_USER","10");
 
@@ -56,11 +57,41 @@ class Requisicao extends Model
         return $this->belongsToMany(Calendar::class, 'requisicoes_id')->withPivot('start', 'end');
     }
     
-    public function products(){
-        return $this->belongsToMany(Product::class, 'calendar')
-                ->using(Calendar::class)
-                ->withPivot('start', 'end', 'quantity');    
+    public function products()
+    {
+        return $this->belongsToMany(Product::class, 'calendar', 'requisicoes_id', 'product_id')
+            ->using(Calendar::class)
+            ->withPivot('start', 'end', 'quantity', 'status', 'base_product_id');
     }
+
+    public function getUniqueBaseProducts()
+    {
+        $requisicao = Requisicao::with('products.base')->find($this->id);
+
+        $uniqueBaseProducts = $requisicao->products
+            ->map(fn($product) => $product->base) // Mapeia para o modelo baseProduct
+            ->unique('id') // Filtra objetos únicos com base no ID
+            ->values();
+        $output = [];
+
+        foreach($uniqueBaseProducts as $base){
+            $baseOnDate = Calendar::where('requisicoes_id', $this->id)
+                            ->where('base_product_id', $base->id)
+                            ->get()
+                            ->unique('product_id')
+                            ->first();
+            $output[] = [
+                'id' => $base->id,
+                'nome' => $base->name,
+                'quantity' => $baseOnDate->quantity,
+                'details' => $base->details,
+                'img' => Arr::first($base->images)
+            ];
+        }
+
+        return $uniqueBaseProducts;
+    }
+
 
     public static function generateToken($user_id, $cart_id, $start){
         return md5($user_id. $cart_id. $start);

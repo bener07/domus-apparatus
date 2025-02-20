@@ -8,6 +8,7 @@
     <meta name="description" content="domus apparatus made for equipment management">
     <meta name="author" content="Bernardo Martins">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="showDeliveryMessage" content="{{ auth()->user()->showDeliveryMessage }}">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -155,6 +156,9 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
     <!-- Custom scripts for all pages-->
     @vite(['resources/js/template.js', 'resources/js/app.js' ])
+    @isAdmin
+        @vite(['resources/js/app_dashboard.js'])
+    @endisAdmin
     @isset($scripts)
         <!-- Custom scripts -->
         {{ $scripts }}
