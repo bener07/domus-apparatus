@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\ClassRoom;
+use App\Models\Classroom;
 use App\Models\Discipline;
 
 class ClassSeeder extends Seeder
@@ -14,7 +14,7 @@ class ClassSeeder extends Seeder
      */
     public function run(): void
     {
-        ClassRoom::create([
+        Classroom::create([
             "name"=> "Sala de Ciências",
             "capacity" => 20,
             "location" => "2025E",

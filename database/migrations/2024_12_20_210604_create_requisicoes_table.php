@@ -16,10 +16,13 @@ return new class extends Migration
             $table->string('title');
             $table->integer('quantity')->default(1);
             $table->string('token')->nullable();
+            $table->string('aditionalInfo')->nullable();
             $table->string('status')->default('pendente');
             $table->dateTime('start')->nullable();
             $table->dateTime('end')->nullable();
             $table->dateTime('entrega_real')->nullable();
+            $table->foreignId('discipline_id')->on('disciplines')->onDelete('cascade');
+            $table->foreignId('room_id')->on('classrooms')->onDelete('cascade');
             $table->foreignId('admin_id')->on('users')->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();

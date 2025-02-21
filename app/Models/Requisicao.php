@@ -26,6 +26,9 @@ class Requisicao extends Model
         'entrega_real',
         'quantity',
         'token',
+        'aditionalInfo',
+        'discipline_id',
+        'room_id',
     ];
 
     protected static function booted()
@@ -56,6 +59,14 @@ class Requisicao extends Model
     public function calendar(){
         return $this->belongsToMany(Calendar::class, 'requisicoes_id')->withPivot('start', 'end');
     }
+
+    public function discipline(){
+        return $this->belongsTo(Discipline::class, 'discipline_id');
+    }
+
+    public function room(){
+        return $this->belongsTo(Classroom::class, 'room_id');
+    }
     
     public function products()
     {
@@ -67,6 +78,9 @@ class Requisicao extends Model
     public function getUniqueBaseProducts()
     {
         $requisicao = Requisicao::with('products.base')->find($this->id);
+        if(!$requisicao){
+            return [];
+        }
 
         $uniqueBaseProducts = $requisicao->products
             ->map(fn($product) => $product->base) // Mapeia para o modelo baseProduct
@@ -76,20 +90,18 @@ class Requisicao extends Model
 
         foreach($uniqueBaseProducts as $base){
             $baseOnDate = Calendar::where('requisicoes_id', $this->id)
-                            ->where('base_product_id', $base->id)
-                            ->get()
-                            ->unique('product_id')
-                            ->first();
+                        ->where('base_product_id', $base->id)
+                        ->get()->first();
             $output[] = [
                 'id' => $base->id,
-                'nome' => $base->name,
+                'name' => $base->name,
                 'quantity' => $baseOnDate->quantity,
                 'details' => $base->details,
                 'img' => Arr::first($base->images)
             ];
         }
 
-        return $uniqueBaseProducts;
+        return $output;
     }
 
 

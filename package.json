@@ -23,6 +23,7 @@
         "bootstrap": "^5.3.3",
         "jquery": "^3.7.1",
         "jquery-easing": "^0.0.1",
+        "qrcode": "^1.5.4",
         "sweetalert2": "^11.14.5"
     }
 }

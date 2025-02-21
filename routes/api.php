@@ -49,6 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // requisicões
         Route::delete('requisicao', [UserController::class, 'deliverRequisicao']);
         Route::post('requisicao', [UserController::class, 'addRequisicao']);
+        Route::delete('requisicoes/{id}', [UserController::class, 'retrieveRequisicao']);
         Route::get('requisicoes', [UserController::class, 'getRequisicoes']);
         Route::get('entregues', [UserController::class, 'getEntregues']);
         Route::get('pendentes', [UserController::class, 'getPendentes']);

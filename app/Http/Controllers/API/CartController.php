@@ -82,7 +82,7 @@ class CartController extends Controller
      */
     public function checkout(CartCheckoutRequest $request){
         $cart = $request->user()->cart;
-        $cart->checkout();
+        $cart->checkout($request);
         return ApiResponseClass::sendResponse([], 'A sua requisição foi enviada para confirmação', 200);
     }
 }

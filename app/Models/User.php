@@ -94,7 +94,7 @@ class User extends Authenticatable
      */
     public function requisicoes()
     {
-        return $this->hasMany(Requisicao::class, 'user_id')->where('requisicoes.status', 'requisitado');
+        return $this->hasMany(Requisicao::class, 'user_id')->where('requisicoes.status', 'confirmado');
     }
 
     /**

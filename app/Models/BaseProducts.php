@@ -81,6 +81,12 @@ class BaseProducts extends Model
         $this->save();
     }
 
+    public function quantityOnDate(){
+        $cart = auth()->user()->cart;
+        $calendarProducts = $cart->items()->where('base_product_id', $this->id)->get()->first();
+        return $calendarProducts->quantity;
+    }
+
     public function requisicao(){
         return $this->belongsTo(Requisicao::class, 'product_id');
     }
