@@ -113,7 +113,7 @@ class Cart extends Model
         }
     }
 
-    public function checkout(){
+    public function checkout($request){
         // notify User and Admin and get admin confirmation
         $choosenAdmin = Requisicao::choseAdmin();
         $user = auth()->user();
@@ -127,6 +127,9 @@ class Cart extends Model
             'end' => $this->end,
             'quantity' => $this->total,
             'token' => Requisicao::generateToken($user->id, $this->id, $this->start),
+            'discipline_id' => $request->discipline,
+            'room_id' => $request->room,
+            'aditionalInfo' => $request->optional_text
         ]);
         $requisicao->pedirConfirmacao($choosenAdmin);
         $this->loadToCalendar($requisicao);

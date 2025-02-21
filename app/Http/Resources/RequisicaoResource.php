@@ -31,7 +31,11 @@ class RequisicaoResource extends JsonResource
             'quantity' => $this->quantity,
             'entrega_real' => $this->entrega_real,
             'requisitado' => $this->created_at,
-            'autorizacao' => $this->confirmacao->pluck('status')
+            'autorizacao' => $this->confirmacao->pluck('status')[0],
+            'qrCode' => $this->token,
+            'aditional_info' => $this->aditionalInfo,
+            'room' => $this->room,
+            'discipline' => $this->discipline,
         ];
     }
 }

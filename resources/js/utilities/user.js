@@ -20,4 +20,8 @@ export class User{
     static getUserRequests(userId){
         return API.makeAuthenticatedRequest('/api/user/requisicoes', 'GET');
     }
+
+    static deleteRequisicao(requisicaoId){
+        return API.makeAuthenticatedRequest('/api/user/requisicoes/' + requisicaoId, 'DELETE');
+    }
 }

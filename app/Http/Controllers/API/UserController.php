@@ -58,21 +58,31 @@ class UserController extends Controller
     }
 
     public function getRequisicoes(Request $request){
-        if($request->input('get') == 'entregues'){
-            return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->entregues()->get()), '', 200);
-        }
-        if($request->input('get') == 'pendentes'){
-            return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->pendentes()->get()), '', 200);
-        }
         return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->allRequisicoes()->get()), '', 200);
     }
 
     public function getEntregues(Request $request){
-        return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->entregues), '', 200);
+        return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->entregues()->get()), '', 200);
     }
     
     public function getPendentes(Request $request){
         return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->pendentes()->get()), '', 200);
+    }
+
+    public function retrieveRequisicao($id, Request $request){
+        $requisicao = Requisicao::find($id);
+
+        if(!$requisicao){
+            return ApiResponseClass::sendResponse([], 'Requisição não encontrada!', 404);
+        }
+
+        if($request->user()->id != $requisicao->user_id && !$request->user()->isAdmin()){
+            return ApiResponseClass::sendResponse([], 'Requisição não pertence ao utilizador!', 403);
+        }
+
+        $requisicao->delete();
+
+        return ApiResponseClass::sendResponse(RequisicaoResource::make($requisicao), '', 200);
     }
 
     public function updateUserDeliveryMessage(Request $request){
