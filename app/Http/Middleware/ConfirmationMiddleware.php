@@ -19,7 +19,7 @@ class ConfirmationMiddleware
         $confirmation = AdminConfirmation::getByToken($request->token);
         $request->confirmation = $confirmation;
         if(!$confirmation){
-            about(404);
+            abort(404);
         }
         if($confirmation->isConfirmado() || $confirmation->isDenied()){
             return redirect()->route('dashboard')->with('warning', 'Token já usado.');

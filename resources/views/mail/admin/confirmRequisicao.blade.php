@@ -1,10 +1,11 @@
 <x-mail::message>
-    <h1>Confirme a requisição do equipamento</h1>
-    <h2>Pedido feito por: <strong>{{ $requisicao->user->name }}</strong></h2>
+    <h1>Confirme a requisição dos seguintes equipamentos</h1>
+    <h2>Pedido feito por: <strong>{{ $user->name }}</strong></h2>
+    <p>Data prevista de entrega: {{ $requisicao->getEntregaPrevista() }}</p>
+    <p>Data de levantamento: {{ $requisicao->start }}</p>
     <p>Lista de Equipamentos: </p>
     <x-list-products :produtos="$products"/>
-    <p>Quantidade: {{ $requisicao->quantity }}</p>
-    <p>Data prevista de entrega: {{ $requisicao->getEntregaPrevista() }}</p>
+    <p>Total de Equipamentos pedidos: {{ $quantity }}</p>
     <div style="display: flex; flex-direction:row;">
         <x-mail::button :url="$requisicao->authorization_url()" color="success">
             Autorizar

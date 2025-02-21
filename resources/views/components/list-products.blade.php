@@ -1,7 +1,7 @@
 <div>
     <ul>
         @foreach($produtos as $product)
-            <ul>{{ $product->name }} ({{ $product->quantity }})</ul>
+            <li>{{ $product->name }} ({{ $product->quantity }})</li>
         @endforeach
     </ul>
 </div>

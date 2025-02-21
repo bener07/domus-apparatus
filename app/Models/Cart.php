@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Classes\GestorDeRequisicoes;
+use App\Exceptions\ProductException;
+use App\Classes\Notifications;
 
 class Cart extends Model
 {
@@ -23,53 +25,62 @@ class Cart extends Model
      * @return HasMany
      */
     public function items(){
-        return $this->hasMany(Requisicao::class);
+        return $this->hasMany(CartItem::class);
     }
 
-    public static function addToCart($product, $quantity, $request){
-        GestorDeRequisicoes::verifyRequest($request, $product);
-        $chosenAdmin = GestorDeRequisicoes::chooseAdmin();
-        // Add product to cart
+    public function products(){
+        return $this->items()->with('baseProduct');
+    }
+
+    public static function addToCart($base_product, $quantity, $request){
+        // Add base_product to cart
         $user = auth()->user();
         $cart = $user->cart;
-        $token = GestorDeRequisicoes::generateToken($user->id, $cart->id, $product->id);
 
-        $title = $product->name . " - ". $user->name;
+        $title = $base_product->name . " - ". $user->name;
 
         // searches for existing products wth the same title, user, and cart id
         $existingCartItem = $cart->items()->where('title', $title)->get();
-        // se não existirem itens no carrinho
+        // in case the array is empty it creates the item
         if(!$existingCartItem->isEmpty()){
-            dd($existingCartItem);
+            $existingCartItem = $existingCartItem->first();
+            $futureQuantity = $existingCartItem->quantity + $quantity;
+            if($futureQuantity > $existingCartItem->product->total){
+                throw new ProductException("Excedeu o limite de produtos disponíveis.", 400);
+            }
+            $existingCartItem->updateQuantity($futureQuantity);
+            $item = $existingCartItem;
+        }else{
+            // items in the cart are the requisicoes
+            $item = $cart->items()->create([
+                'title' => $title,
+                'quantity' => $quantity,
+                'base_product_id' => $base_product->id
+            ]);
         }
-        
-        // items in the cart are the requisicoes
-        $requisicao = $cart->items()->create([
-            'title' => $title,
-            'product_id' => $product->id,
-            'quantity' => $quantity,
-            'admin_id' => $chosenAdmin->id, // Admin not chosen yet
-            'user_id' => $user->id, // User making the request
-            'status' => 'pendente', // Request is pending
-            'token' => $token, //
-            'start' => $cart->start,
-            'end' => $cart->end,
-        ]);
-        if($requisicao){
-            $cart->updateTotal();
-            return $requisicao;
+        $cart->updateTotal();
+        if($item){
+            return $item;
         }
     }
 
-    
-    public function isEmpty() {
-        return $this->items()->exists();
+    public function remove($requisicaoId){
+        $item = $this->items()->find($requisicaoId);
+        if($item){
+            $item->delete();
+            $this->updateTotal();
+        }
+        return $this;
     }
-    
+
+    public function isEmpty() {
+        return !$this->items()->exists();
+    }
+
     function updateTotal(){
         $totalQuantity = 0;
         foreach ($this->items as $item) {
-            $totalQuantity += $item['quantity']; // Add up the quantities of each product
+            $totalQuantity += $item->quantity; // Add up the quantities of each base_product
         }
         $this->total = $totalQuantity; // Update the total in the cart
         $this->save();
@@ -79,5 +90,46 @@ class Cart extends Model
         $this->start = $start;
         $this->end = $end;
         $this->save();
+    }
+
+    public function isExpired(){
+        return $this->end < now();
+    }
+
+    public function loadToCalendar($requisicao){
+        foreach($this->items as $item){
+            $products = BaseProducts::find($item->base_product_id)->products()->limit($item->quantity)->get();
+            foreach($products as $product){
+                Calendar::create([
+                    'requisicoes_id' => $requisicao->id,
+                    'base_product_id' => $item->base_product_id,
+                    'product_id' => $product->id,
+                    'quantity' => $item->quantity,
+                    'start' => $this->start,
+                    'end' => $this->end,
+                    'status' => 'em confirmacao',
+                ]);
+            }
+        }
+    }
+
+    public function checkout(){
+        // notify User and Admin and get admin confirmation
+        $choosenAdmin = Requisicao::choseAdmin();
+        $user = auth()->user();
+        $requisicao = Requisicao::create([
+            'title' => $user->name. ' ' . $this->start. ' - ' . $this->end,
+            'status' => 'em confirmacao',
+            'admin_id' => $choosenAdmin->id,
+            'user_id' => $user->id,
+            'total' => $this->total,
+            'start' => $this->start,
+            'end' => $this->end,
+            'quantity' => $this->total,
+            'token' => Requisicao::generateToken($user->id, $this->id, $this->start),
+        ]);
+        $requisicao->pedirConfirmacao($choosenAdmin);
+        $this->loadToCalendar($requisicao);
+        $this->delete();
     }
 }

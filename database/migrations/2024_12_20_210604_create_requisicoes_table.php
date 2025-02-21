@@ -22,8 +22,6 @@ return new class extends Migration
             $table->dateTime('entrega_real')->nullable();
             $table->foreignId('admin_id')->on('users')->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('cart_id')->on('carts')->constrained()->onDelete('cascade');
-            $table->foreignId('product_id')->on('products')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

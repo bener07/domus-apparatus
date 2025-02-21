@@ -23,6 +23,7 @@ class UserResource extends JsonResource
             'departments' => UserDepartmentResource::make($this->department),
             'links' => $this->socialLinks->pluck('platform'),
             'avatar' => $this->avatar ? $this->avatar : '/storage/images/avatar.png',
+            'show_delivery_message' => $this->showDeliveryMessage
         ];
     }
 }

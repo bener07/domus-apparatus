@@ -28,6 +28,7 @@ class User extends Authenticatable
         'email',
         'password',
         'department_id',
+        'showDeliveryMessage',
     ];
 
     /**
@@ -94,6 +95,13 @@ class User extends Authenticatable
     public function requisicoes()
     {
         return $this->hasMany(Requisicao::class, 'user_id')->where('requisicoes.status', 'requisitado');
+    }
+
+    /**
+     * @return HasManyRelations
+     */
+    public function allRequisicoes(){
+        return $this->hasMany(Requisicao::class, 'user_id');
     }
 
     public function entregues(){

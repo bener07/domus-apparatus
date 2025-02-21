@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
             return $user->id === $Product->owner_id;
         });
 
-        Blade::if('isEmptyCart', function(){
+        Blade::if('cartEmpty', function(){
             $user = Auth::user();
             $cart = $user->cart;
 
@@ -63,6 +63,6 @@ class AppServiceProvider extends ServiceProvider
         });
         Gate::define('viewPulse', function (User $user) {
             return $user->isAdmin();
-        });    
+        });
     }
 }

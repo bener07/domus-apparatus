@@ -17,16 +17,19 @@ class RequisicaoResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $product = BaseProducts::find($this->product_id);
         return [
             'id' => $this->id,
             'status' => $this->status,
             'user' => $this->user->name, // Access the name directly
-            'product' => BaseProducts::find($this->product_id)->name, // Access the name directly
+            'title' => $this->title,
+            'products' => ProductResource::collection($this->products()->get()), // Access the name directly
+            'base_products' => $this->getUniqueBaseProducts(), // Access the name directly
             'admin' => $this->admin->name, // Access the name directly
+            'requisicao' => $this->start, // Access the name directly
             'entrega_prevista' => $this->end,
             'quantity' => $this->quantity,
             'entrega_real' => $this->entrega_real,
-            'img' => Arr::first($this->product->images),
             'requisitado' => $this->created_at,
             'autorizacao' => $this->confirmacao->pluck('status')
         ];

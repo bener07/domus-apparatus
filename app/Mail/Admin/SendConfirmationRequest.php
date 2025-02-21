@@ -11,21 +11,29 @@ use Illuminate\Mail\Mailables\Address;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Requisicao;
 use App\Models\Product;
-use App\Classes\GestorDeRequisicoes;
+use App\Classes\Notifications;
 use Illuminate\Support\Facades\Log;
 
 class SendConfirmationRequest extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $requisicao;
+    public $admin;
+    public $user;
+    public $cart;
+    public $products;
+
     /**
      * Create a new message instance.
      */
-    public function __construct($requisicao)
+    public function __construct(public Notifications $notification)
     {
-        $this->requisicao = $requisicao->requisicao;
-        $this->admin = $requisicao->admin;
-        $this->products = $requisicao->products;
+        $this->requisicao = $notification->requisicao;
+        $this->admin = $notification->admin;
+        $this->user = $notification->user;
+        $this->cart = $notification->cart;
+        $this->products = $notification->cart->items()->with('product')->get()->pluck('product');
     }
 
     /**
@@ -47,9 +55,11 @@ class SendConfirmationRequest extends Mailable
         return new Content(
             markdown: 'mail.admin.confirmRequisicao',
             with: [
-               'requisicao' => $this->requisicao,
+                'requisicao' => $this->requisicao,
+                'user' => $this->user,
                 'admin' => $this->admin,
                 'products' => $this->products,
+                'quantity' => $this->cart->total
             ],
         );
     }

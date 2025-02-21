@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('details');
             $table->json('images');
+            $table->integer('total')->default(1);
             $table->timestamps();
         });
     }

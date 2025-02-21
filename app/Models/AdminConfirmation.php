@@ -11,6 +11,7 @@ class AdminConfirmation extends Model
     protected $fillable = [
         'requisicao_id',
         'admin_id',
+        'cart_id',
         'status',
         'token'
     ];
@@ -21,6 +22,10 @@ class AdminConfirmation extends Model
 
     public function requisicao(){
         return $this->belongsTo(Requisicao::class);
+    }
+
+    public function user(){
+        return $this->requisicao()->user();
     }
 
     public function confirm(){

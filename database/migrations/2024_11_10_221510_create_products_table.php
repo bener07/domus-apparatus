@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->longText('details');
             $table->string('status')->default('disponivel');
-            $table->foreignId('requisicao_id')->on('requisicoes')->onDelete('cascade')->nullable();
             $table->foreignId('base_id')->on('base_products')->onDelete('cascade');
             $table->string("isbn")->unique();
             $table->timestamps();

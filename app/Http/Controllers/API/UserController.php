@@ -7,6 +7,7 @@ use App\Http\Resources\RequisicaoResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\GestorResource;
 use App\Http\Resources\CartResource;
+use App\Http\Resources\UserResource;
 use App\Classes\ApiResponseClass;
 use App\Classes\GestorDeRequisicoes;
 use Illuminate\Http\Request;
@@ -56,11 +57,31 @@ class UserController extends Controller
         return ApiResponseClass::sendResponse(RequisicaoResource::make($requisicao), 'Produto entregue com sucesso!', 200);
     }
 
+    public function getRequisicoes(Request $request){
+        if($request->input('get') == 'entregues'){
+            return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->entregues()->get()), '', 200);
+        }
+        if($request->input('get') == 'pendentes'){
+            return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->pendentes()->get()), '', 200);
+        }
+        return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->allRequisicoes()->get()), '', 200);
+    }
+
     public function getEntregues(Request $request){
         return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->entregues), '', 200);
     }
     
     public function getPendentes(Request $request){
         return ApiResponseClass::sendResponse(RequisicaoResource::collection($request->user()->pendentes()->get()), '', 200);
+    }
+
+    public function updateUserDeliveryMessage(Request $request){
+        if(isset($request->showDeliveryMessage)){
+            $request->user()->showDeliveryMessage = $request->showDeliveryMessage == 'true' ? 1 : 0;
+            $request->user()->save();
+        }else{
+            return ApiResponseClass::sendResponse([], 'Parâmetro inválido!', 400);
+        }
+        return ApiResponseClass::sendResponse(new UserResource(auth()->user()), '', 200);
     }
 }

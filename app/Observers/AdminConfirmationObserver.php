@@ -4,19 +4,19 @@ namespace App\Observers;
 use Illuminate\Support\Facades\Log;
 use App\Models\AdminConfirmation;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\SendConfirmationRequest;
-use App\Classes\GestorDeRequisicoes;
+use App\Classes\Notifications;
 
 
 class AdminConfirmationObserver
 {
     public function created(AdminConfirmation $confirmation){
-        Log::info("New confirmation created please check your inbox");
+        Log::info("New confirmation made by: " . $confirmation . "");
         $requisicao = $confirmation->requisicao;
+        $choosenAdmin = $requisicao->admin;
+        $user = auth()->user();
 
-        // send email to administrator with product information and other information
-        $requisicao = new GestorDeRequisicoes($requisicao);
-        // notifies administrator and user of the requisition
-        $requisicao->notifyOnAction('em confirmacao', true, true);
+        $notification = new Notifications('em confirmacao', $user, $choosenAdmin, $requisicao);
+        $notification->send();
+        // notifies user and administrator
     }
 }
