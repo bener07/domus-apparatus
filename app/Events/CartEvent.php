@@ -17,7 +17,7 @@ class CartEvent implements ShouldBroadcastNow
 {
     use Dispatchable, SerializesModels;
 
-    public function __construct(public $cart, public $message)
+    public function __construct(public $cart, public $message, public $color)
     {}
 
     /**
@@ -32,7 +32,8 @@ class CartEvent implements ShouldBroadcastNow
     {
         return [
             'cart' => new CartResource($this->cart),
-            'message' => $this->message
+            'message' => $this->message,
+            'color' => $this->color
         ];
     }
 

@@ -130,16 +130,17 @@ export class Cart {
   updateCart(event) {
       this.resetProducts();
       this.updateProducts(event.cart.items);
-      this.showMessage(event.message);
+      this.showMessage(event.message, event.color);
       this.total = event.cart.total;
       this.totalDiv.html('Total de Equipamentos: ' + this.total);
   }
 
-  showMessage(message) {
+  showMessage(message, color) {
       this.messager.text(message);
 
       // Show the messager using Bootstrap's 'show' class
-      this.messager.addClass('show').removeClass('fade');
+      this.messager.removeClass('alert-danger alert-succes');
+      this.messager.addClass(`show alert-${color}`).removeClass('fade');
 
       // Hide the messager after 4 seconds
       const messager = this.messager;

@@ -77,7 +77,7 @@ class Calendar extends Pivot
         if ($products_on_date->get()->isEmpty()) {
             return $products_on_date; // Retorna uma coleção vazia corretamente
         }
-    
+
         return $products_on_date
             ->selectRaw('requisicoes_id, SUM(quantity) as total_quantity, COUNT(DISTINCT product_id) as unique_products')
             ->groupBy('requisicoes_id')
@@ -98,18 +98,43 @@ class Calendar extends Pivot
         return self::whereIn('id', $subquery);
     }
 
+    public static function requestedDates($start, $end){
+        $products = self::whereIn('id', function($query) use ($start, $end) {
+            $query->selectRaw('MIN(id)')
+                  ->from('calendar')
+                  ->where(function($query) use ($start, $end) {
+                      $query->where('end', '<=', '2025-02-10')
+                            ->orWhere('start', '<=', '2025-03-10');
+                  })
+                  ->where(function($query) use ($start, $end) {
+                      $query->where('end', '>=', $start)
+                            ->orWhere('start', '>=', $start);
+                  })
+                  ->groupBy('base_product_id');
+            });
+        return $products;
+    }
+
+    public static function productsRequestedOnDate($base_product, $start, $end){
+        return self::requestedDates($start, $end)->where('base_product_id', $base_product)->get();
+    }
+
+    public static function confirmedProductsRequestedOnDate($base_product, $start, $end){
+        return self::productsDates($start, $end)->with('requisicoes');
+    }
+
     /**
      * $product_id -> id from table id
      * $start -> start date to search in the calendar
      * $end -> end date to search in the calendar
      * @return Collection of Calendar
      */
-    public static function productsRequestedOnDate($product_id, $start, $end){
-        $base_product_id = BaseProducts::find($product_id)->id;
-        $products_on_date = self::productsOnDate($base_product_id, $start, $end)->sum('quantity');
-        if($products_on_date > 0){
-            return $products_on_date;
-        }
-        return auth()->user()->cart->items()->where('base_product_id', $product_id)->sum('quantity');
-    }
+    // public static function productsRequestedOnDate($product_id, $start, $end){
+    //     $base_product_id = BaseProducts::find($product_id)->id;
+    //     $products_on_date = self::productsOnDate($base_product_id, $start, $end)->sum('quantity');
+    //     if($products_on_date > 0){
+    //         return $products_on_date;
+    //     }
+    //     return auth()->user()->cart->items()->where('base_product_id', $product_id)->sum('quantity');
+    // }
 }

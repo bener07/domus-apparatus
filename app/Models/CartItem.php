@@ -26,5 +26,10 @@ class CartItem extends Model
         $this->save();
     }
 
-
+    public static function itemsOnDate($baseId, $start, $end){
+        return self::whereHas('cart', function ($query) use ($start, $end) {
+            $query->where('start', '<=', $start)
+                  ->where('end', '>=', $end);
+        })->where('base_product_id', $baseId)->get();
+    }
 }

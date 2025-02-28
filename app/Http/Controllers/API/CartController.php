@@ -29,7 +29,7 @@ class CartController extends Controller
      */
     public function store(AddToCartRequest $request){
         $cart = $request->user()->cart;
-        $product = BaseProducts::find($request->product_id);
+        $product = BaseProducts::where('id', $request->product_id)->get()->first();
         $requisicao = Cart::addToCart($product, $request->quantity, $request);
         return ApiResponseClass::sendResponse(new CartResource($cart), 'Product added to cart', 201);
     }

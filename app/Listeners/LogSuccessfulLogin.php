@@ -31,7 +31,7 @@ class LogSuccessfulLogin
         if ($user->cart && $user->cart->isExpired()) {
             $user->cart->delete(); // Clear expired cart
             $user->cart()->create();
-            event(new CartEvent($user->cart, '<a href="/requisitar">O seu carrinho expirou! Clique aqui para renovar</a>'));
+            event(new CartEvent($user->cart, '<a href="/requisitar">O seu carrinho expirou! Clique aqui para renovar</a>', 'info'));
         }
     }
 }

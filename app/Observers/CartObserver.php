@@ -13,8 +13,10 @@ class CartObserver
 
         if ($currentTotal < $originalTotal) {
             $message = 'Equipamento removido do carrinho!';
+            $color = 'danger';
         } elseif ($currentTotal > $originalTotal) {
             $message = 'Equipamento adicionado ao carrinho!';
+            $color = 'success';
         } else {
             // If no change occurred, no need to fire the event
             \Log::info("No change in total detected");
@@ -22,6 +24,6 @@ class CartObserver
         }
 
         // Fire the event with the message
-        event(new CartEvent($cart, $message));
+        event(new CartEvent($cart, $message, $color));
     }
 }
