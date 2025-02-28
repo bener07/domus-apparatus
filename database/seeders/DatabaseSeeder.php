@@ -40,6 +40,13 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
             'remember_token' => Str::random(10)
         ]);
+        User::create([
+            'name' => 'José Carlos',
+            'email' => 'jc@domusnet.pt',
+            'password' => Hash::make('pass123#'),
+            'email_verified_at' => now(),
+            'remember_token' => Str::random(10)
+        ]);
         $this->call(TagsSeeder::class);
         $this->call(ProductSeeder::class);
 
