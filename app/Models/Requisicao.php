@@ -57,8 +57,10 @@ class Requisicao extends Model
     }
 
     public function calendar(){
-        return $this->belongsToMany(Calendar::class, 'requisicoes_id')->withPivot('start', 'end');
+        return $this->belongsToMany(BaseProducts::class, 'calendar', 'requisicoes_id', 'base_product_id')
+                    ->withPivot('start', 'end', 'quantity', 'status');
     }
+    
 
     public function discipline(){
         return $this->belongsTo(Discipline::class, 'discipline_id');

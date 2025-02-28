@@ -18,7 +18,8 @@ class AddToCartRequest extends ApiRequest
     public function authorize(): bool
     {
         $request = $this;
-        $cart = $request->user()->cart;
+        $user = $request->user();
+        $cart = $user->cart;
         $base_product_id = $request->input('product_id') 
                            ??
                            $cart->items()
@@ -27,8 +28,7 @@ class AddToCartRequest extends ApiRequest
                                 $request->input('id')
                             )->first()
                             ->base_product_id;
-        $product = BaseProducts::find($base_product_id)->get()->first();
-        
+        $product = BaseProducts::where('id', $base_product_id)->get()->first();
         if(!$product->exists()){
             throw new UserException("O produto não existe", 404);
         }
@@ -39,14 +39,17 @@ class AddToCartRequest extends ApiRequest
             event(new CartEvent($cart, ''));
             throw new UserException("Quantidade de equipamentos solicitada é superior ao disponível", 400);
         }
-        $productsOnDate = Calendar::baseProductsQuantityOnDate(
-            $product, // base product
-            $request->start ?? $cart->start,
-            $request->end ?? $cart->end,
-            $request->quantity
-        )->get();
-        if ($product->quantity < array_sum($productsOnDate->toArray()))
-            throw new ProductException("Não há equipamentos suficientes para a data pedida", 400);
+        // $productsOnDate = Calendar::productsRequestedOnDate($product->id, $request->start ?? $cart->start, $request->end ?? $cart->end)->sum('quantity');
+
+        // //dd( $product->quantity - $productsOnDate + $request->quantity);
+        // if ($productsOnDate < $request->quantity )
+        //     throw new ProductException("Não há equipamentos suficientes para a data pedida", 400);
+        $title = $product->name . " - ". $user->name;
+        $existingCartItem = $cart->items()->where('title', $title)->get();
+        $productQuantityOnDate = $product->quantity - Calendar::productsRequestedOnDate($product->id, $cart->start, $cart->end)->sum('quantity');
+        if($productQuantityOnDate < $request->quantity){
+            throw new ProductException("Não há equipamentos suficientes para a data pedida.", 400);
+        }
         return true;
     }
 

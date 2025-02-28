@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use App\Models\Calendar;
+use App\Models\CartItem;
 
 class ProductsResource extends JsonResource
 {
@@ -17,7 +18,7 @@ class ProductsResource extends JsonResource
     public function toArray(Request $request): array
     {
         $cart = $request->user()->cart;
-        $availability = $this->quantity - Calendar::baseProductsQuantityOnDate($this->id, $cart->start, $cart->end)->sum('quantity');
+        $availability = $this->quantity - Calendar::productsRequestedOnDate($this->id, $cart->start, $cart->end)->sum('quantity');
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -27,6 +28,7 @@ class ProductsResource extends JsonResource
             'tags' => $this->tags->pluck('name'),
             'status' => $availability > 0 ? 'disponivel' : 'indisponivel',
             'quantity' => $availability,
+            'non_confirmed_requisicoes' => Calendar::productsRequestedOnDate($this->id, $cart->start, $cart->end)->sum('quantity'),
             'products' => ProductResource::collection($this->products)
         ];
     }

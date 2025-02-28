@@ -45,8 +45,15 @@ class Cart extends Model
         if(!$existingCartItem->isEmpty()){
             $existingCartItem = $existingCartItem->first();
             $futureQuantity = $existingCartItem->quantity + $quantity;
+
+            $productQuantityOnDate = $base_product->quantity - Calendar::productsRequestedOnDate($base_product->id, $cart->start, $cart->end)->sum('quantity');
+
+            if($productQuantityOnDate < $futureQuantity){
+                throw new ProductException("Não há equipamentos suficientes para a data pedida.", 400);
+            }
+
             if($futureQuantity > $existingCartItem->product->total){
-                throw new ProductException("Excedeu o limite de produtos disponíveis.", 400);
+                throw new ProductException("Quantidade pedida excede a quantidade de equipamentos em stock.", 400);
             }
             $existingCartItem->updateQuantity($futureQuantity);
             $item = $existingCartItem;

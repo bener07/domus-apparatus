@@ -57,10 +57,13 @@ export function loadProducts() {
           <div class="card-body">
             <a class="card-title fs-5" href="/product/${product.id}">${truncatedTitle}</a>
             <p class="card-text" style="height: 50px">${truncatedDescription}</p>
-            <div class="d-flex flex-row justify-content-between mt-3 align-items-center">
-              <h4 class="fs-6 px-3 py-2 fw-400 rounded bg-${processedStatus} text-capitalize">
+            <div class="d-flex row justify-content-between mt-3 align-items-center">
+              <h4 class="fs-6 px-3 m-1 py-2 fw-400 rounded bg-${processedStatus} text-capitalize">
                 ${product.status}: 
                 ${product.quantity}
+              </h4>
+              <h4 class="fs-6 m-1 px-3 py-2 fw-300 rounded bg-secondary text-capitalize">
+                ${product.non_confirmed_requisicoes} equipamentos foram pedidos para confirmação na mesma data
               </h4>
             </div>
             <div class="d-flex justify-content-between flex-column mt-3">
