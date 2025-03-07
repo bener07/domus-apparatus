@@ -6,20 +6,40 @@ use App\Exceptions\ArgumentsException;
 use Illuminate\Database\Eloquent\Model;
 use App\Classes\ApiResponseClass;
 use App\Models\Requisicao;
+use App\Classes\FileClass;
+use Illuminate\Support\Facades\DB;
 
 class BaseProducts extends Model
 {
     protected $fillable = [
-        'quantity',
         'name',
-        'description',
+        'details',
         'quantity',
-        'total'
+        'total',
+        'images'
     ];
 
     protected $casts = [
         'images' => 'array'
     ];
+
+    public function delete(){
+        DB::beginTransaction();
+        try{
+            $this->products()->delete();
+
+            $this->tags()->detach();
+            
+            $result = parent::delete();
+            
+            DB::commit();
+
+            return $result;
+        }catch(\Exception $e){
+            DB::roolback();
+            throw $e;
+        }
+    }
 
     protected function create($data){
         if(!isset($data['isbns'])){
@@ -28,12 +48,30 @@ class BaseProducts extends Model
         if(!is_array($data['isbns'])){
             throw new ArgumentsException('Os ISBNs devem ser um array', 1);
         }
+
+        array_unshift($data['images'], $data['featured_image']);
+        
+        $imagePaths = [];
+        
+        foreach ($data['images'] as $file) {
+            if(!is_string($file)){
+                $does_file_exist = FileClass::fileExists($file);
+                if(!$does_file_exist){
+                    $imagePaths[] = '/storage/'.$file->store('products', 'public');
+                }
+                else{
+                    $imagePaths[] = $does_file_exist;
+                }
+            }else{
+                $imagePaths[] = $file;
+            }
+        }
+
         $quantity = sizeof($data['isbns']);
-        $data['quantity'] = $quantity;
         $base = parent::create([
             'name' => $data['name'],
             'details' => $data['details'],
-            'images' => $data['images'],
+            'images' => $imagePaths,
             'quantity' => $quantity,
             'total' => $quantity
         ]);
@@ -46,6 +84,7 @@ class BaseProducts extends Model
                 'isbn' => $data['isbns'][$product]
             ]);
         }
+        $base->tags()->attach($data['tag']);
         return $base;
     }
     public function products(){

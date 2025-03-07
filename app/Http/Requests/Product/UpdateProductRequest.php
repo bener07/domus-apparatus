@@ -25,8 +25,8 @@ class UpdateProductRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'details' => 'required'
+            'name' => 'required|string',
+            'details' => 'required|string'
         ];
     }
 

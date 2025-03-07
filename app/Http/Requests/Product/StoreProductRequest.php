@@ -26,7 +26,6 @@ class StoreProductRequest extends ApiRequest
         return [
             'name' => 'required|string|max: 100',
             'details' => 'required|string',
-            'description' => 'required|string',
             'featured_image' => "required|file|mimes:jpg,jpeg,png|max:4096",
             "images.*" => "nullable|required|file|mimes:jpg,jpeg,png|max:8192",
         ];

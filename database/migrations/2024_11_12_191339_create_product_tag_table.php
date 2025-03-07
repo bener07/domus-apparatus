@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('base_product_tag', function (Blueprint $table) {
             $table->id();
             $table->foreignId('base_products_id')->constrained()->onDelete('cascade');
-            $table->foreignId('tags_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tags_id')->onDelete('cascade');
             $table->timestamps();
         });
     }

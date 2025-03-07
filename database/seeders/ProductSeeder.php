@@ -21,6 +21,7 @@ class ProductSeeder extends Seeder
             $products = BaseProducts::create([
                 'name' => $faker->name,
                 'details'=> $faker->sentence,
+                'featured_image' => 'https://officechai.com/wp-content/uploads/2016/05/online-shoping.jpg',
                 'images' => [
                     'shopping'=>'https://officechai.com/wp-content/uploads/2016/05/online-shoping.jpg',
                     'testing' => 'https://officechai.com/wp-content/uploads/2016/05/3-Photoshop-Funny-CEO-Falls-Asleep-Work-Employees-Edit-Memes.jpg',
@@ -31,9 +32,9 @@ class ProductSeeder extends Seeder
                     $faker->unique()->numberBetween(10000, 100000),
                     $faker->unique()->numberBetween(10000, 100000),
                     $faker->unique()->numberBetween(10000, 100000),
-                ]
+                ],
+                'tag' => 1
             ]);
-            $products->tags()->attach(1);
         }
     }
 }
