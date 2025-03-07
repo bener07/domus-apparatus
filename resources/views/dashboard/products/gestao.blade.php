@@ -9,7 +9,7 @@
                 </div>
                 <table class="table table-striped table-bordered" id="productsTable">
                     <div>
-                        <button type="button" class="btn btn-primary" id="addNewBtn">Adicionar Utilizador</button>
+                        <button type="button" class="btn btn-primary" id="addNewBtn">Adicionar Produto</button>
                     </div>
                     <thead class="table-dark">
                         <tr>

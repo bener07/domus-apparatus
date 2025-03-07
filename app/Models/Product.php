@@ -10,6 +10,7 @@ class Product extends Model
         'name',
         'details',
         'requisicao_id',
+        'isbn'
     ];
 
     public function base(){

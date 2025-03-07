@@ -1,9 +1,23 @@
-    import { Products } from '../utilities/admin_products';
+import { Products } from '../utilities/admin_products';
 import { Tags } from '../utilities/tags';
 import { SwalDialog } from '../utilities/dialog';
+import { Modal } from '../components/manager';
+
+const MAX_DESCRIPTION_LENGTH = 50;
+
+function truncatedText(text){
+    let truncatedText = text;
+    if (truncatedText.length > MAX_DESCRIPTION_LENGTH) {
+        truncatedText = truncatedText.substring(0, MAX_DESCRIPTION_LENGTH) + '...';
+    }
+    return truncatedText;
+}
 
 
 function loadTable(){
+    if ($.fn.dataTable.isDataTable('#productsTable')) {
+        $('#productsTable').DataTable().clear().destroy();
+    }
     return $('#productsTable').DataTable({
         'paging': true,
         "pageLength": 5, // Set number of rows per page 
@@ -31,7 +45,7 @@ function loadTable(){
                         '<img src="' + row.featured_image + '" alt="Avatar" width="70" height="70" class="me-2 product-image">' +
                             '<div class="d-flex flex-column">'+
                                 '<span class="fs-4">' + row.name + '</span>' +
-                                '<span class="fw-lighter"> ' + row.details +'</span>' + 
+                                '<span class="fw-lighter"> ' + truncatedText(row.details) +'</span>' + 
                             '</div>' +
                         '</div>';
                 },
@@ -46,7 +60,7 @@ function loadTable(){
                 "data": null,
                 "render": function(data, type, row) {
                     return '<button class="btn btn-danger btn-sm eliminar-btn" data-id="' + row.id + '">Eliminar</button> ' +
-                        '<button class="btn btn-warning btn-sm editar-btn" data-id="' + row.id + '" data-user=\''+JSON.stringify(row)+'\'>Editar</button>';
+                        '<button class="btn btn-warning btn-sm editar-btn" data-id="' + row.id + '" data-product=\''+JSON.stringify(row)+'\'>Editar</button>';
                 },
                 "title": "Ações"
             }
@@ -78,7 +92,7 @@ $(document).ready(function() {
         $('#productsTable tbody').on('click', '.editar-btn', function() {
             var productId = $(this).data('id');
             var product = $(this).data('product');
-            editarProduto(userId, user);
+            editarProduto(productId, product);
         });
     }
 
@@ -88,12 +102,6 @@ $(document).ready(function() {
 
     // Hide initial loading wheel
     $('#loadingWheel').hide();
-
-    Tags.getTags().then((response) => {
-        response.data.forEach(department => {
-            $('#tagsSelection').append(`<option value="${department.id}">${department.name}</option>`);
-        });
-    });
 
     $('#image-container').on('click', () => {
         $('#productImage').click();
@@ -259,6 +267,44 @@ export function eliminarProduto(id){
     )
 }
 
+function uploadProduct(title, details, tag, quantity) {
+    const formData = new FormData();
+
+    // Adiciona os valores do modal ao FormData
+    formData.append('name', title);
+    formData.append('details', details);
+    formData.append('tag', tag);
+    formData.append('quantity', quantity);
+
+    // Adiciona a imagem principal
+    const mainPhoto = $('#mainPhoto')[0].files[0];
+    if (mainPhoto) {
+        formData.append('featured_image', mainPhoto);
+    }
+
+    // Adiciona as imagens secundárias
+    const secondaryPhotos = $('#secondaryPhotos')[0].files;
+    for (let i = 0; i < secondaryPhotos.length; i++) {
+        formData.append('images[]', secondaryPhotos[i]);
+    }
+
+    // Captura os ISBNs e adiciona ao formData
+    $('.isbn-input').each(function (index, input) {
+        formData.append(`isbns[]`, $(input).val());
+    });
+
+    // Envio com a função Products.addProduct()
+    Products.addProduct(formData)
+        .then(function () {
+            Swal.fire('Guardado!', 'Produto adicionado com sucesso!', 'success');
+            window.table.ajax.reload();
+        })
+        .catch(function (error) {
+            Swal.fire('Erro!', 'Não foi possível guardar os detalhes.', 'error');
+            console.error('Erro ao adicionar produto:', error);
+        });
+}
+
 export function addNewProduct() {
     $.ajax({
         url: '/api/tags', // Replace with your API URL for tags
@@ -268,12 +314,9 @@ export function addNewProduct() {
         function (tagsData) {
             const tags = tagsData.data;
 
-            // Initialize user tags and departments
-            let productTags = [];
-
             // Function to render tags list
             function updatetagList() {
-                const tagListHtml = usertags
+                const tagListHtml = tags
                     .map(tag => `
                         <tr>
                             <td>${tag.name}</td>
@@ -284,141 +327,310 @@ export function addNewProduct() {
                 $('#tag-list tbody').html(tagListHtml);
             }
 
-            SwalDialog.defaultAlert(
+            let addNewProduct = new Modal(
                 '',
-                'Criar Equipamento',
-                '',
-                (result) => {
-                    console.log(result.value)
-                    Products.addProduct(JSON.stringify(result.value))
-                        .then(function () {
-                            Swal.fire('Guardado!', 'Detalhes atualizados.', 'success');
-                            window.table.ajax.reload();
-                        })
-                        .catch(function (error) {
-                            Swal.fire('Erro!', 'Não foi possível guardar os detalhes.', 'error');
-                            console.error('Error updating user:', error);
-                        });}
-                ,() => {},
-                {
-                    html: `<div class="row" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(to right, #f8f9fa, #e3f2fd); padding: 20px; border-radius: 15px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); transition: all 0.3s ease-in-out;">
-    <div class="col-lg-8 d-flex flex-column">
-        <label for="swal-input-nome" style="display:block; margin-bottom:5px; font-weight: bold; font-size: 1.2em; color: #333;">Nome do Equipamento</label>
-        <input id="swal-input-nome" class="swal2-input" style="padding: 10px; border-radius: 10px; border: 1px solid #ccc; font-size: 1em; transition: box-shadow 0.3s ease;" onfocus="this.style.boxShadow='0 0 10px rgba(0, 123, 255, 0.5)'" onblur="this.style.boxShadow='none'">
-
-        <label for="swal-input-descricao" style="display:block; margin-top:10px; margin-bottom:5px; font-weight: bold; font-size: 1.2em; color: #333;">Descrição</label>
-        <input id="swal-input-descricao" class="swal2-input" style="padding: 10px; border-radius: 10px; border: 1px solid #ccc; font-size: 1em; transition: box-shadow 0.3s ease;" onfocus="this.style.boxShadow='0 0 10px rgba(0, 123, 255, 0.5)'" onblur="this.style.boxShadow='none'">
-    </div>
-    <div class="col-lg-4 d-flex justify-content-center align-items-center">
-        <input type="file" id="equipment-image" accept="image/*" style="display: none;" onchange="previewImage(event)">
-        <img src="https://i.pinimg.com/564x/b9/d3/83/b9d3831124e896c6315569c891e31bb9.jpg" alt="Imagem Modelo" id="equipment-preview" 
-            style="width:200px; height: 200px; object-fit: cover; cursor: pointer; border: 2px solid #007bff; box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); border-radius: 10px; transition: transform 0.3s ease, box-shadow 0.3s ease; background: linear-gradient(to bottom right, #ffffff, #e3f2fd);" 
-            onclick="document.getElementById('equipment-image').click();" onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 12px 24px rgba(0, 0, 0, 0.3)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.3)';">
-              
-    </div>
-</div>
-<div class="row mt-4" style="background: linear-gradient(to right, #ffffff, #f0f8ff); padding: 20px; border-radius: 15px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);">
-    <div class="col-lg-12">
-        <table id="tag-list" class="table table-bordered" style="border-collapse: collapse; background-color: #ffffff;">
-            <caption style="caption-side: top; text-align: center; font-size: 1.5em; font-weight: bold; color: #007bff; text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);">Aspectos</caption>
-            <thead>
-                <tr style="background-color: #007bff; color: #fff;">
-                    <th style="width: 50%; text-align: left; padding: 10px; font-size: 1.1em;">Quantidade</th>
-                    <th style="width: 50%; text-align: right; padding: 10px; font-size: 1.1em;">Categorias</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Dynamically populated tags -->
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td style="text-align: left; padding: 10px;">
-                        <input type="number" id="tag-quantity" class="form-control" placeholder="Quantidade" style="padding: 10px; border-radius: 10px; border: 1px solid #ccc; font-size: 1em; transition: box-shadow 0.3s ease;" onfocus="this.style.boxShadow='0 0 10px rgba(0, 123, 255, 0.5)'" onblur="this.style.boxShadow='none'">
-                    </td>
-                    <td style="text-align: right; padding: 10px;">
+                `<form>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="details" class="form-label">Details</label>
+                        <textarea class="form-control" id="details" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="tags" class="form-label">Tags</label>
                         <select class="form-select" id="tagsSelection" name="tags" style="padding: 10px; border-radius: 10px; border: 1px solid #ccc; font-size: 1em; transition: box-shadow 0.3s ease;" onfocus="this.style.boxShadow='0 0 10px rgba(0, 123, 255, 0.5)'" onblur="this.style.boxShadow='none'">
                             <option value="" disabled selected>Selecione uma categoria</option>
                             ${tags.map(tag => `<option value="${tag.id}">${tag.name}</option>`).join('')}
                         </select>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-</div>
-<script>
-function previewImage(event) {
-    const preview = document.getElementById('equipment-preview');
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-}
-</script>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" min="1" required>
+                    </div>
+                    <div id="isbnContainer" class="mb-3"></div>
+                </div>
+                <div class="col-md-6 d-flex flex-column align-items-center">
+                    <label class="form-label">Main Photo</label>
+                    <input type="file" class="form-control" id="mainPhoto" accept="image/*">
+                    <img id="mainPreview" class="img-thumbnail mt-2 d-none" width="250">
+                    
+                    <label class="form-label mt-3">Secondary Photos</label>
+                    <input type="file" class="form-control" id="secondaryPhotos" accept="image/*" multiple>
+                    <div id="secondaryPreviews" class="d-flex flex-wrap mt-2"></div>
+                </div>
+            </div>
+        </form>
+                `,
+                'Adicionar Novo Produto',
+                function () {
+                    // Initial render of user tags and departments
+                    updatetagList();
 
+                    // Add tag
+                    $('#addtag').on('click', function () {
+                        const selectedtagId = $('#tagsSelection').val();
+                        const selectedtag = tags.find(tag => tag.id == selectedtagId);
 
-                    `,
-                    focusConfirm: false,
-                    showCancelButton: true,
-                    confirmButtonText: 'Salvar',
-                    customClass: 'swal-form',
-                    didOpen: function () {
-                        // Initial render of user tags and departments
-                        updatetagList();
-                        updateDepartmentList();
-
-                        // Add tag
-                        $('#addtag').on('click', function () {
-                            const selectedtagId = $('#tagsSelection').val();
-                            const selectedtag = tags.find(tag => tag.id == selectedtagId);
-
-                            if (selectedtag && !usertags.some(r => r.id == selectedtagId)) {
-                                usertags.push(selectedtag);
-                                updatetagList();
-                            } else {
-                                alert('Este cargo já foi adicionado.');
-                            }
-                        });
-
-                        // Remove tag
-                        $('#tag-list').on('click', '.remove-tag', function () {
-                            const tagIdToRemove = $(this).data('tag-id');
-                            usertags = usertags.filter(tag => tag.id != tagIdToRemove);
+                        if (selectedtag && !usertags.some(r => r.id == selectedtagId)) {
+                            usertags.push(selectedtag);
                             updatetagList();
-                        });
-
-                        // Remove department
-                        $('#department-list').on('click', '.remove-department', function () {
-                            userDepartments = [];
-                            updateDepartmentList();
-                        });
-                    },
-                    preConfirm: function () {
-                        const name = $('#swal-input-nome').val();
-                        const email = $('#swal-input-email').val();
-
-                        if (!name || !email || usertags.length === 0 || userDepartments.length === 0) {
-                            Swal.showValidationMessage('Nome, Email, pelo menos um Cargo e um Departamento são necessários!');
-                            return null;
+                        } else {
+                            alert('Este cargo já foi adicionado.');
                         }
+                    });
 
-                        return {
-                            name,
-                            email,
-                            tags: usertags.map(tag => tag.name),
-                            departments: userDepartments
-                        };
+                    $('#quantity').on('change', function () {
+                        const quantity = parseInt($(this).val(), 10);
+                        const isbnContainer = $('#isbnContainer');
+                    
+                        // Limpa os ISBNs anteriores
+                        isbnContainer.empty();
+                    
+                        if (quantity > 0) {
+                            for (let i = 0; i < quantity; i++) {
+                                const isbnInput = `
+                                    <div class="mb-2">
+                                        <label class="form-label">ISBN do Equipamento ${i + 1}</label>
+                                        <input type="text" class="form-control isbn-input" name="isbn[]" required>
+                                    </div>`;
+                                isbnContainer.append(isbnInput);
+                            }
+                        }
+                    });
+                    
+
+                    // Remove tag
+                    $('#tag-list').on('click', '.remove-tag', function () {
+                        const tagIdToRemove = $(this).data('tag-id');
+                        usertags = usertags.filter(tag => tag.id != tagIdToRemove);
+                        updatetagList();
+                    });
+
+                    $('#mainPhoto').on('change', (e) => {
+                        e.preventDefault();
+                        const preview = document.getElementById('mainPreview');
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                preview.src = event.target.result;
+                                preview.classList.remove('d-none');
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+
+                    $('#secondaryPhotos').on('change', function(event){
+                        const container = document.getElementById('secondaryPreviews');
+                        container.innerHTML = ''; // Limpar as imagens anteriores
+                        let imageCounter = 0;
+                        Array.from(event.target.files).forEach(file => {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.classList.add('img-thumbnail', 'm-1');
+                                img.style.width = '100px';
+                                img.id = `image-${imageCounter}`;
+
+                                img.addEventListener('click', function() {
+                                    const input = document.createElement('input');
+                                    input.type = 'file';
+                                    input.accept = 'image/*';
+                                    input.style.display = 'none';
+                                    container.appendChild(input);
+                                    input.click();
+
+                                    input.addEventListener('change', function(event) {
+                                        const file = event.target.files[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onload = function(e) {
+                                                img.src = e.target.result;
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    });
+                                });
+
+                                container.appendChild(img);
+                                imageCounter++;
+                            };
+                            reader.readAsDataURL(file);
+                        });
+                    })
+                },
+                function () {
+                    const title = $('#title').val();
+                    const details = $('#details').val();
+                    const tag = $('#tagsSelection').val();
+                    const quantity = $('#quantity').val();
+
+                    if (!title || !details || !tag || !quantity) {
+                        Swal.showValidationMessage('titulo, detalhes, quantidade, categoria e imagens são obrigatórias!');
+                        return null;
                     }
-                }
+                    uploadProduct(title, details, tag, quantity);
+                },
+                (result) => {}
             );
+
+            addNewProduct.build();
         },
         error: function (xhr, status, error) {
             console.error('Error fetching tags:', error);
             Swal.fire('Erro!', 'Não foi possível carregar os cargos.', 'error');
+        }
+    });
+}
+
+
+function editarProduto(productId, product) {
+    $.ajax({
+        url: '/api/tags',
+        method: 'GET',
+        dataType: 'json',
+        success: function (tagsData) {
+            const tags = tagsData.data;
+
+            let editarProduct = new Modal(
+                '',
+                `<form id="editProductForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">Title</label>
+                                <input type="text" value="${product.name}" class="form-control" id="title" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="details" class="form-label">Details</label>
+                                <textarea class="form-control" id="details" rows="3" required>${product.details}</textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" min="1" value="${product.quantity}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="tagsSelection" class="form-label">Category</label>
+                                <select class="form-select" id="tagsSelection">
+                                    ${tags.map(tag => `<option value="${tag.id}" ${product.tag_id === tag.id ? 'selected' : ''}>${tag.name}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <div id="isbnContainer" class="mb-3"></div>
+                        </div>
+
+                        <div class="col-md-6 d-flex flex-column align-items-center">
+                            <label class="form-label">Main Photo</label>
+                            <input type="file" class="form-control" id="mainPhoto" accept="image/*">
+                            <img id="mainPreview" src="${product.featured_image}" class="img-thumbnail mt-2" width="250">
+
+                            <label class="form-label mt-3">Secondary Photos</label>
+                            <input type="file" class="form-control" id="secondaryPhotos" accept="image/*" multiple>
+                            <div id="secondaryPreviews" class="d-flex flex-wrap mt-2"></div>
+
+                            <label class="form-label mt-3">Existing Images</label>
+                            <div id="existingImages" class="d-flex flex-wrap mt-2">
+                                ${product.img.map((imageUrl, index) => `
+                                    <div class="image-wrapper m-2">
+                                        <img src="${imageUrl}" class="img-thumbnail existing-image" width="100" data-index="${index}">
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </form>`,
+                'Edit ' + product.name,
+                function () {
+                    // Populate ISBNs
+                    const isbnContainer = $('#isbnContainer');
+                    isbnContainer.empty();
+                    product.products.forEach((item, index) => {
+                        const isbnInput = `
+                            <div class="mb-2">
+                                <label class="form-label">ISBN for Equipment ${index + 1}</label>
+                                <input type="text" class="form-control isbn-input" value="${item.isbn}" name="isbn[]" required>
+                            </div>`;
+                        isbnContainer.append(isbnInput);
+                    });
+
+                    // Handle main photo preview
+                    $('#mainPhoto').on('change', function (e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (event) {
+                                $('#mainPreview').attr('src', event.target.result);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+
+                    // Handle new secondary photos preview
+                    $('#secondaryPhotos').on('change', function (event) {
+                        const container = $('#secondaryPreviews');
+                        container.empty(); // Clear previous previews
+                        Array.from(event.target.files).forEach(file => {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.classList.add('img-thumbnail', 'm-1');
+                                img.style.width = '100px';
+                                container.append(img);
+                            };
+                            reader.readAsDataURL(file);
+                        });
+                    });
+                },
+                function () {
+                    const updatedData = {
+                        name: $('#title').val(),
+                        details: $('#details').val(),
+                        quantity: $('#quantity').val(),
+                        tag_id: $('#tagsSelection').val(),
+                        isbns: $('.isbn-input').map(function () { return $(this).val(); }).get()
+                    };
+
+                    const formData = new FormData();
+                    formData.append('name', updatedData.name);
+                    formData.append('details', updatedData.details);
+                    formData.append('quantity', updatedData.quantity);
+                    formData.append('tag_id', updatedData.tag_id);
+
+                    updatedData.isbns.forEach((isbn, index) => {
+                        formData.append(`isbns[${index}]`, isbn);
+                    });
+
+                    const mainPhotoFile = $('#mainPhoto')[0].files[0];
+                    if (mainPhotoFile) {
+                        formData.append('main_photo', mainPhotoFile);
+                    }
+
+                    // Append new secondary photos
+                    const secondaryFiles = $('#secondaryPhotos')[0].files;
+                    for (let i = 0; i < secondaryFiles.length; i++) {
+                        formData.append('secondary_photos[]', secondaryFiles[i]);
+                    }
+
+                    Products.updateProduct(productId, formData);
+                }
+            );
+
+            editarProduct.build();
+        },
+        error: function () {
+            Swal.fire('Error!', 'Failed to load categories.', 'error');
         }
     });
 }
