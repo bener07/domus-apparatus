@@ -2,11 +2,6 @@
     <div class="card shadow mb-4">
         <div class="card-body">
             <div class="table-responsive">
-                <div id="loadingWheel" style="display: block; background:white;width:100%;" class="text-center">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </div>
                 <table class="table table-striped table-bordered" id="productsTable">
                     <div>
                         <button type="button" class="btn btn-primary" id="addNewBtn">Adicionar Produto</button>

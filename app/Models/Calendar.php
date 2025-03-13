@@ -103,8 +103,8 @@ class Calendar extends Pivot
             $query->selectRaw('MIN(id)')
                   ->from('calendar')
                   ->where(function($query) use ($start, $end) {
-                      $query->where('end', '<=', '2025-02-10')
-                            ->orWhere('start', '<=', '2025-03-10');
+                      $query->where('end', '<=', $end)
+                            ->orWhere('start', '<=', $end);
                   })
                   ->where(function($query) use ($start, $end) {
                       $query->where('end', '>=', $start)

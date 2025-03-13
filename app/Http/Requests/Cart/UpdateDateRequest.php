@@ -23,8 +23,8 @@ class UpdateDateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'start' => 'required|date|after_or_equal:today',
-            'end' => 'required|date|after_or_equal:start',
+            'start' => 'required|date_format:Y-m-d\TH:i|after_or_equal:today',
+            'end' => 'required|date_format:Y-m-d\TH:i|after_or_equal:start',
         ];
     }
 
@@ -36,7 +36,7 @@ class UpdateDateRequest extends FormRequest
             'start.after_or_equal' => 'Data de requisição tem de ser posterior a hoje!',
             'end.required' => 'Data de entrega é obrigatória',
             'end.date' => 'Data de entrega tem de ser uma data válida',
-            'end.after_or_equal' => 'Data de entrega tem de ser posterior à Data de requisição!'
+            'end.after_or_equal' => 'Data de entrega tem de ser posterior à Data de requisição!',
         ];
     }
 

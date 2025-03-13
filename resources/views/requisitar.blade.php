@@ -51,16 +51,24 @@
                             <div class="row g-3">
                                 <!-- Initial Date -->
                                 <div class="col-12 col-md-5">
-                                    <label for="start_date" class="form-label">Data de requisição</label>
-                                    <input type="date" id="start_date" name="start" class="form-control" required>
+                                    <label for="start" class="form-label">Data de requisição</label>
+                                    <input type="date" id="start" class="form-control" required>
+                                    <label for="start_time">Hora de requisição</label>
+                                    <input type="time" id="start_time" name="start_time" class="form-control" required>
+
+                                    <input type="datetime-local" id="start_date" name="start" class="form-control d-none">
                                 </div>
                                 <div class="col-12 col-md-2 text-center d-flex align-items-center justify-content-center">
                                     <i class="bi bi-arrow-right fs-2 text-dark"></i>
                                 </div>
                                 <!-- Final Date -->
                                 <div class="col-12 col-md-5">
-                                    <label for="end_date" class="form-label">Data de entrega</label>
-                                    <input type="date" id="end_date" name="end" class="form-control" required>
+                                    <label for="end" class="form-label">Data de entrega</label>
+                                    <input type="date" id="end" class="form-control" required>
+                                    <label for="end_time">Hora de Entrega</label>
+                                    <input type="time" id="end_time" name="end_time" class="form-control"required>
+                                    
+                                    <input type="datetime-local" id="end_date" name="end" class="form-control d-none">
                                 </div>
                             </div>
                             <!-- Submit Button -->
@@ -72,8 +80,8 @@
             @endisDateChoosen
         </div>
     </section>
-    
-    <slot name="scripts">
+
+    <x-slot name="scripts">
         @vite(['resources/js/user/requisitar.js'])
         <script>
             const submitBtn = document.getElementById('submitForm');
@@ -87,8 +95,26 @@
             });
 
             submitBtn.addEventListener('click', function () {
+                event.preventDefault();
+                let startDate = $('#start').val();
+                let startTime = $('#start_time').val();
+
+                let endDate = $('#end').val();
+                let endTime = $('#end_time').val();
+
+                if(startDate && startTime){
+                    let dateTime = startDate + 'T' + startTime;
+                    $('#start_date').val(dateTime);
+                    console.log(dateTime);
+                }
+
+                if (endDate && endTime){
+                    let dateTime = endDate + 'T' + endTime;
+                    $('#end_date').val(dateTime);
+                    console.log(dateTime);
+                }
                 document.getElementById('dateForm').submit();
             });
         </script>
-    </slot>
+    </x-slot>
 </x-app-layout>
