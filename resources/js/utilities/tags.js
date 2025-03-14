@@ -10,14 +10,14 @@ export class Tags extends API{
     }
 
     static updateTag(tagId, tagData){
-        return API.makeAuthenticatedRequest('/api/tags/' + tagId, 'PUT', tagData);
+        return API.makeAuthenticatedRequest('/api/admin/tags/' + tagId, 'PUT', tagData);
     }
 
     static deleteTag(tagId){
-        return API.makeAuthenticatedRequest('/api/tags/' + tagId, 'DELETE');
+        return API.makeAuthenticatedRequest('/api/admin/tags/' + tagId, 'DELETE');
     }
 
-    static createTag(tagData){
-        return API.makeAuthenticatedRequest('/api/tags', 'POST', tagData);
+    static addTag(tagData){
+        return API.makeAuthenticatedRequest('/api/admin/tags', 'POST', tagData);
     }
 }

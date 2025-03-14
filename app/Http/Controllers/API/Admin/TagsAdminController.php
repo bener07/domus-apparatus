@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\API\Admin;
 
-use App\Http\Requests\StoreTagsRequest;
-use App\Http\Requests\UpdateTagsRequest;
+use App\Http\Requests\Tags\StoreTagsRequest;
+use App\Http\Requests\Tags\UpdateTagsRequest;
 use App\Models\Tags;
 use App\Http\Resources\TagResource;
 use App\Classes\ApiResponseClass;
@@ -29,10 +29,8 @@ class TagsAdminController extends Controller
 
     public function update(UpdateTagsRequest $request, $id){
         $tag = Tags::find($id);
-        if(!$tag){
-            return ApiResponseClass::sendResponse([], 'Tag not found', 404);
-        }
         $tag->update($request->all());
+        $tag->owner_id = $request->owner_id;
         return ApiResponseClass::sendResponse(new TagResource($tag), 'Tag updated successfully', 200);
     }
 

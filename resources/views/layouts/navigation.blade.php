@@ -18,6 +18,16 @@
             <span>Home</span>
         </a>
     </li>
+    <li class="nav-item">
+        <div class="nav-link ">
+            <a href="#" id="deliveryScanner" class="shadow-lg rounded btn btn-info btn-icon-split fw-bold fs-1 align-items-center">
+                <span class="icon text-white-50">
+                    <i class="bi bi-qr-code fs-5 fw-bold"></i>
+                </span>
+                <span class="text fs-5">Scan</span>
+            </a>
+        </div>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -38,7 +48,7 @@
                 <h5 class="collapse-header">Equipamentos:</h5>
                 <a class="collapse-item @if(request()->is('dashboard/products')) active @endif" href="{{route('admin.products')}}">Gerir Equipamentos </a>
                 <a class="collapse-item @if(request()->is('dashboard/tags')) active @endif" href="{{route('admin.tags')}}"><i class="bi bi-tags"></i> Categorias </a>
-                <button class="collapse-item" id="addNewProduct"><i class="bi bi-plus"></i> Adicionar</button>
+                <a class="collapse-item" id="addNewProduct" href="#"><i class="bi bi-plus"></i> Adicionar</a>
             </div>
         </div>
     </li>
@@ -53,7 +63,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h5 class="collapse-header">Utilizadores:</h5>
                 <a class="collapse-item @if(request()->is('dashboard/users')) active @endif" href="{{route('admin.users')}}">Editar Utilizadores</a>
-                <button class="collapse-item" id="addNewUser"><i class="bi bi-plus"></i> Adicionar</button>
+                <a class="collapse-item" id="addNewUser" href="#"><i class="bi bi-plus"></i> Adicionar</a>
             </div>
         </div>
     </li>
@@ -68,7 +78,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h5 class="collapse-header">Cargos:</h5>
                 <a class="collapse-item @if(request()->is('dashboard/roles')) active @endif" href="{{route('admin.roles')}}">Editar Cargos</a>
-                <button class="collapse-item" id="addNewCargo"><i class="bi bi-plus"></i> Adicionar</button>
+                <a class="collapse-item" id="addNewCargo" href="#"><i class="bi bi-plus"></i> Adicionar</a>
             </div>
         </div>
     </li>
@@ -82,7 +92,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h5 class="collapse-header">Departamentos:</h5>
                 <a class="collapse-item @if(request()->is('dashboard/department')) active @endif" href="{{route('admin.departments')}}">Editar Departamentos</a>
-                <button class="collapse-item" id="addNewDepartment"><i class="bi bi-plus"></i> Adicionar</button>
+                <a class="collapse-item" id="addNewDepartment" href="#"><i class="bi bi-plus"></i> Adicionar</a>
             </div>
         </div>
     </li>

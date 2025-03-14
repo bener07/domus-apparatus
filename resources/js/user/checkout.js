@@ -1,4 +1,4 @@
-import { Cart } from '../utilities/cart';
+import { Cart } from '../components/cart';
 import { SwalDialog } from '../components/dialog';
 import { Disciplines } from '../utilities/disciplines';
 import { Classes } from '../utilities/classes';

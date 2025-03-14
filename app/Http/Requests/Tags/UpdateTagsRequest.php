@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Tags;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Http\Request\ApiRequest;
+use App\Http\Requests\ApiRequest;
 
 class UpdateTagsRequest extends ApiRequest
 {
@@ -23,7 +23,11 @@ class UpdateTagsRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            //
+            'id' => 'required|integer|exists:tags,id',
+            'name' => 'required|string|max:255',
+            'details' => 'nullable|string',
+            'description' => 'nullable|string',
+            'owner_id' => 'required|exists:users,id'
         ];
     }
 }
