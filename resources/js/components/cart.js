@@ -1,6 +1,6 @@
 import {
   API
-} from './api';
+} from '../utilities/api';
 import {
   loadProducts
 } from '../user/requisitar.js';

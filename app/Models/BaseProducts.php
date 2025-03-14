@@ -129,4 +129,8 @@ class BaseProducts extends Model
     public function requisicao(){
         return $this->belongsTo(Requisicao::class, 'product_id');
     }
+
+    public function hasTag($tag_id){
+        return $this->tags()->withPivot('tag_id', $tag_id)->exists();
+    }
 }

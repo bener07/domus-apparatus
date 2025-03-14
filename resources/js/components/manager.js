@@ -1,5 +1,5 @@
 import {API} from '../utilities/api';
-import { SwalDialog } from '../utilities/dialog';
+import { SwalDialog } from './dialog';
 
 
 

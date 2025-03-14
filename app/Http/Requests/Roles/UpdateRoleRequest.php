@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Tags;
+namespace App\Http\Requests\Roles;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Requests\ApiRequest;
 
-class UpdateTagsRequest extends ApiRequest
+class UpdateRoleRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +22,9 @@ class UpdateTagsRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|integer|exists:tags,id',
+            'id' => 'required|integer|exists:roles,id',
             'name' => 'required|string|max:255',
-            'details' => 'nullable|string',
-            'description' => 'nullable|string',
-            'owner_id' => 'required|exists:users,id'
+            'description' => 'nullable|string'
         ];
     }
 }

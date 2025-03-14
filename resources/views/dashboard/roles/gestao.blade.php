@@ -1,38 +1,45 @@
 <x-app-layout>
-    <div class="card shadow mb-4">
+    <h1 class="mt-4">Gestão de Cargos</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Lista de Cargos</span>
+                <button id="addNew-role" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Adicionar Novo Cargo
+                </button>
+            </div>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
-                <div id="loadingWheel" style="display: block; background:white;width:100%;" class="text-center">
-                    <div class="spinner-border" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
+                <!-- Search Input -->
+                <div class="form-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar...">
                 </div>
-                <table class="table table-striped table-bordered" id="usersTable">
-                    <div>
-                        <button type="button" class="btn btn-primary" id="addNewBtn">Adicionar Utilizador</button>
-                    </div>
-                    <thead class="table-dark">
+
+                <!-- Roles Table -->
+                <table id="rolesTable" class="table table-bordered table-striped" width="100%" cellspacing="0">
+                    <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Perfil</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Departamento</th>
-                            <th scope="col">Cargo</th>
-                            <th scope="col">Ações</th>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Descrição</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody">
+                    <tbody>
+                        {{-- <!-- Data will be populated dynamically by DataTables --> --}}
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    
+
+    <!-- Modal Placeholder -->
+    <div id="modal-placeholder"></div>
     
 
     <x-slot name="scripts">
         
-        @vite(['resources/js/dashboard/users.js'])
     </x-slot>
     
 </x-app-layout>

@@ -25,7 +25,7 @@ export class Products{
         return API.makeAuthenticatedRequest('/api/admin/products', 'POST', formData, ()=>{});
     }
     static updateProduct(productId, productData){
-        return API.makeAuthenticatedRequest('/api/admin/products/'+productId, 'PUT', productData, ()=>{});
+        return API.makeAuthenticatedRequest('/api/admin/products/'+productId+'?_method=PUT', 'POST', productData, ()=>{});
     }
     static deleteProduct(productId){
         return API.makeAuthenticatedRequest('/api/admin/products/'+productId, 'DELETE', {}, ()=>{});

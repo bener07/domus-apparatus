@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Tags;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Requests\ApiRequest;
 
 class StoreTagsRequest extends ApiRequest

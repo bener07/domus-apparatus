@@ -65,11 +65,9 @@ Route::group([
     Route::get('/users/add', function(){return view('dashboard.users.add');})->name('admin.users.add');
     
     Route::get('/roles', function(){return view('dashboard.roles.gestao');})->name('admin.roles');
-    Route::get('/roles/add', function(){return view('dashboard.roles.add');})->name('admin.roles.add');
     Route::get('/department', function(){return view('dashboard.departments.gestao');})->name('admin.departments');
-    Route::get('/department/add', function(){return view('dashboard.departments.add');})->name('admin.departments.add');
     Route::get('/products', function(){return view('dashboard.products.gestao');})->name('admin.products');
-    Route::get('/products/add', function(){return view('dashboard.products.add');})->name('admin.products.add');
+    Route::get('/tags', function () {return view('dashboard.products.tags');})->name('admin.tags');
 });
 
 

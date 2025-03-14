@@ -20,6 +20,10 @@ export class Users extends API {
         return API.makeAuthenticatedRequest('/api/admin/users/' + userId, 'GET', {}, ()=>{});
     }
 
+    static uploadAvatar(userId, avatar){
+        return API.makeAuthenticatedRequest('/api/user/' + userId + '/avatar', 'POST', avatar, ()=>{});
+    }
+
     static updateUser(userId, userData) {
         return API.makeAuthenticatedRequest('/api/admin/users/' + userId, 'PUT', userData, ()=>{});
     }

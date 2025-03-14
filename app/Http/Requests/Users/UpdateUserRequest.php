@@ -26,8 +26,8 @@ class UpdateUserRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'name' => ['required','string','max:255'],
-            'email' => ['required','string','email'],
+            'name' => ['string','max:255'],
+            'email' => ['string','email'],
             'avatar' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
             'password' => ['nullable','string','min:8','confirmed'],
             'role' => ['nullable','string','in:user,admin'],

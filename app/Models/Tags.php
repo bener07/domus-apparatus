@@ -10,7 +10,8 @@ class Tags extends Model
         'name',
         'details',
         'image',
-        'description'
+        'description',
+        'owner_id',
     ];
 
     public static function boot()
@@ -33,6 +34,6 @@ class Tags extends Model
     }
 
     public function user(){
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'owner_id');
     }
 }

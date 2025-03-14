@@ -18,7 +18,8 @@ class ProductsResource extends JsonResource
     public function toArray(Request $request): array
     {
         $cart = $request->user()->cart;
-        $availability = $this->quantity - Calendar::productsRequestedOnDate($this->id, $cart->start, $cart->end)->sum('quantity');
+        $products_requested_on_date = Calendar::productsRequestedOnDate($this->id, $cart->start, $cart->end)->sum('quantity');
+        $availability = $this->quantity - $products_requested_on_date;
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -28,7 +29,7 @@ class ProductsResource extends JsonResource
             'tags' => $this->tags->pluck('name'),
             'status' => $availability > 0 ? 'disponivel' : 'indisponivel',
             'quantity' => $availability,
-            'non_confirmed_requisicoes' => Calendar::productsRequestedOnDate($this->id, $cart->start, $cart->end)->sum('quantity'),
+            'non_confirmed_requisicoes' => $products_requested_on_date,
             'products' => ProductResource::collection($this->products)
         ];
     }

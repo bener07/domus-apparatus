@@ -36,7 +36,6 @@ class AddToCartRequest extends ApiRequest
             throw new UserException("Quantidade de equipamentos solicitada deve ser superior a 0", 400);
         }
         if($request->quantity > $product->quantity){
-            event(new CartEvent($cart, ''));
             throw new UserException("Quantidade de equipamentos solicitada é superior ao disponível", 400);
         }
         // $productsOnDate = Calendar::productsRequestedOnDate($product->id, $request->start ?? $cart->start, $request->end ?? $cart->end)->sum('quantity');
