@@ -1,5 +1,5 @@
 import { Cart } from '../utilities/cart';
-import { SwalDialog } from '../utilities/dialog';
+import { SwalDialog } from '../components/dialog';
 import { Disciplines } from '../utilities/disciplines';
 import { Classes } from '../utilities/classes';
 import { showLoading, hideLoading } from '../app';

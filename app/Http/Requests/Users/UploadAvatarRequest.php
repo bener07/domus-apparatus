@@ -3,12 +3,10 @@
 namespace App\Http\Requests\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Classes\ApiResponseClass;
+use Illuminate\Http\Request;
 use App\Http\Requests\ApiRequest;
 
-class UpdateUserRequest extends ApiRequest
+class UploadAvatarRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,11 +24,7 @@ class UpdateUserRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            'name' => ['string','max:255'],
-            'email' => ['string','email'],
-            'avatar' => ['nullable','image','mimes:jpeg,png,jpg','max:2048'],
-            'password' => ['nullable','string','min:8','confirmed'],
-            'role' => ['nullable','string','in:user,admin'],
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

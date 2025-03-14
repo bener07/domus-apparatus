@@ -1,8 +1,8 @@
 import { Users } from '../utilities/users';
-import { Tags } from '../utilities/tags';
+import { Roles } from '../utilities/roles';
 import { Departments } from '../utilities/departments';
-import { SwalDialog } from '../utilities/dialog';
-import { DataTableManager } from '../utilities/tables';
+import { SwalDialog } from '../components/dialog';
+import { DataTableManager } from '../components/tables';
 import { Modal } from '../components/manager';
 
 const usersTableManager = new DataTableManager('usersTable', {
@@ -32,8 +32,13 @@ const usersTableManager = new DataTableManager('usersTable', {
         {
             data: "roles",
             title: "Cargo",
-            render: (data) => {
-                return data || ''; // Handle missing roles
+            render: function(data, type, row) {
+                // Transform the roles array into a comma-separated string
+                if (Array.isArray(data) && data.length > 0) {
+                    return data.map(role => role.name).join(', ');
+                } else {
+                    return 'No roles'; // Default value if roles array is empty
+                }
             }
         },
         {
@@ -90,6 +95,12 @@ export function eliminarUser(userId) {
 }
 
 $(document).ready(() => {
+    console.log('Document is ready');
+    $('#addNew-user').on('click', ()=>{
+        console.log('Button clicked');
+        addNewUser()
+    });
+
     if ($("#usersTable").length > 0) {
         usersTableManager.init();
 
@@ -113,23 +124,22 @@ $(document).ready(() => {
         });
     }
 
-    $('#addNewBtn').on('click', addNewUser);
 
-    // Load tags and departments
+    // Load roles and departments
     loadTagsAndDepartments();
 });
 
 async function loadTagsAndDepartments() {
     try {
         const [tagsResponse, departmentsResponse] = await Promise.all([
-            Tags.getTags(),
+            Roles.getRoles(),
             Departments.getDepartments()
         ]);
 
-        populateDropdown('#tagsSelection', tagsResponse.data);
+        populateDropdown('#roleSelection', tagsResponse.data);
         populateDropdown('#departmentSelection', departmentsResponse.data);
     } catch (error) {
-        console.error('Error loading tags or departments:', error);
+        console.error('Error loading roles or departments:', error);
     }
 }
 
@@ -148,21 +158,21 @@ export async function editarUser(userId, user) {
         return;
     }
     try {
-        const [tagsData, departmentsData] = await Promise.all([
-            fetchData('/api/tags'),
-            fetchData('/api/departments')
+        const [rolesData, departmentsData] = await Promise.all([
+            Roles.getRoles(),
+            Departments.getDepartments()
         ]);
 
-        const tags = tagsData.data;
+        const roles = rolesData.data;
         const departments = departmentsData.data;
 
-        const modalContent = buildUserForm(user, tags, departments);
+        const modalContent = buildUserForm(user, roles, departments);
         const modal = new Modal(
             '',
             modalContent,
             'Editar Utilizador',
-            () => setupFormEvents(user, tags, departments),
-            () => handleFormSubmission(userId, usertags, userDepartments, uploadedImage)
+            () => setupFormEvents(user, roles, departments),
+            () => handleFormSubmission(userId, userRoles, userDepartments, uploadedImage)
         );
         modal.build();
     } catch (error) {
@@ -171,7 +181,7 @@ export async function editarUser(userId, user) {
     }
 }
 
-function buildUserForm(user, tags, departments) {
+function buildUserForm(user, roles, departments) {
     return `
         <div class="row">
             <div class="col-lg-8 d-flex flex-column">
@@ -194,18 +204,18 @@ function buildUserForm(user, tags, departments) {
         </div>
         <div class="row">
             <div class="col-lg-5 mt-4">
-                <table id="tag-list" class="table table-bordered">
+                <table id="role-list" class="table table-bordered">
                     <caption>Cargos</caption>
                     <tbody></tbody>
                     <tfoot>
                         <tr>
                             <td colspan="2" style="padding: 0px">
                                 <div class="d-flex flex-row">
-                                    <select class="form-select col-lg-8" id="tagsSelection" name="tags">
+                                    <select class="form-select col-lg-8" id="roleSelection" name="roles">
                                         <option value="" disabled selected>Selecione um cargo</option>
-                                        ${tags.map(tag => `<option value="${tag.id}">${tag.name}</option>`).join('')}
+                                        ${roles.map(tag => `<option value="${tag.id}">${tag.name}</option>`).join('')}
                                     </select>
-                                    <button id="addtag" type="button" class="btn btn-primary col-lg-4" style="border-radius: 0 10px 10px 0px;">Adicionar Cargo</button>
+                                    <button id="addRole" type="button" class="btn btn-primary col-lg-4" style="border-radius: 0 10px 10px 0px;">Adicionar Cargo</button>
                                 </div>
                             </td>
                         </tr>
@@ -235,23 +245,23 @@ function buildUserForm(user, tags, departments) {
     `;
 }
 
-let usertags = [];
+let userRoles = [];
 let userDepartments = [];
 let uploadedImage = null;
 
-function setupFormEvents(user, tags, departments) {
-    usertags = user.tags || [];
+function setupFormEvents(user, roles, departments) {
+    userRoles = user.roles || [];
     userDepartments = user.departments || [];
     uploadedImage = null;
 
-    function updatetagList() {
-        const tagListHtml = usertags.map(tag => `
+    function updateRoleList() {
+        const roleListHtml = userRoles.map(tag => `
             <tr>
                 <td>${tag.name}</td>
-                <td><button type="button" class="btn btn-danger btn-sm remove-tag" data-tag-id="${tag.id}">Remover</button></td>
+                <td><button type="button" class="btn btn-danger btn-sm remove-role" data-tag-id="${tag.id}">Remover</button></td>
             </tr>
         `).join('');
-        $('#tag-list tbody').html(tagListHtml);
+        $('#role-list tbody').html(roleListHtml);
     }
 
     function updateDepartmentList() {
@@ -264,24 +274,24 @@ function setupFormEvents(user, tags, departments) {
         $('#department-list tbody').html(departmentListHtml);
     }
 
-    updatetagList();
+    updateRoleList();
     updateDepartmentList();
 
-    $('#addtag').on('click', function () {
-        const selectedtagId = $('#tagsSelection').val();
-        const selectedtag = tags.find(tag => tag.id == selectedtagId);
-        if (selectedtag && !usertags.some(r => r.id == selectedtagId)) {
-            usertags.push(selectedtag);
-            updatetagList();
+    $('#addRole').on('click', function () {
+        const selectedtagId = $('#roleSelection').val();
+        const selectedtag = roles.find(tag => tag.id == selectedtagId);
+        if (selectedtag && !userRoles.some(r => r.id == selectedtagId)) {
+            userRoles.push(selectedtag);
+            updateRoleList();
         } else {
             alert('Este cargo já foi adicionado.');
         }
     });
 
-    $('#tag-list').on('click', '.remove-tag', function () {
+    $('#role-list').on('click', '.remove-role', function () {
         const tagIdToRemove = $(this).data('tag-id');
-        usertags = usertags.filter(tag => tag.id != tagIdToRemove);
-        updatetagList();
+        userRoles = userRoles.filter(tag => tag.id != tagIdToRemove);
+        updateRoleList();
     });
 
     $('#addDepartment').on('click', function () {
@@ -300,7 +310,10 @@ function setupFormEvents(user, tags, departments) {
         updateDepartmentList();
     });
 
-    $('#image-container').on('click', () => $('#userImage').click());
+    $('#image-container').off('click').on('click', (event) => {
+        event.stopPropagation();
+        $('#userImage').click()
+    });
     $('#userImage').on('change', function () {
         const file = this.files[0];
         if (file && file.type.startsWith('image/')) {
@@ -316,81 +329,68 @@ function setupFormEvents(user, tags, departments) {
     });
 }
 
-function handleFormSubmission(userId, usertags, userDepartments, uploadedImage) {
+function handleFormSubmission(userId, userRoles, userDepartments, uploadedImage) {
     // Extract values from the modal inputs
     const name = $('#swal-input-nome').val();
     const email = $('#swal-input-email').val();
 
     // Validate required fields
-    if (!name || !email || usertags.length === 0 || userDepartments.length === 0) {
+    if (!name || !email || userRoles.length === 0 || userDepartments.length === 0) {
         Swal.showValidationMessage('Nome, Email, pelo menos um Cargo e um Departamento são necessários!');
         return null;
     }
 
-    // Create FormData object
+    // Create JSON payload
+    const payload = JSON.stringify({
+        name: name,
+        email: email,
+        roles: userRoles,
+        departments: userDepartments,
+    });
+
+    // Send the JSON payload
+    const userPromise = userId ? Users.updateUser(userId, payload) : Users.addUser(payload);
+
+    userPromise
+        .then((response) => {
+            if (uploadedImage) {
+                // Upload the image separately
+                return uploadAvatar(userId == null ? response.data.id : userId, uploadedImage);
+            }
+            return response;
+        })
+        .then(() => {
+            Swal.fire('Guardado!', 'Detalhes atualizados.', 'success');
+            usersTableManager.reload();
+        })
+        .catch((error) => {
+            console.error('Error:', error.responseJSON || error.responseText || error);
+            Swal.fire('Erro!', 'Não foi possível guardar os detalhes.', 'error');
+        });
+}
+
+function uploadAvatar(userId, file) {
     const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('tags', JSON.stringify(usertags));
-    formData.append('departments', JSON.stringify(userDepartments));
-    if (uploadedImage) {
-        formData.append('avatar', uploadedImage);
-    }
+    formData.append('avatar', file);
 
-    // Log FormData for debugging
-    for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-    }
-
-    // Send the request to the server
-    if (userId) {
-        // Update existing user
-        Users.updateUser(userId, formData)
-            .then(() => {
-                Swal.fire('Guardado!', 'Detalhes atualizados.', 'success');
-                usersTableManager.reload();
-            })
-            .catch((error) => {
-                // Log the full error response
-                console.error('Update error:', error.responseJSON || error.responseText || error);
-                Swal.fire('Erro!', 'Não foi possível guardar os detalhes.', 'error');
-            });
-    } else {
-        // Add new user
-        Users.addUser(formData)
-            .then(() => {
-                Swal.fire('Guardado!', 'Utilizador adicionado com sucesso.', 'success');
-                usersTableManager.reload();
-            })
-            .catch((error) => {
-                // Log the full error response
-                console.error('Add user error:', error.responseJSON || error.responseText || error);
-                Swal.fire('Erro!', 'Não foi possível adicionar o utilizador.', 'error');
-            });
-    }
+    return Users.uploadAvatar(userId, formData);
 }
 
 export function addNewUser() {
-    $.ajax({
-        url: '/api/tags',
-        method: 'GET',
-        dataType: 'json',
-        success: (tagsData) => {
-            const tags = tagsData.data;
-            const modalContent = buildUserForm({ name: '', email: '', avatar: 'http://localhost/storage/images/avatar.png' }, tags, []);
+    Roles.getRoles().then(function (rolesData) {
+        Departments.getDepartments().then(function (response){
+            const roles = rolesData.data;
+            const departments = response.data;
+            const modalContent = buildUserForm({ name: '', email: '', avatar: 'http://localhost/storage/images/avatar.png' }, roles, departments);
             const modal = new Modal(
                 '',
                 modalContent,
                 'Adicionar Novo Utilizador',
-                () => setupFormEvents({ tags: [], departments: [] }, tags, []),
-                () => handleFormSubmission(null, usertags, userDepartments, uploadedImage)
+                () => setupFormEvents({ roles: [], departments: [] }, roles, departments),
+                () => handleFormSubmission(null, userRoles, userDepartments, uploadedImage)
             );
             modal.build();
-        },
-        error: (xhr, status, error) => {
-            console.error('Error fetching tags:', error);
-            Swal.fire('Erro!', 'Não foi possível carregar os cargos.', 'error');
-        }
+        })
     });
 }
 

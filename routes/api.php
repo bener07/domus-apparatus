@@ -63,6 +63,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/', [CartController::class, 'store']);
             Route::put('/', [CartController::class, 'update']);
         });
+        Route::post('{id}/avatar', [UserController::class, 'avatar']);
     });
 
     Route::get('/test-cart', function (Request $request){

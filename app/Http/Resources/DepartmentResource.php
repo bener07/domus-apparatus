@@ -17,6 +17,7 @@ class DepartmentResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'description' => $this->details,
             'manager_id' => $this->manager_id,
             'manager' => new UserResource($this->manager) // eager load the related user
         ];

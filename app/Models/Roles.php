@@ -9,7 +9,8 @@ class Roles extends Model
     protected $table = 'roles';
 
     protected $fillable = [
-        'name'
+        'name',
+        'description'
     ];
     
     public static function findRole($role_name=''){
@@ -22,6 +23,6 @@ class Roles extends Model
      */
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'roles_user', 'user_id', 'role_id');
     }
 }

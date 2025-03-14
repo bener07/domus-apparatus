@@ -119,7 +119,7 @@ class User extends Authenticatable
      */
     public function roles()
     {
-        return $this->belongsToMany(Roles::class, 'role_user', 'user_id', 'role_id');
+        return $this->belongsToMany(Roles::class, 'roles_user', 'user_id', 'role_id');
     }
 
     public function hasRole($role_name){
@@ -142,7 +142,7 @@ class User extends Authenticatable
     }
 
     public function syncRoles($roles){
-        $this->roles()->sync($this->getRoleIds($roles));
+        $this->roles()->sync($roles);
     }
 
     public function removeRole($role_name){

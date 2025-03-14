@@ -14,7 +14,7 @@ export class DataTableManager {
             paging: true,
             pageLength: 5,
             lengthChange: false,
-            searching: true,
+            searching: false,
             info: false,
             autoWidth: false,
             processing: true,

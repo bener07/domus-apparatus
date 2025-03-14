@@ -16,6 +16,8 @@ use App\Models\User;
 use App\Models\BaseProducts;
 use App\Models\Cart;
 use App\Http\Requests\Cart\AddToCartRequest;
+use App\Http\Requests\Users\UploadAvatarRequest;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -93,5 +95,41 @@ class UserController extends Controller
             return ApiResponseClass::sendResponse([], 'Parâmetro inválido!', 400);
         }
         return ApiResponseClass::sendResponse(new UserResource(auth()->user()), '', 200);
+    }
+
+    public function avatar(UploadAvatarRequest $request, $userId){
+        // Find the user
+        $user = User::find($userId);
+
+        // If the user doesn't exist, return a 404 error
+        if (!$user) {
+            return ApiResponseClass::sendResponse([], 'User not found!', 404);
+        }
+
+        // Store the file
+        if ($request->hasFile('avatar')) {
+            // Delete the old avatar if it exists
+            if ($user->avatar && Storage::exists($user->avatar)) {
+                Storage::delete($user->avatar);
+            }
+    
+            // Store the new avatar
+            $path = $request->file('avatar')->store('avatars', 'public');
+    
+            // Update the user's avatar field with the relative path
+            $user->avatar = Storage::url($path); // Store as
+            $user->save();
+    
+            // Return a success response with the public URL
+            return ApiResponseClass::sendResponse(
+                ['avatar_url' => Storage::url($path)],
+                'File Uploaded Successfully!',
+                200
+            );
+        }
+    
+
+        // If no file was uploaded, return an error
+        return ApiResponseClass::sendResponse([], 'No file specified!', 200);
     }
 }

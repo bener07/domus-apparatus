@@ -1,33 +1,47 @@
 <x-app-layout>
-    <div class="card shadow mb-4">
+    <h1 class="mt-4">Gestão de Utilizadores</h1>
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Lista de Utilizadores</span>
+                <button id="addNew-user" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Adicionar Novo Utilizador
+                </button>
+            </div>
+        </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-striped table-bordered" id="usersTable">
-                    <div>
-                        <button type="button" class="btn btn-primary" id="addNewUser">Adicionar Utilizador</button>
-                    </div>
-                    <thead class="table-dark">
+                <!-- Search Input -->
+                <div class="form-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar...">
+                </div>
+
+                <!-- Users Table -->
+                <table id="usersTable" class="table table-bordered table-striped" width="100%" cellspacing="0">
+                    <thead>
                         <tr>
-                            <th scope="col">id</th>
-                            <th scope="col">Perfil</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Departamento</th>
-                            <th scope="col">Cargo</th>
-                            <th scope="col">Ações</th>
+                            <th>ID</th>
+                            <th>Perfil</th>
+                            <th>Email</th>
+                            <th>Departamento</th>
+                            <th>Cargo</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody">
+                    <tbody>
+                        <!-- Data will be populated dynamically by DataTables -->
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    
+
+    <!-- Modal Placeholder -->
+    <div id="modal-placeholder"></div>
     
 
     <x-slot name="scripts">
-        
-        @vite(['resources/js/dashboard/users.js'])
+        {{-- @vite(['resources/js/dashboard/users.js']) --}}
     </x-slot>
-    
+
 </x-app-layout>

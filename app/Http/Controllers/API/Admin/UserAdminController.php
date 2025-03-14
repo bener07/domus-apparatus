@@ -61,7 +61,7 @@ class UserAdminController extends Controller
             'avatar' => $fileName ?? 'http://localhost/storage/images/avatar.png',
         ]);
         if($request->has('roles')){
-            $user->syncRoles($request->roles);
+            $user->syncRoles(collect($request->roles)->pluck('id'));
         }
         if($request->has('departments')){
             $user->department_id = $request->departments['id'];
@@ -84,7 +84,7 @@ class UserAdminController extends Controller
             return ApiResponseClass::sendResponse([], 'User not found', 404);
         }
         if($request->has('roles')) {
-            $user->syncRoles($request->roles);
+            $user->syncRoles(collect($request->roles)->pluck('id'));
         }
         if($request->has('departments')){
             $department = Department::find($request->departments['id']);

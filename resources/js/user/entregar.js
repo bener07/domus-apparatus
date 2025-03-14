@@ -1,5 +1,5 @@
 import { User } from '../utilities/user';
-import { SwalDialog } from '../utilities/dialog';
+import { SwalDialog } from '../components/dialog';
 import QRCode from 'qrcode';
 
 

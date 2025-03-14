@@ -1,6 +1,6 @@
 import { Products } from '../utilities/admin_products';
-import { SwalDialog } from '../utilities/dialog';
-import { DataTableManager } from '../utilities/tables';
+import { SwalDialog } from '../components/dialog';
+import { DataTableManager } from '../components/tables';
 import { Modal } from '../components/manager';
 
 const MAX_DESCRIPTION_LENGTH = 50;

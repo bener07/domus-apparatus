@@ -1,6 +1,6 @@
 import { Products } from '../utilities/products';
-import { Cart } from '../utilities/cart';
-import { SwalDialog } from '../utilities/dialog';
+import { Cart } from '../components/cart';
+import { SwalDialog } from '../components/dialog';
 
 const MAX_DESCRIPTION_LENGTH = 40;
 const MAX_TITLE_LENGTH = 20;

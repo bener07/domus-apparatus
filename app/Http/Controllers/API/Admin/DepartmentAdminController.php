@@ -11,8 +11,46 @@ use App\Models\Department;
 
 class DepartmentAdminController extends Controller
 {
-    public function index(){
-        return ApiResponseClass::sendResponse(DepartmentResource::collection(Department::all()), '', 200);
+    public function index(Request $request){
+        if ($request->ajax() && isset($request->start)) {
+            $start = $request->get('start');
+            $length = $request->get('length');
+            $search = $request->get('search');
+            $sortDirection = $request->get('orderDir');
+            $orderByColumn = $request->get('orderColumn');
+
+            $query = Department::query();
+
+            if (!empty($search)) {
+                $query->where(function($query) use ($search) {
+                    $query->where('name', 'like', "%$search%")
+                        ->orWhere('description', 'like', "%$search%");
+                });
+            }
+
+            $totalData = $query->count();
+
+            $columns = ['id', 'name', 'description', 'manager'];
+            $orderByColumnName = $columns[$orderByColumn] ?? 'id';
+            $query->orderBy($orderByColumnName, $sortDirection);
+
+            $departments = $query->offset($start)
+                                ->limit($length)
+                                ->get();
+
+            $totalFiltered = $query->count();
+
+            return response()->json([
+                "draw" => intval($request->input('draw')),
+                "recordsTotal" => $totalData,
+                "recordsFiltered" => $totalFiltered,
+                "data" => DepartmentResource::collection($departments)
+            ]);
+        }
+    
+        // Non-AJAX request (fallback)
+        $departments = Department::all();
+        return ApiResponseClass::sendResponse(DepartmentResource::collection($departments), '', 200);
     }
 
     public function store(StoreDepartmentRequest $request){

@@ -1,4 +1,4 @@
-import { SwalDialog } from "./dialog";
+import { SwalDialog } from "../components/dialog";
 
 export class API{
     constructor(){

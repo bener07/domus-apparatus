@@ -1,6 +1,6 @@
 import './bootstrap.js';
 import Alpine from 'alpinejs';
-import { Cart } from './utilities/cart.js';
+import { Cart } from './components/cart.js';
 import { loadProducts } from './user/requisitar.js';
 // import $ from 'jquery';
 
