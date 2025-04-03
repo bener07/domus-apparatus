@@ -36,7 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('roles', [RoleAdminController::class, 'index']);
     Route::get('departments', [DepartmentAdminController::class, 'index']);
     Route::get('tags', [TagsAdminController::class, 'index']);
-    Route::get('classes', [ClassAdminController::class, 'index']);
+    Route::get('classrooms', [ClassAdminController::class, 'index']);
     Route::get('disciplines', [DisciplinesAdminController::class, 'index']);
     Route::get('user', function (Request $request) {
         return ApiResponseClass::sendResponse(UserResource::make($request->user()), '', 200);
@@ -93,5 +93,6 @@ Route::group([
     Route::apiResource('tags', TagsAdminController::class);
     Route::apiResource('products', ProductsAdminController::class);
     Route::apiResource('departments', DepartmentAdminController::class);
-    Route::apiResource('classes', ClassAdminController::class);
+    Route::apiResource('classrooms', ClassAdminController::class);
+    Route::apiResource('disciplines', DisciplinesAdminController::class);
 });
