@@ -170,6 +170,12 @@ class Requisicao extends Model
         return $confirmation;
     }
 
+    public function deliver(){
+        $this->updateStatus('confirmado');
+        $this->updateProductsStatus('disponivel');
+        $this->updateEntregaReal(now());
+    }
+
     public function authorization_url(){
         return route('confirmation', ['token' => $this->token]);
     }

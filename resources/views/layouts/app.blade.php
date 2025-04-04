@@ -27,7 +27,11 @@
 </head>
 
 <body id="page-top">
-    <div id="loader">
+    <div id="loader"
+        @isAdmin 
+        style="width: 85%;"
+        @endisAdmin
+    >
         <div class="spinner-border text-secondary" role="status">
             <span class="sr-only">Loading...</span>
         </div>

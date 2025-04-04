@@ -1,6 +1,7 @@
 import { Modal } from "./manager";
 import { Users } from "../utilities/users";
 import QrScanner from "qr-scanner";
+import { SwalDialog } from "./dialog";
 
 let qrScannerInstance = null; // Store the QR scanner instance globally
 
@@ -54,9 +55,13 @@ function handleScannerSubmission(result) {
         return;
     }
 
-    // Process the scanned result (e.g., send it to the server)
-    console.log('Scanned result:', result);
     alert(`QR Code escaneado: ${result}`);
+
+    API.makeauthenticatedRequest('/admin/deliver', 'POST', {
+        qr_code: result
+    }, () => {
+        SwalDialog.success('Produto Entregue com sucesso');
+    });
 
     // Stop the scanner
     if (qrScannerInstance) {
