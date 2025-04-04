@@ -39,8 +39,4 @@
     <!-- Modal Placeholder -->
     <div id="modal-placeholder"></div>
     
-    <x-slot name="scripts">
-        @vite(['resources/js/classrooms.js'])
-    </x-slot>
-    
 </x-app-layout>

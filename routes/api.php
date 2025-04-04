@@ -95,4 +95,5 @@ Route::group([
     Route::apiResource('departments', DepartmentAdminController::class);
     Route::apiResource('classrooms', ClassAdminController::class);
     Route::apiResource('disciplines', DisciplinesAdminController::class);
+    Route::post('/deliver', [ProductsAdminController::class, 'deliver']);
 });

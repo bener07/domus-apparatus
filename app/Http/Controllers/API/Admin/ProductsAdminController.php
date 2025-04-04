@@ -161,56 +161,6 @@ class ProductsAdminController extends Controller
         return ApiResponseClass::sendResponse(new ChartsProductsResource($product), 'Produto atualizado', 200);
     }
 
-    // public function update($id, Request $request){
-        
-    //     $product = BaseProducts::where('id',$id)->get()->first();
-    //     if(!$product){
-    //         return ApiResponseClass::sendResponse([], 'Produto não encontrado', 404);
-    //     }
-    //     $product->update([
-    //         'name' => $request->name,
-    //         'details' => $request->details,
-    //         'quantity' => sizeof($request->isbns),
-    //     ]);
-    //     if ($request->has('featured_image')) {
-    //         // Get the value; it could be a file or a string.
-    //         $file = $request->get('featured_image');
-            
-    //         if (!is_string($file)) {
-    //             // Assume it's a file (an instance of UploadedFile)
-    //             $existingPath = FileClass::fileExists($file);
-    //             if (!$existingPath) {
-    //                 // Store file and create a public URL path.
-    //                 $storedPath = $file->store('products', 'public');
-    //                 $image = '/storage/' . $storedPath;
-    //             } else {
-    //                 $image = $existingPath;
-    //             }
-    //         } else {
-    //             // If it's already a string, we assume it's the image path/URL.
-    //             $image = $file;
-    //         }
-        
-    //         // Update the first element in the images array.
-    //         $images = $product->images; // Get current images (should be an array)
-    //         $images[0] = $image;        // Replace the first element.
-    //         $product->images = $images; // Update the product's images property.
-    //         $product->save();
-    //     }
-        
-    //     if($request->has('images')){
-    //         $product->images = $request->images;
-    //         $product->save();
-    //     }
-    //     if($request->has('isbns')){
-    //         foreach($request->isbns as $isbn){
-    //             $product->products()->updateOrCreate(['isbn' => $isbn], ['name' => $request->name, 'details' => $request->details]);
-    //         }
-    //     }
-    //     $product->tags()->attach($request->tag);
-    //     return ApiResponseClass::sendResponse(new ChartsProductsResource($product), 'Produto atualizado', 200);
-    // }
-
     public function destroy($id){
         $product = BaseProducts::find($id);
         if($product){
@@ -220,4 +170,14 @@ class ProductsAdminController extends Controller
         return ApiResponseClass::sendResponse([], 'Product not found', 404);
     }
 
+    public function deliver(Request $request){
+        if(!$request->has('qr_code'))
+            return ApiResponseClass::sendResponse([], 'QR code is required', 400);
+        
+        $requisition = Requisicoes::where('token', $request->get('qr_code'));
+        if(!$requisition)
+            return ApiResponseClass::sendResponse([], 'Requisição não encontrada', 404);
+        $requisition->deliver();
+        return ApiResponseClass::sendResponse(new RequisicoesResource($requisition), 'Requisição Entregue', 200);
+    }
 }

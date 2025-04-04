@@ -17,7 +17,7 @@ API.makeAuthenticatedRequest('/api/user', 'GET', () => {}).then(function (respon
         cluster: 'mt1', // Change this to your Pusher cluster if needed
         forceTLS: false, // Set to true if you are using SSL
         encrypted: false, // Set to true if you are using SSL
-        wsHost: "192.168.1.192", // Use your Reverb host
+        wsHost: "192.168.166.123", // Use your Reverb host
         wsPort: 8080, // Use your Reverb port
         wssPort: 443, // Use 443 for SSL
         disableStats: true,
