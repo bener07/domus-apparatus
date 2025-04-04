@@ -1,7 +1,7 @@
 import { Cart } from '../components/cart';
 import { SwalDialog } from '../components/dialog';
 import { Disciplines } from '../utilities/disciplines';
-import { Classes } from '../utilities/classes';
+import { Classrooms } from '../utilities/classrooms';
 import { showLoading, hideLoading } from '../app';
 
 export function loadCart() {
@@ -11,7 +11,7 @@ export function loadCart() {
 
 $(document).ready(function () {
     Disciplines.loadDisciplines();
-    Classes.loadClasses();
+    Classrooms.loadClassrooms();
     $('#checkoutBtn').on('click', function(){
         SwalDialog.info('Introduza a Sala, disciplina e, opcionalmente, observações', '',
             (result)=>{

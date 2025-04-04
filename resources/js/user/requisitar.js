@@ -51,7 +51,7 @@ export function loadProducts() {
 
       // Create the card HTML for each product
       let cardHtml = `
-      <div class="col-sm-4 mb-4">
+      <div class="col-sm-3 mb-4">
         <div class="card">
           <img src="${product.featured_image}" class="card-img-top product-img" alt="${product.name}" style="width: 100%; height: 200px;">
           <div class="card-body">

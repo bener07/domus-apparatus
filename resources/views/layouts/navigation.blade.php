@@ -63,22 +63,10 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h5 class="collapse-header">Utilizadores:</h5>
                 <a class="collapse-item @if(request()->is('dashboard/users')) active @endif" href="{{route('admin.users')}}">Editar Utilizadores</a>
-                <a class="collapse-item" id="addNewUser" href="#"><i class="bi bi-plus"></i> Adicionar</a>
-            </div>
-        </div>
-    </li>
-
-    <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#cargosDropdown"
-            aria-expanded="true" aria-controls="cargosDropdown">
-            <i class="bi bi-award-fill"></i>
-            <span>Cargos</span>
-        </a>
-        <div id="cargosDropdown" class="collapse @if(request()->is('dashboard/roles') || request()->is('dashboard/roles/add')) show @endif" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" id="addNewUser" href="#"><i class="bi bi-plus"></i> Adicionar Utilizador</a>
                 <h5 class="collapse-header">Cargos:</h5>
                 <a class="collapse-item @if(request()->is('dashboard/roles')) active @endif" href="{{route('admin.roles')}}">Editar Cargos</a>
-                <a class="collapse-item" id="addNewCargo" href="#"><i class="bi bi-plus"></i> Adicionar</a>
+                <a class="collapse-item" id="addNewCargo" href="#"><i class="bi bi-plus"></i> Adicionar Cargo</a>
             </div>
         </div>
     </li>
@@ -86,13 +74,27 @@
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#departamentosDropdown"
             aria-expanded="true" aria-controls="departamentosDropdown">
             <i class="bi bi-building-fill"></i>
-            <span>Departamentos</span>
+            <span>Escola</span>
         </a>
-        <div id="departamentosDropdown" class="collapse @if(request()->is('dashboard/department') ) show @endif " aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="departamentosDropdown" class="collapse @if(request()->is('dashboard/school/*') ) show @endif " aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
+
+
                 <h5 class="collapse-header">Departamentos:</h5>
-                <a class="collapse-item @if(request()->is('dashboard/department')) active @endif" href="{{route('admin.departments')}}">Editar Departamentos</a>
-                <a class="collapse-item" id="addNewDepartment" href="#"><i class="bi bi-plus"></i> Adicionar</a>
+                <a class="collapse-item @if(request()->is('dashboard/school/department')) active @endif" href="{{route('admin.departments')}}">Editar Departamentos</a>
+                <a class="collapse-item" id="addNewDepartment" href="#"><i class="bi bi-plus"></i> Adicionar Departamento</a>
+
+
+                <h5 class="collapse-header">Disciplinas:</h5>
+                <a class="collapse-item @if(request()->is('dashboard/school/disciplines')) active @endif" href="{{route('admin.disciplines')}}">Gerir Disciplinas</a>
+                <a class="collapse-item" id="addNewDiscipline" href="#"><i class="bi bi-plus"></i> Adicionar Disciplina</a>
+
+
+                <h5 class="collapse-header">Salas:</h5>
+                <a class="collapse-item @if(request()->is('dashboard/school/rooms')) active @endif" href="{{route('admin.classrooms')}}">Gerir Salas</a>
+                <a class="collapse-item" id="addNewClassroom" href="#"><i class="bi bi-plus"></i> Adicionar Sala</a>
+
+
             </div>
         </div>
     </li>

@@ -12,6 +12,15 @@
         </header>
         @endcartEmpty
 
+        <header>
+            <h2 class="text-lg font-medium text-gray-900">Data registada para o seu pedido</h2>
+            {{ auth()->user()->cart->start }}
+
+            até
+
+            {{ auth()->user()->cart->end }}
+        </header>
+
         <!-- Card Container -->
         <div class="container">
             <ul>

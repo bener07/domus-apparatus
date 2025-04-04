@@ -15,6 +15,7 @@ export default defineConfig({
                 'resources/js/dashboard/products.js',
                 'resources/js/user/requisitar.js',
                 'resources/js/user/checkout.js',
+                'resources/js/user/entregar.js',
 		        'resources/js/app_dashboard.js',
             ],
             refresh: true,

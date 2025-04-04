@@ -2,7 +2,8 @@
 @tailwind components;
 
 #loader{
-    width: 100%;
+    right: 0;
+    width: 85%;
     height: 100%;
     display: flex;
     position: fixed;

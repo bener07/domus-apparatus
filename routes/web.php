@@ -65,9 +65,16 @@ Route::group([
     Route::get('/users/add', function(){return view('dashboard.users.add');})->name('admin.users.add');
     
     Route::get('/roles', function(){return view('dashboard.roles.gestao');})->name('admin.roles');
-    Route::get('/department', function(){return view('dashboard.departments.gestao');})->name('admin.departments');
     Route::get('/products', function(){return view('dashboard.products.gestao');})->name('admin.products');
     Route::get('/tags', function () {return view('dashboard.products.tags');})->name('admin.tags');
+    Route::group([
+        'prefix' => 'school',
+        'name' => 'admin.school.'
+    ], function () {
+        Route::get('/rooms', function(){return view('dashboard.classrooms.gestao');})->name('admin.classrooms');
+        Route::get('/disciplines', function(){return view('dashboard.disciplines.gestao');})->name('admin.disciplines');
+        Route::get('/department', function(){return view('dashboard.departments.gestao');})->name('admin.departments');
+    });
 });
 
 

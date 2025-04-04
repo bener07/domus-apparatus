@@ -111,7 +111,7 @@ $(document).ready(() => {
         // Bind the "Editar" button click event
         $('#usersTable tbody').on('click', '.editar-btn', function () {
             const userId = $(this).data('id');
-            const user = $(this).data('user');
+            let user = $(this).data('user');
             if (typeof user === 'string') {
                 try {
                     user = JSON.parse(user);
@@ -392,13 +392,4 @@ export function addNewUser() {
             modal.build();
         })
     });
-}
-
-async function fetchData(url) {
-    const response = await $.ajax({
-        url,
-        method: 'GET',
-        dataType: 'json'
-    });
-    return response;
 }
